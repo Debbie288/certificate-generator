@@ -1,0 +1,150 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f4f7fc 0%, #e2e8f0 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+.container {
+  background: white;
+  max-width: 750px;
+  width: 100%;
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-size: 1.8rem;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+h1::before {
+  content: '✨ ';
+}
+
+p {
+  color: #64748b;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #334155;
+}
+
+label::after {
+  content: ' *';
+  color: #ef4444;
+}
+
+/* Remove asterisk for optional fields */
+.form-group:has(input[type="file"]) label::after,
+.form-group:has(input#certNumber) label::after,
+.form-group:has(select) label::after {
+  content: '';
+}
+
+input[type="file"] {
+  padding: 0.5rem;
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  width: 100%;
+  cursor: pointer;
+  background: #f8fafc;
+}
+
+input[type="file"]:hover {
+  border-color: #2563eb;
+  background: #f1f5f9;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.15s;
+  background: white;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+button {
+  width: 100%;
+  padding: 0.8rem;
+  background: #2563eb;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 0.5rem;
+}
+
+button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+small {
+  display: block;
+  margin-top: 0.3rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+#previewArea {
+  margin-top: 2rem;
+}
+
+#previewArea h2 {
+  color: #1e293b;
+  border-bottom: 3px solid #2563eb;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .container {
+    padding: 1.5rem;
+  }
+  h1 {
+    font-size: 1.3rem;
+  }
+  button {
+    font-size: 1rem;
+  }
+}
