@@ -201,3 +201,32 @@ document.addEventListener('DOMContentLoaded', () => {
     */
   });
 });
+// Save to Supabase
+const supabaseUrl = 'https://ovnlwzfwlepsewymlvdy.supabase.co';
+const supabaseKey = 'sb_publishable_Q8vbLCgokanKi2OTCsFiag_Ad9bV5ts';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+async function saveCertificate() {
+  const studentName = document.getElementById('studentName').value;
+  const courseName = document.getElementById('courseName').value;
+  const completionDate = document.getElementById('completionDate').value;
+  const certNumber = document.getElementById('certNumber').value;
+  const institutionName = document.getElementById('institutionName').value;
+  const directorName = document.getElementById('directorName').value;
+
+  const { error } = await supabase
+    .from('certificates')
+    .insert([
+      {
+        student_name: studentName,
+        course_name: courseName,
+        completion_date: completionDate,
+        cert_number: certNumber,
+        institution: institutionName,
+        director: directorName
+      }
+    ]);
+    
+  if (error) console.error('Error saving:', error);
+  else console.log('Certificate saved!');
+}
