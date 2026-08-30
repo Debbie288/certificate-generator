@@ -1,1 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Admin Login - Certificate Generator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #111827, #1e3a8a);
+            font-family: Arial, sans-serif;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0 0 8px;
+            color: #111827;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #message {
+            display: none;
+            margin-top: 18px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-card">
+
+        <div class="logo">
+            🔐
+        </div>
+
+        <h1>Admin Login</h1>
+
+        <p class="subtitle">
+            Certificate Generator Administration
+        </p>
+
+        <form id="loginForm">
+
+            <div class="form-group">
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your admin email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                >
+            </div>
+
+            <button
+                type="submit"
+                id="loginButton"
+            >
+                🔐 Login
+            </button>
+
+        </form>
+
+        <div id="message"></div>
+
+        <a
+            href="index.html"
+            class="back-link"
+        >
+            ← Back to Certificate Generator
+        </a>
+
+    </div>
+
+
+    <!-- Supabase -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <script>
+
+        const supabaseUrl =
+            'https://gdophhworvapqctpmyia.supabase.co';
+
+        const supabaseKey =
+            'sb_publishable_PUMkwRHzr6lwQQzTQyO1bQ_DCmmQ9ww';
+
+        const supabaseClient =
+            window.supabase.createClient(
+                supabaseUrl,
+                supabaseKey
+            );
+
+
+        const loginForm =
+            document.getElementById('loginForm');
+
+        const loginButton =
+            document.getElementById('loginButton');
+
+        const message =
+            document.getElementById('message');
+
+
+        function showMessage(text, type) {
+
+            message.textContent = text;
+
+            message.className = type;
+
+            message.style.display = 'block';
+        }
+
+
+        loginForm.addEventListener(
+            'submit',
+            async function(event) {
+
+                event.preventDefault();
+
+                const email =
+                    document
+                        .getElementById('email')
+                        .value
+                        .trim();
+
+                const password =
+                    document
+                        .getElementById('password')
+                        .value;
+
+
+                loginButton.disabled = true;
+
+                loginButton.textContent =
+                    '⏳ Logging in...';
+
+
+                const { data, error } =
+                    await supabaseClient.auth
+                        .signInWithPassword({
+                            email: email,
+                            password: password
+                        });
+
+
+                if (error) {
+
+                    console.error(error);
+
+                    showMessage(
+                        '❌ ' + error.message,
+                        'error'
+                    );
+
+                    loginButton.disabled = false;
+
+                    loginButton.textContent =
+                        '🔐 Login';
+
+                    return;
+                }
+
+
+                showMessage(
+                    '✅ Login successful! Opening dashboard...',
+                    'success'
+                );
+
+
+                setTimeout(function() {
+
+                    window.location.href =
+                        'dashboard.html';
+
+                }, 800);
+
+            }
+        );
+
+    </script>
+
+</body>
+  </html>
