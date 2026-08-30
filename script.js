@@ -177,26 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 🔴 NEW: Save to Supabase (uncomment when Supabase is set up)
     /*
     // For Supabase, add this code after generating the certificate
-    const supabaseUrl = 'https://your-project.supabase.co';
-    const supabaseKey = 'sb_publishable_Q8vbLCgokanKi2OTCsFiag_Ad9bV5ts';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-    async function saveCertificate() {
-      const { data, error } = await supabase
-        .from('certificates')
-        .insert([
-          {
-            student_name: studentName,
-            course_name: courseName,
-            completion_date: completionDate,
-            cert_number: certNumber,
-            institution: institutionName,
-            director: directorName
-          }
-        ]);
-      if (error) console.error('Error saving:', error);
-      else console.log('Certificate saved!');
-    }
 // Save to Supabase
 const supabaseUrl = 'https://ovnlwzfwlepsewymlvdy.supabase.co';
 const supabaseKey = 'sb_publishable_Q8vbLCgokanKi2OTCsFiag_Ad9bV5ts';
