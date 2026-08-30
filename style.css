@@ -1,5 +1,5 @@
 * {
-    margin: 0;
+no    margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
@@ -146,5 +146,29 @@ footer a {
     }
     button {
         font-size: 1rem;
+        /* ==========================================
+   PROFESSIONAL SIGNATURE STYLE
+   ========================================== */
+
+.signature-name {
+  font-family: "Brush Script MT", "Segoe Script", cursive;
+  font-size: 1.8rem;
+  font-style: italic;
+  color: #1e293b;
+  margin-bottom: 5px;
+}
+
+.signature-line {
+  width: 180px;
+  border-top: 1px solid #334155;
+  margin: 0 auto 6px;
+}
+
+.signature-title {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+    }
     }
   }
