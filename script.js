@@ -197,10 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (error) console.error('Error saving:', error);
       else console.log('Certificate saved!');
     }
-    saveCertificate();
-    */
-  });
-});
 // Save to Supabase
 const supabaseUrl = 'https://ovnlwzfwlepsewymlvdy.supabase.co';
 const supabaseKey = 'sb_publishable_Q8vbLCgokanKi2OTCsFiag_Ad9bV5ts';
