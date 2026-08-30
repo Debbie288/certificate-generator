@@ -1,1 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Admin Login - Certificate Generator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #111827, #1e3a8a);
+            padding: 20px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 35px 25px;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 18px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        #message {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+
+        <h1>🔐 Admin Login</h1>
+
+        <p class="subtitle">
+            Certificate Generator
+        </p>
+
+        <form id="adminLoginForm">
+
+            <label for="email">
+                Email
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your admin email"
+                required
+            >
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                required
+            >
+
+            <button
+                type="submit"
+                id="loginButton"
+            >
+                🔐 Login
+            </button>
+
+        </form>
+
+        <div id="message"></div>
+
+        <a
+            href="index.html"
+            class="back-link"
+        >
+            ← Back to Certificate Generator
+        </a>
+
+    </div>
+
+
+    <!-- Supabase -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <script>
+
+        const supabaseUrl =
+            'https://gdophhworvapqctpmyia.supabase.co';
+
+        const supabaseKey =
+            'sb_publishable_PUMkwRHzr6lwQQzTQyO1bQ_DCmmQ9ww';
+
+        const supabaseClient =
+            window.supabase.createClient(
+                supabaseUrl,
+                supabaseKey
+            );
+
+
+        const form =
+            document.getElementById(
+                'adminLoginForm'
+            );
+
+        const message =
+            document.getElementById(
+                'message'
+            );
+
+        const loginButton =
+            document.getElementById(
+                'loginButton'
+            );
+
+
+        form.addEventListener(
+            'submit',
+            async function(event) {
+
+                event.preventDefault();
+
+                const email =
+                    document
+                        .getElementById('email')
+                        .value
+                        .trim();
+
+                const password =
+                    document
+                        .getElementById('password')
+                        .value;
+
+
+                message.textContent =
+                    '⏳ Logging in...';
+
+                message.style.color =
+                    '#2563eb';
+
+                loginButton.disabled = true;
+
+
+                const { data, error } =
+                    await supabaseClient.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
+
+
+                if (error) {
+
+                    console.error(error);
+
+                    message.textContent =
+                        '❌ ' + error.message;
+
+                    message.style.color =
+                        '#dc2626';
+
+                    loginButton.disabled =
+                        false;
+
+                    return;
+                }
+
+
+                message.textContent =
+                    '✅ Login successful!';
+
+                message.style.color =
+                    '#16a34a';
+
+
+                setTimeout(function() {
+
+                    window.location.href =
+                        'dashboard.html';
+
+                }, 800);
+
+            }
+        );
+
+    </script>
+
+</body>
+  </html>
