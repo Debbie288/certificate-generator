@@ -1,1 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>Certificate Verification</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fc;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      color: #334155;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #2563eb;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    #result {
+      margin-top: 25px;
+      display: none;
+    }
+
+    .valid {
+      border: 2px solid #16a34a;
+      background: #f0fdf4;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .invalid {
+      border: 2px solid #dc2626;
+      background: #fef2f2;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .valid h2 {
+      color: #15803d;
+      margin-bottom: 15px;
+    }
+
+    .invalid h2 {
+      color: #b91c1c;
+      margin-bottom: 10px;
+    }
+
+    .details {
+      margin-top: 15px;
+      line-height: 1.8;
+      color: #334155;
+    }
+
+    .loading {
+      text-align: center;
+      color: #64748b;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>🔐 Certificate Verification</h1>
+
+    <p class="subtitle">
+      Enter a certificate number to verify its authenticity.
+    </p>
+
+    <form id="verifyForm">
+
+      <label for="certNumber">
+        Certificate Number
+      </label>
+
+      <input
+        type="text"
+        id="certNumber"
+        placeholder="e.g. CERT-2026-1234"
+        required
+      >
+
+      <button type="submit">
+        🔎 Verify Certificate
+      </button>
+
+    </form>
+
+    <div id="result"></div>
+
+  </div>
+
+
+  <!-- Supabase -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <script>
+
+    // ==========================================
+    // SUPABASE
+    // ==========================================
+
+    const supabaseUrl =
+      'https://gdophhworvapqctpmyia.supabase.co';
+
+    const supabaseKey =
+      'sb_publishable_PUMkwRHzr6lwQQzTQyO1bQ_DCmmQ9ww';
+
+    const supabaseClient =
+      window.supabase.createClient(
+        supabaseUrl,
+        supabaseKey
+      );
+
+
+    // ==========================================
+    // VERIFICATION
+    // ==========================================
+
+    const form =
+      document.getElementById('verifyForm');
+
+    const result =
+      document.getElementById('result');
+
+
+    form.addEventListener('submit', async function(event) {
+
+      event.preventDefault();
+
+
+      const certNumber =
+        document
+          .getElementById('certNumber')
+          .value
+          .trim();
+
+
+      if (!certNumber) {
+
+        alert('Please enter a certificate number.');
+
+        return;
+      }
+
+
+      // Show loading
+
+      result.style.display = 'block';
+
+      result.innerHTML = `
+        <div class="loading">
+          ⏳ Checking certificate...
+        </div>
+      `;
+
+
+      try {
+
+        // Search Supabase
+
+        const { data, error } =
+          await supabaseClient
+            .from('certificates')
+            .select('*')
+            .eq('cert_number', certNumber)
+            .maybeSingle();
+
+
+        // Database error
+
+        if (error) {
+
+          result.innerHTML = `
+            <div class="invalid">
+
+              <h2>
+                ❌ Verification Error
+              </h2>
+
+              <p>
+                ${error.message}
+              </p>
+
+            </div>
+          `;
+
+          return;
+        }
+
+
+        // Certificate not found
+
+        if (!data) {
+
+          result.innerHTML = `
+            <div class="invalid">
+
+              <h2>
+                ❌ Certificate Not Found
+              </h2>
+
+              <p>
+                No certificate with this number
+                was found in our database.
+              </p>
+
+            </div>
+          `;
+
+          return;
+        }
+
+
+        // Certificate found
+
+        const date =
+          new Date(
+            data.completion_date + 'T00:00:00'
+          );
+
+
+        const formattedDate =
+          date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+
+
+        result.innerHTML = `
+
+          <div class="valid">
+
+            <h2>
+              ✅ VALID CERTIFICATE
+            </h2>
+
+            <p>
+              This certificate has been successfully
+              verified against our database.
+            </p>
+
+
+            <div class="details">
+
+              <strong>Student:</strong>
+              ${data.student_name}
+              <br>
+
+              <strong>Course:</strong>
+              ${data.course_name}
+              <br>
+
+              <strong>Institution:</strong>
+              ${data.institution}
+              <br>
+
+              <strong>Director:</strong>
+              ${data.director}
+              <br>
+
+              <strong>Completion Date:</strong>
+              ${formattedDate}
+              <br>
+
+              <strong>Certificate Number:</strong>
+              ${data.cert_number}
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+
+      catch (error) {
+
+        result.innerHTML = `
+
+          <div class="invalid">
+
+            <h2>
+              ❌ Something Went Wrong
+            </h2>
+
+            <p>
+              ${error.message}
+            </p>
+
+          </div>
+
+        `;
+
+      }
+
+    });
+
+  </script>
+
+</body>
+        </html>
