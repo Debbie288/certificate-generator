@@ -1,7 +1,17 @@
 // Supabase Initialization
 const supabaseUrl = 'https://gdophhworvapqctpmyia.supabase.co';
 const supabaseKey = 'sb_publishable_PUMkwRHzr6lwQQzTQyO1bQ_DCmmQ9ww';
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+  },
+  global: {
+    headers: {
+      'apikey': supabaseKey
+    }
+  }
+});
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('certificateForm');
