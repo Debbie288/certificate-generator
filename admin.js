@@ -677,3 +677,1122 @@ function setupCertificateModal() {
         );
     }
 }
+// ==========================================================
+// SECTION 3 OF 4
+// NAVIGATION + FILTERS
+// ==========================================================
+
+
+// ==========================================================
+// NAVIGATION
+// ==========================================================
+
+function setupNavigation() {
+
+    const navItems =
+        document.querySelectorAll(
+            '.nav-item'
+        );
+
+
+    navItems.forEach(
+        item => {
+
+            item.addEventListener(
+                'click',
+                function () {
+
+                    const section =
+                        item.dataset.section;
+
+
+                    showSection(
+                        section
+                    );
+
+
+                    navItems.forEach(
+                        nav =>
+                            nav.classList.remove(
+                                'active'
+                            )
+                    );
+
+
+                    item.classList.add(
+                        'active'
+                    );
+                }
+            );
+        }
+    );
+
+
+    const sectionButtons =
+        document.querySelectorAll(
+            '[data-section-button]'
+        );
+
+
+    sectionButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                'click',
+                function () {
+
+                    showSection(
+                        button.dataset.sectionButton
+                    );
+                }
+            );
+        }
+    );
+}
+
+
+// ==========================================================
+// SHOW SECTION
+// ==========================================================
+
+function showSection(
+    sectionId
+) {
+
+    const sections =
+        document.querySelectorAll(
+            '.page-section'
+        );
+
+
+    sections.forEach(
+        section => {
+
+            section.classList.remove(
+                'active-section'
+            );
+        }
+    );
+
+
+    const selected =
+        document.getElementById(
+            sectionId
+        );
+
+
+    if (selected) {
+
+        selected.classList.add(
+            'active-section'
+        );
+    }
+
+
+    const titles = {
+
+        dashboardSection:
+            'Dashboard',
+
+        certificatesSection:
+            'Certificates',
+
+        analyticsSection:
+            'Analytics',
+
+        activitySection:
+            'Activity',
+
+        settingsSection:
+            'Settings'
+    };
+
+
+    setText(
+        'pageTitle',
+        titles[sectionId] ||
+        'Dashboard'
+    );
+
+
+    const sidebar =
+        document.getElementById(
+            'sidebar'
+        );
+
+
+    if (
+        window.innerWidth <=
+        800
+    ) {
+
+        if (sidebar) {
+
+            sidebar.classList.remove(
+                'open'
+            );
+        }
+    }
+}
+
+
+// ==========================================================
+// MOBILE MENU
+// ==========================================================
+
+function setupMenu() {
+
+    const menuButton =
+        document.getElementById(
+            'menuButton'
+        );
+
+
+    const sidebar =
+        document.getElementById(
+            'sidebar'
+        );
+
+
+    if (
+        menuButton &&
+        sidebar
+    ) {
+
+        menuButton.addEventListener(
+            'click',
+            function () {
+
+                sidebar.classList.toggle(
+                    'open'
+                );
+            }
+        );
+    }
+}
+
+
+// ==========================================================
+// LOGOUT
+// ==========================================================
+
+function setupLogout() {
+
+    const button =
+        document.getElementById(
+            'logoutButton'
+        );
+
+
+    if (!button)
+        return;
+
+
+    button.addEventListener(
+        'click',
+        async function () {
+
+            const confirmed =
+                confirm(
+                    'Are you sure you want to logout?'
+                );
+
+
+            if (!confirmed)
+                return;
+
+
+            const {
+                error
+            } =
+                await supabaseClient.auth.signOut();
+
+
+            if (error) {
+
+                alert(
+                    'Logout failed: ' +
+                    error.message
+                );
+
+                return;
+            }
+
+
+            window.location.href =
+                'admin-login.html';
+        }
+    );
+}
+
+
+// ==========================================================
+// FILTER SETUP
+// ==========================================================
+
+function setupFilters() {
+
+    const searchInput =
+        document.getElementById(
+            'searchInput'
+        );
+
+
+    const courseFilter =
+        document.getElementById(
+            'courseFilter'
+        );
+
+
+    const institutionFilter =
+        document.getElementById(
+            'institutionFilter'
+        );
+
+
+    const dateFrom =
+        document.getElementById(
+            'dateFrom'
+        );
+
+
+    const dateTo =
+        document.getElementById(
+            'dateTo'
+        );
+
+
+    const clearButton =
+        document.getElementById(
+            'clearFilters'
+        );
+
+
+    [
+        searchInput,
+        courseFilter,
+        institutionFilter,
+        dateFrom,
+        dateTo
+    ]
+        .filter(Boolean)
+        .forEach(
+            element => {
+
+                element.addEventListener(
+                    'input',
+                    applyFilters
+                );
+
+                element.addEventListener(
+                    'change',
+                    applyFilters
+                );
+            }
+        );
+
+
+    if (clearButton) {
+
+        clearButton.addEventListener(
+            'click',
+            function () {
+
+                if (searchInput)
+                    searchInput.value = '';
+
+                if (courseFilter)
+                    courseFilter.value = '';
+
+                if (institutionFilter)
+                    institutionFilter.value = '';
+
+                if (dateFrom)
+                    dateFrom.value = '';
+
+                if (dateTo)
+                    dateTo.value = '';
+
+
+                applyFilters();
+            }
+        );
+    }
+}
+
+
+// ==========================================================
+// APPLY FILTERS
+// ==========================================================
+
+function applyFilters() {
+
+    const search =
+        (
+            document.getElementById(
+                'searchInput'
+            )?.value || ''
+        )
+        .toLowerCase()
+        .trim();
+
+
+    const course =
+        document.getElementById(
+            'courseFilter'
+        )?.value || '';
+
+
+    const institution =
+        document.getElementById(
+            'institutionFilter'
+        )?.value || '';
+
+
+    const dateFrom =
+        document.getElementById(
+            'dateFrom'
+        )?.value || '';
+
+
+    const dateTo =
+        document.getElementById(
+            'dateTo'
+        )?.value || '';
+
+
+    filteredCertificates =
+        allCertificates.filter(
+            certificate => {
+
+                const searchable = [
+
+                    certificate.student_name,
+
+                    certificate.course_name,
+
+                    certificate.cert_number,
+
+                    certificate.institution
+
+                ]
+                    .filter(Boolean)
+                    .join(' ')
+                    .toLowerCase();
+
+
+                if (
+                    search &&
+                    !searchable.includes(
+                        search
+                    )
+                ) {
+
+                    return false;
+                }
+
+
+                if (
+                    course &&
+                    certificate.course_name !==
+                    course
+                ) {
+
+                    return false;
+                }
+
+
+                if (
+                    institution &&
+                    certificate.institution !==
+                    institution
+                ) {
+
+                    return false;
+                }
+
+
+                if (
+                    dateFrom &&
+                    certificate.completion_date <
+                    dateFrom
+                ) {
+
+                    return false;
+                }
+
+
+                if (
+                    dateTo &&
+                    certificate.completion_date >
+                    dateTo
+                ) {
+
+                    return false;
+                }
+
+
+                return true;
+            }
+        );
+
+
+    displayCertificates();
+}
+
+
+// ==========================================================
+// COURSE FILTER
+// ==========================================================
+
+function populateCourseFilter() {
+
+    const select =
+        document.getElementById(
+            'courseFilter'
+        );
+
+
+    if (!select)
+        return;
+
+
+    const current =
+        select.value;
+
+
+    select.innerHTML =
+        '<option value="">All Courses</option>';
+
+
+    const courses =
+        [
+            ...new Set(
+                allCertificates
+                    .map(
+                        cert =>
+                            cert.course_name
+                    )
+                    .filter(Boolean)
+            )
+        ]
+        .sort();
+
+
+    courses.forEach(
+        course => {
+
+            const option =
+                document.createElement(
+                    'option'
+                );
+
+
+            option.value =
+                course;
+
+
+            option.textContent =
+                course;
+
+
+            select.appendChild(
+                option
+            );
+        }
+    );
+
+
+    select.value =
+        current;
+}
+
+
+// ==========================================================
+// INSTITUTION FILTER
+// ==========================================================
+
+function populateInstitutionFilter() {
+
+    const select =
+        document.getElementById(
+            'institutionFilter'
+        );
+
+
+    if (!select)
+        return;
+
+
+    const current =
+        select.value;
+
+
+    select.innerHTML =
+        '<option value="">All Institutions</option>';
+
+
+    const institutions =
+        [
+            ...new Set(
+                allCertificates
+                    .map(
+                        cert =>
+                            cert.institution
+                    )
+                    .filter(Boolean)
+            )
+        ]
+        .sort();
+
+
+    institutions.forEach(
+        institution => {
+
+            const option =
+                document.createElement(
+                    'option'
+                );
+
+
+            option.value =
+                institution;
+
+
+            option.textContent =
+                institution;
+
+
+            select.appendChild(
+                option
+            );
+        }
+    );
+
+
+    select.value =
+        current;
+                }
+// ==========================================================
+// SECTION 4 OF 4
+// ANALYTICS + EXPORT + HELPERS
+// ==========================================================
+
+
+// ==========================================================
+// ANALYTICS
+// ==========================================================
+
+function updateAnalytics() {
+
+    if (
+        allCertificates.length ===
+        0
+    ) {
+
+        setText(
+            'popularCourse',
+            '—'
+        );
+
+
+        setText(
+            'latestCertificate',
+            '—'
+        );
+
+
+        const analytics =
+            document.getElementById(
+                'courseAnalytics'
+            );
+
+
+        if (analytics) {
+
+            analytics.innerHTML = `
+                <div class="empty-state">
+                    No certificate data available yet.
+                </div>
+            `;
+        }
+
+
+        return;
+    }
+
+
+    const courseCounts =
+        {};
+
+
+    allCertificates.forEach(
+        certificate => {
+
+            const course =
+                certificate.course_name ||
+                'Unknown';
+
+
+            courseCounts[course] =
+                (
+                    courseCounts[course] ||
+                    0
+                ) + 1;
+        }
+    );
+
+
+    const sortedCourses =
+        Object.entries(
+            courseCounts
+        )
+        .sort(
+            (
+                a,
+                b
+            ) =>
+                b[1] -
+                a[1]
+        );
+
+
+    const popular =
+        sortedCourses[0];
+
+
+    setText(
+        'popularCourse',
+        popular
+            ? `${popular[0]} (${popular[1]})`
+            : '—'
+    );
+
+
+    const latest =
+        allCertificates[0];
+
+
+    setText(
+        'latestCertificate',
+        latest
+            ? (
+                latest.cert_number ||
+                latest.student_name ||
+                '—'
+            )
+            : '—'
+    );
+
+
+    const analytics =
+        document.getElementById(
+            'courseAnalytics'
+        );
+
+
+    if (!analytics)
+        return;
+
+
+    analytics.innerHTML = '';
+
+
+    sortedCourses.forEach(
+        item => {
+
+            const row =
+                document.createElement(
+                    'div'
+                );
+
+
+            row.style.padding =
+                '12px 0';
+
+
+            row.style.borderBottom =
+                '1px solid #eee';
+
+
+            row.innerHTML = `
+
+                <strong>
+                    ${escapeHTML(
+                        item[0]
+                    )}
+                </strong>
+
+                <span style="float:right;">
+                    ${item[1]}
+                </span>
+
+            `;
+
+
+            analytics.appendChild(
+                row
+            );
+        }
+    );
+}
+
+
+// ==========================================================
+// BUTTONS
+// ==========================================================
+
+function setupButtons() {
+
+    const refresh =
+        document.getElementById(
+            'refreshCertificates'
+        );
+
+
+    if (refresh) {
+
+        refresh.addEventListener(
+            'click',
+            async function () {
+
+                refresh.textContent =
+                    '⏳ Loading...';
+
+
+                await loadCertificates();
+
+
+                refresh.textContent =
+                    '🔄 Refresh';
+            }
+        );
+    }
+
+
+    const exportButton =
+        document.getElementById(
+            'exportCSV'
+        );
+
+
+    if (exportButton) {
+
+        exportButton.addEventListener(
+            'click',
+            exportCSV
+        );
+    }
+}
+
+
+// ==========================================================
+// EXPORT CSV
+// ==========================================================
+
+function exportCSV() {
+
+    if (
+        filteredCertificates.length ===
+        0
+    ) {
+
+        alert(
+            'There are no certificates to export.'
+        );
+
+        return;
+    }
+
+
+    const headers = [
+
+        'Certificate Number',
+
+        'Student Name',
+
+        'Course',
+
+        'Completion Date',
+
+        'Institution',
+
+        'Director'
+
+    ];
+
+
+    const rows =
+        filteredCertificates.map(
+            certificate => [
+
+                certificate.cert_number,
+
+                certificate.student_name,
+
+                certificate.course_name,
+
+                certificate.completion_date,
+
+                certificate.institution,
+
+                certificate.director
+
+            ]
+        );
+
+
+    const csv = [
+
+        headers,
+
+        ...rows
+
+    ]
+        .map(
+            row =>
+                row
+                    .map(
+                        value =>
+                            `"${String(
+                                value ?? ''
+                            )
+                            .replace(
+                                /"/g,
+                                '""'
+                            )}"`
+                    )
+                    .join(',')
+        )
+        .join('\n');
+
+
+    const blob =
+        new Blob(
+            [csv],
+            {
+                type:
+                    'text/csv;charset=utf-8;'
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const link =
+        document.createElement(
+            'a'
+        );
+
+
+    link.href =
+        url;
+
+
+    link.download =
+        'certificates.csv';
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    link.remove();
+
+
+    URL.revokeObjectURL(
+        url
+    );
+}
+
+
+// ==========================================================
+// CERTIFICATE COUNT
+// ==========================================================
+
+function updateCertificateCount() {
+
+    const element =
+        document.getElementById(
+            'certificateCount'
+        );
+
+
+    if (!element)
+        return;
+
+
+    const count =
+        filteredCertificates.length;
+
+
+    element.textContent =
+        count +
+        (
+            count === 1
+                ? ' certificate'
+                : ' certificates'
+        );
+}
+
+
+// ==========================================================
+// FORMAT DATE
+// ==========================================================
+
+function formatDate(
+    date
+) {
+
+    if (!date)
+        return '—';
+
+
+    const parsed =
+        new Date(
+            date +
+            'T00:00:00'
+        );
+
+
+    if (
+        Number.isNaN(
+            parsed.getTime()
+        )
+    ) {
+
+        return date;
+    }
+
+
+    return parsed.toLocaleDateString(
+        'en-US',
+        {
+            year:
+                'numeric',
+
+            month:
+                'long',
+
+            day:
+                'numeric'
+        }
+    );
+}
+
+
+// ==========================================================
+// SET TEXT
+// ==========================================================
+
+function setText(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            value;
+    }
+}
+
+
+// ==========================================================
+// ESCAPE HTML
+// ==========================================================
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value ?? ''
+    )
+    .replace(
+        /&/g,
+        '&amp;'
+    )
+    .replace(
+        /</g,
+        '&lt;'
+    )
+    .replace(
+        />/g,
+        '&gt;'
+    )
+    .replace(
+        /"/g,
+        '&quot;'
+    )
+    .replace(
+        /'/g,
+        '&#039;'
+    );
+}
+
+
+// ==========================================================
+// DATABASE ERROR
+// ==========================================================
+
+function showDatabaseError(
+    error
+) {
+
+    console.error(
+        'Database error:',
+        error
+    );
+
+
+    const message =
+        error?.message ||
+        'Unknown Supabase error';
+
+
+    alert(
+        '❌ Could not load certificates from Supabase.\n\n' +
+        message +
+        '\n\n' +
+        'If your certificates table contains data, we may need to fix the Supabase SELECT policy.'
+    );
+}
+
+
+// ==========================================================
+// GENERAL ERROR
+// ==========================================================
+
+function showError(
+    message
+) {
+
+    alert(
+        '❌ ' +
+        message
+    );
+}
+
+
+// ==========================================================
+// READY
+// ==========================================================
+
+console.log(
+    'Certificate Admin Dashboard JS ready.'
+);
