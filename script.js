@@ -665,4 +665,71 @@ document.addEventListener('DOMContentLoaded', function () {
                     .insert([
                         {
                             student_name: studentName,
+                            course_name: courseName,
+                            completion_date: completionDate,
+                            cert_number: certNumber,
+                            institution: institutionName,
+                            director: directorName
+                        }
+                    ])
+                    .select();
+
+
+            // ==========================================
+            // DATABASE ERROR
+            // ==========================================
+
+            if (error) {
+
+                console.error(
+                    'Supabase error:',
+                    error
+                );
+
+                alert(
+                    '⚠️ Certificate was generated, ' +
+                    'but it could not be saved.\n\n' +
+                    'Database says:\n' +
+                    error.message
+                );
+
+                return;
+            }
+
+
+            // ==========================================
+            // SUCCESS
+            // ==========================================
+
+            alert(
+                '✅ SUCCESS!\n\n' +
+                'Certificate generated and saved successfully!\n\n' +
+                'Certificate Number:\n' +
+                certNumber
+            );
+
+        }
+
+
+        // ==========================================
+        // GENERAL ERROR
+        // ==========================================
+
+        catch (error) {
+
+            console.error(
+                'Certificate error:',
+                error
+            );
+
+            alert(
+                '❌ Something went wrong.\n\n' +
+                error.message
+            );
+        }
+
+    });
+
+});
+⚠️ One important
                     
