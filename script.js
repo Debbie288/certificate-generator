@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /*
     // For Supabase, add this code after generating the certificate
     const supabaseUrl = 'https://your-project.supabase.co';
-    const supabaseKey = 'your-anon-key';
+    const supabaseKey = 'sb_publishable_Q8vbLCgokanKi2OTCsFiag_Ad9bV5ts';
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
     async function saveCertificate() {
