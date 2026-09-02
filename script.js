@@ -2254,3 +2254,114 @@ console.log(
 console.log(
     '===================================='
 );
+/* =========================================================
+   FINAL CERTIFICATE FORM CONNECTOR
+========================================================= */
+
+(function () {
+
+    function connectFinalCertificateForm() {
+
+        const form = document.getElementById('certificateForm');
+
+        if (!form) {
+            console.error('❌ certificateForm not found.');
+            return;
+        }
+
+        if (form.dataset.xylarionConnected === 'true') {
+            console.log('Certificate form already connected.');
+            return;
+        }
+
+        form.dataset.xylarionConnected = 'true';
+
+        form.addEventListener('submit', async function (event) {
+
+            event.preventDefault();
+
+            console.log('🎓 Generate Certificate clicked.');
+
+            try {
+
+                const data =
+                    collectXylarionCertificateData();
+
+                console.log('📋 Certificate data:', data);
+
+                renderXylarionCertificate(data);
+
+                const previewArea =
+                    document.getElementById('previewArea');
+
+                if (previewArea) {
+                    previewArea.style.display = 'block';
+                    previewArea.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+
+                if (typeof saveXylarionCertificateData === 'function') {
+
+                    const saveResult =
+                        await saveXylarionCertificateData(data);
+
+                    console.log(
+                        '💾 Supabase result:',
+                        saveResult
+                    );
+
+                    if (saveResult && saveResult.success) {
+                        alert(
+                            '✅ Certificate generated and saved successfully!'
+                        );
+                    } else {
+                        alert(
+                            '⚠️ Certificate generated, but could not be saved.'
+                        );
+                    }
+
+                } else {
+
+                    console.warn(
+                        '⚠️ Save function not found. Certificate was generated locally.'
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    '❌ Certificate generation error:',
+                    error
+                );
+
+                alert(
+                    '❌ Certificate generation failed: ' +
+                    (error.message || error)
+                );
+            }
+
+        });
+
+        console.log(
+            '✅ Final certificate form connector loaded.'
+        );
+    }
+
+
+    if (document.readyState === 'loading') {
+
+        document.addEventListener(
+            'DOMContentLoaded',
+            connectFinalCertificateForm
+        );
+
+    } else {
+
+        connectFinalCertificateForm();
+
+    }
+
+})();
