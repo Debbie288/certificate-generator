@@ -725,4 +725,123 @@ document.addEventListener("DOMContentLoaded", function () {
                                     width:120px;
                                     height:120px;
                                     display:block;
+                                    image-rendering:auto;
+                                "
+                            />
+
+                        </div>
+
+                        <div style="
+                            margin-top:5px;
+                            color:#9A7028;
+                            font-size:12px;
+                            font-weight:bold;
+                            letter-spacing:2px;
+                        ">
+                            OFFICIAL VERIFICATION
+                        </div>
+
+                    </div>
+
+
+                    <!-- SIGNATURE -->
+
+                    <div style="
+                        width:210px;
+                        text-align:center;
+                    ">
+
+                        <div style="
+                            height:35px;
+                            border-bottom:1px solid #0B1930;
+                            font-family:cursive;
+                            font-size:25px;
+                            font-style:italic;
+                        ">
+                            ${director}
+                        </div>
+
+                        <div style="
+                            margin-top:7px;
+                            font-size:13px;
+                        ">
+                            Authorized Signatory
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- GOLD SEAL -->
+
+                <div style="
+                    position:absolute;
+                    right:15px;
+                    bottom:18px;
+                    width:92px;
+                    height:92px;
+                    border-radius:50%;
+                    background:
+                        radial-gradient(
+                            circle,
+                            #F3D889 0%,
+                            #C8A45D 55%,
+                            #9A7028 100%
+                        );
+                    border:4px solid #C8A45D;
+                    box-shadow:0 2px 8px rgba(0,0,0,.25);
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                ">
+
+                    <div style="
+                        width:68px;
+                        height:68px;
+                        border:2px solid #0B1930;
+                        border-radius:50%;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        color:#0B1930;
+                        font-size:30px;
+                    ">
+                        ♕
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        `;
+
+
+        /* =========================
+           SHOW PREVIEW
+        ========================= */
+
+        previewArea.style.display = "block";
+
+        previewArea.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+
+        console.log(
+            "Certificate generated:",
+            certNumber
+        );
+
+        console.log(
+            "Verification URL:",
+            qr.verificationURL
+        );
+
+    });
+
+});
+                                    
                         
