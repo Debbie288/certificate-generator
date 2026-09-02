@@ -1323,3 +1323,934 @@ async function copyVerificationLink(certNumber) {
 console.log(
     'Xylarion Session 5 QR verification loaded.'
 );
+/* =========================================================
+   SESSION 6 — SAVE, DOWNLOAD & PRINT
+========================================================= */
+
+
+/* =========================================================
+   33. SAVE CERTIFICATE TO SUPABASE
+========================================================= */
+
+async function saveXylarionCertificate(data = {}) {
+
+    if (!supabaseClient) {
+
+        console.error(
+            'Supabase client is not available.'
+        );
+
+        return {
+            success: false,
+            error: 'Database connection is unavailable.'
+        };
+    }
+
+
+    const studentName =
+        data.studentName ||
+        data.student ||
+        data.name ||
+        '';
+
+    const courseName =
+        data.courseName ||
+        data.course ||
+        data.program ||
+        '';
+
+    const institutionName =
+        data.institutionName ||
+        data.institution ||
+        data.organization ||
+        '';
+
+    const certificateId =
+        data.certificateId ||
+        data.certNumber ||
+        createTemporaryCertificateNumber();
+
+    const issueDate =
+        data.date ||
+        data.issueDate ||
+        new Date().toISOString();
+
+
+    /*
+       These are the most common fields used by
+       the certificate table.
+
+       If your existing database uses different
+       column names, keep your original saving
+       function instead of replacing it.
+    */
+
+    const certificateRecord = {
+
+        certificate_id: certificateId,
+
+        student_name: studentName,
+
+        course: courseName,
+
+        institution: institutionName,
+
+        created_at: issueDate
+
+    };
+
+
+    try {
+
+        const { data: savedData, error } =
+            await supabaseClient
+                .from('certificates')
+                .insert(certificateRecord)
+                .select();
+
+
+        if (error) {
+
+            console.error(
+                'Certificate save error:',
+                error
+            );
+
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+
+
+        console.log(
+            'Certificate saved successfully:',
+            savedData
+        );
+
+
+        return {
+            success: true,
+            data: savedData,
+            certificateId: certificateId
+        };
+
+    } catch (error) {
+
+        console.error(
+            'Unexpected save error:',
+            error
+        );
+
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+}
+
+
+/* =========================================================
+   34. DOWNLOAD CERTIFICATE AS HTML
+========================================================= */
+
+function downloadCertificateHTML(
+    certificateElement,
+    fileName = 'Xylarion-Certificate.html'
+) {
+
+    if (!certificateElement) {
+
+        alert(
+            'Certificate preview was not found.'
+        );
+
+        return;
+    }
+
+
+    const certificateHTML =
+        certificateElement.outerHTML;
+
+
+    const completeHTML = `
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0">
+
+<title>Xylarion Certificate</title>
+
+<style>
+
+html,
+body {
+
+    margin: 0;
+    padding: 0;
+
+    background: #ffffff;
+
+}
+
+body {
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    padding: 20px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+${certificateHTML}
+
+</body>
+
+</html>
+`;
+
+
+    const blob =
+        new Blob(
+            [completeHTML],
+            {
+                type: 'text/html;charset=utf-8'
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement('a');
+
+    link.href = url;
+
+    link.download = fileName;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+
+    setTimeout(
+        function () {
+
+            URL.revokeObjectURL(url);
+
+        },
+        1000
+    );
+}
+
+
+/* =========================================================
+   35. PRINT / SAVE AS PDF
+========================================================= */
+
+function printXylarionCertificate(
+    certificateElement
+) {
+
+    if (!certificateElement) {
+
+        alert(
+            'Certificate preview was not found.'
+        );
+
+        return;
+    }
+
+
+    const printWindow =
+        window.open(
+            '',
+            '_blank'
+        );
+
+
+    if (!printWindow) {
+
+        alert(
+            'Please allow pop-ups to print the certificate.'
+        );
+
+        return;
+    }
+
+
+    printWindow.document.write(`
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Xylarion Certificate</title>
+
+<style>
+
+@page {
+
+    size: A4 landscape;
+    margin: 0;
+
+}
+
+html,
+body {
+
+    margin: 0;
+    padding: 0;
+
+    background: white;
+
+}
+
+body {
+
+    width: 100vw;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+}
+
+.certificate-wrapper {
+
+    width: 950px;
+    height: 670px;
+
+    margin-top: 0;
+
+}
+
+@media print {
+
+    body {
+
+        overflow: hidden;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="certificate-wrapper">
+
+${certificateElement.outerHTML}
+
+</div>
+
+<script>
+
+window.onload = function () {
+
+    setTimeout(
+        function () {
+
+            window.print();
+
+        },
+        500
+    );
+
+};
+
+window.onafterprint = function () {
+
+    window.close();
+
+};
+
+<\/script>
+
+</body>
+
+</html>
+`);
+
+
+    printWindow.document.close();
+}
+
+
+/* =========================================================
+   36. DOWNLOAD IMAGE USING SVG/CANVAS
+========================================================= */
+
+async function downloadCertificateImage(
+    certificateElement,
+    fileName = 'Xylarion-Certificate.png'
+) {
+
+    if (!certificateElement) {
+
+        alert(
+            'Certificate preview was not found.'
+        );
+
+        return;
+    }
+
+
+    /*
+       This creates a clean downloadable HTML
+       representation. The browser's print/PDF
+       function remains the recommended method
+       for preserving the full certificate design.
+    */
+
+    alert(
+        'For the highest-quality certificate, use Print → Save as PDF.'
+    );
+
+    printXylarionCertificate(
+        certificateElement
+    );
+}
+
+
+/* =========================================================
+   37. SESSION 6 COMPLETE
+========================================================= */
+
+console.log(
+    'Xylarion Session 6 save/download system loaded.'
+);
+/* =========================================================
+   SESSION 7 — FINAL CONNECTION & SYSTEM INITIALIZATION
+========================================================= */
+
+
+/* =========================================================
+   38. FIND CERTIFICATE PREVIEW
+========================================================= */
+
+function findCertificatePreview() {
+
+    const selectors = [
+
+        '#certificatePreview',
+
+        '#certificate-preview',
+
+        '.certificate-preview',
+
+        '#certificate',
+
+        '.certificate'
+
+    ];
+
+
+    for (
+        let i = 0;
+        i < selectors.length;
+        i++
+    ) {
+
+        const element =
+            document.querySelector(
+                selectors[i]
+            );
+
+
+        if (element) {
+
+            return element;
+
+        }
+    }
+
+
+    return null;
+}
+
+
+/* =========================================================
+   39. CREATE CERTIFICATE PREVIEW
+========================================================= */
+
+function renderXylarionCertificate(
+    data = {},
+    container = null
+) {
+
+    const target =
+        container ||
+        findCertificatePreview();
+
+
+    if (!target) {
+
+        console.warn(
+            'Certificate preview container was not found.'
+        );
+
+        return null;
+    }
+
+
+    target.innerHTML =
+        buildPremiumCertificate(data);
+
+
+    return target;
+}
+
+
+/* =========================================================
+   40. GET FORM VALUE SAFELY
+========================================================= */
+
+function getXylValue(selectors = []) {
+
+    for (
+        let i = 0;
+        i < selectors.length;
+        i++
+    ) {
+
+        const element =
+            document.querySelector(
+                selectors[i]
+            );
+
+
+        if (
+            element &&
+            typeof element.value !== 'undefined'
+        ) {
+
+            return element.value.trim();
+
+        }
+    }
+
+
+    return '';
+}
+
+
+/* =========================================================
+   41. COLLECT CERTIFICATE FORM DATA
+========================================================= */
+
+function collectXylarionCertificateData() {
+
+    return {
+
+        studentName:
+            getXylValue([
+                '#studentName',
+                '#student-name',
+                '[name="studentName"]',
+                '[name="student"]'
+            ]),
+
+        courseName:
+            getXylValue([
+                '#courseName',
+                '#course-name',
+                '[name="courseName"]',
+                '[name="course"]'
+            ]),
+
+        institutionName:
+            getXylValue([
+                '#institutionName',
+                '#institution-name',
+                '[name="institutionName"]',
+                '[name="institution"]'
+            ]),
+
+        date:
+            getXylValue([
+                '#date',
+                '#issueDate',
+                '#issue-date',
+                '[name="date"]',
+                '[name="issueDate"]'
+            ]) ||
+            new Date().toISOString(),
+
+        certificateId:
+            getXylValue([
+                '#certificateId',
+                '#certificate-id',
+                '[name="certificateId"]'
+            ]) ||
+            createTemporaryCertificateNumber()
+
+    };
+}
+
+
+/* =========================================================
+   42. CONNECT PREVIEW BUTTON
+========================================================= */
+
+function connectXylarionPreviewButton() {
+
+    const buttons = [
+
+        '#previewCertificate',
+
+        '#previewBtn',
+
+        '#generateCertificate',
+
+        '#generateBtn',
+
+        '#generateCertificateBtn'
+
+    ];
+
+
+    for (
+        let i = 0;
+        i < buttons.length;
+        i++
+    ) {
+
+        const button =
+            document.querySelector(
+                buttons[i]
+            );
+
+
+        if (!button) {
+            continue;
+        }
+
+
+        if (button.dataset.xylConnected) {
+            continue;
+        }
+
+
+        button.dataset.xylConnected =
+            'true';
+
+
+        button.addEventListener(
+            'click',
+            function () {
+
+                const data =
+                    collectXylarionCertificateData();
+
+
+                renderXylarionCertificate(
+                    data
+                );
+
+            }
+        );
+
+
+        console.log(
+            'Connected preview button:',
+            buttons[i]
+        );
+
+
+        break;
+    }
+}
+
+
+/* =========================================================
+   43. CONNECT PRINT BUTTON
+========================================================= */
+
+function connectXylarionPrintButton() {
+
+    const buttons = [
+
+        '#printCertificate',
+
+        '#printBtn',
+
+        '#downloadPDF',
+
+        '#downloadPdf',
+
+        '#savePDF',
+
+        '#savePdf'
+
+    ];
+
+
+    for (
+        let i = 0;
+        i < buttons.length;
+        i++
+    ) {
+
+        const button =
+            document.querySelector(
+                buttons[i]
+            );
+
+
+        if (!button) {
+            continue;
+        }
+
+
+        if (button.dataset.xylConnected) {
+            continue;
+        }
+
+
+        button.dataset.xylConnected =
+            'true';
+
+
+        button.addEventListener(
+            'click',
+            function () {
+
+                const preview =
+                    findCertificatePreview();
+
+
+                if (!preview) {
+
+                    alert(
+                        'Please generate the certificate first.'
+                    );
+
+                    return;
+                }
+
+
+                printXylarionCertificate(
+                    preview
+                );
+
+            }
+        );
+
+
+        console.log(
+            'Connected print button:',
+            buttons[i]
+        );
+
+
+        break;
+    }
+}
+
+
+/* =========================================================
+   44. CONNECT SAVE BUTTON
+========================================================= */
+
+function connectXylarionSaveButton() {
+
+    const buttons = [
+
+        '#saveCertificate',
+
+        '#saveBtn',
+
+        '#saveCertificateBtn'
+
+    ];
+
+
+    for (
+        let i = 0;
+        i < buttons.length;
+        i++
+    ) {
+
+        const button =
+            document.querySelector(
+                buttons[i]
+            );
+
+
+        if (!button) {
+            continue;
+        }
+
+
+        if (button.dataset.xylConnected) {
+            continue;
+        }
+
+
+        button.dataset.xylConnected =
+            'true';
+
+
+        button.addEventListener(
+            'click',
+            async function () {
+
+                const data =
+                    collectXylarionCertificateData();
+
+
+                const result =
+                    await saveXylarionCertificate(
+                        data
+                    );
+
+
+                if (result.success) {
+
+                    alert(
+                        'Certificate saved successfully.'
+                    );
+
+                } else {
+
+                    alert(
+                        'Certificate could not be saved: ' +
+                        result.error
+                    );
+
+                }
+
+            }
+        );
+
+
+        console.log(
+            'Connected save button:',
+            buttons[i]
+        );
+
+
+        break;
+    }
+}
+
+
+/* =========================================================
+   45. FINAL SYSTEM INITIALIZATION
+========================================================= */
+
+function initializeXylarionCertificateSystem() {
+
+    console.log(
+        '===================================='
+    );
+
+    console.log(
+        'XYLARION CERTIFICATE SYSTEM'
+    );
+
+    console.log(
+        'Initializing...'
+    );
+
+    console.log(
+        '===================================='
+    );
+
+
+    connectXylarionPreviewButton();
+
+    connectXylarionPrintButton();
+
+    connectXylarionSaveButton();
+
+    setupCustomerLogoUpload();
+
+
+    console.log(
+        'Xylarion certificate system ready.'
+    );
+}
+
+
+/* =========================================================
+   46. START SYSTEM
+========================================================= */
+
+if (
+    document.readyState === 'loading'
+) {
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        initializeXylarionCertificateSystem
+    );
+
+} else {
+
+    initializeXylarionCertificateSystem();
+
+}
+
+
+/* =========================================================
+   47. FINAL STATUS
+========================================================= */
+
+console.log(
+    '===================================='
+);
+
+console.log(
+    'XYLARION CERTIFICATE SYSTEM READY'
+);
+
+console.log(
+    'Premium certificate design loaded.'
+);
+
+console.log(
+    'Floral borders loaded.'
+);
+
+console.log(
+    'Logo system loaded.'
+);
+
+console.log(
+    'Certificate content loaded.'
+);
+
+console.log(
+    'Save / PDF system loaded.'
+);
+
+console.log(
+    '===================================='
+);
