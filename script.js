@@ -584,4 +584,279 @@ document.addEventListener(
                                         letter-spacing:1px;
                                         color:${gray};
                                     ">
-                                        This is to
+                                                                    This is to certify that
+                                    </p>
+
+
+                                    <!-- ================================= -->
+                                    <!-- STUDENT -->
+                                    <!-- ================================= -->
+
+                                    <h2 style="
+                                        font-size:34px;
+                                        margin:5px 0 8px;
+                                        font-weight:normal;
+                                        color:${navy};
+                                        font-style:italic;
+                                    ">
+                                        ${safeStudent}
+                                    </h2>
+
+
+                                    <div style="
+                                        width:48%;
+                                        height:1px;
+                                        background:${gold};
+                                        margin:0 auto 9px;
+                                    "></div>
+
+
+                                    <!-- ================================= -->
+                                    <!-- COURSE -->
+                                    <!-- ================================= -->
+
+                                    <p style="
+                                        font-size:14px;
+                                        margin:0 0 5px;
+                                        color:${gray};
+                                    ">
+                                        has successfully completed the program
+                                    </p>
+
+
+                                    <h3 style="
+                                        font-size:21px;
+                                        margin:6px 0 9px;
+                                        font-weight:normal;
+                                        color:${navy};
+                                        letter-spacing:0.5px;
+                                    ">
+                                        ${safeCourse}
+                                    </h3>
+
+
+                                    <!-- ================================= -->
+                                    <!-- DATE -->
+                                    <!-- ================================= -->
+
+                                    <p style="
+                                        font-size:13px;
+                                        margin:0 0 13px;
+                                        color:${gray};
+                                    ">
+                                        Awarded on
+                                        <strong style="
+                                            color:${navy};
+                                        ">
+                                            ${formattedDate}
+                                        </strong>
+                                    </p>
+
+
+                                    <!-- ================================= -->
+                                    <!-- BOTTOM INFORMATION -->
+                                    <!-- ================================= -->
+
+                                    <div style="
+                                        display:flex;
+                                        justify-content:
+                                            space-between;
+                                        align-items:flex-end;
+                                        gap:25px;
+                                        padding:0 8px;
+                                    ">
+
+
+                                        <!-- CERTIFICATE ID -->
+
+                                        <div style="
+                                            flex:1;
+                                            text-align:left;
+                                            font-family:
+                                                Arial,
+                                                Helvetica,
+                                                sans-serif;
+                                            font-size:10px;
+                                        ">
+
+                                            <div style="
+                                                color:#777;
+                                                margin-bottom:3px;
+                                            ">
+                                                CERTIFICATE ID
+                                            </div>
+
+                                            <div style="
+                                                font-weight:bold;
+                                                font-size:12px;
+                                                color:${navy};
+                                            ">
+                                                ${safeCertNumber}
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- QR -->
+
+                                        <div style="
+                                            width:130px;
+                                            text-align:center;
+                                            font-family:
+                                                Arial,
+                                                Helvetica,
+                                                sans-serif;
+                                        ">
+
+                                            <img
+                                                src="${qrCodeURL}"
+                                                alt="QR Code"
+                                                style="
+                                                    width:78px;
+                                                    height:78px;
+                                                    display:block;
+                                                    margin:
+                                                        0 auto 4px;
+                                                    border:2px solid white;
+                                                "
+                                            >
+
+                                            <div style="
+                                                font-size:9px;
+                                                letter-spacing:0.5px;
+                                                color:${gray};
+                                            ">
+                                                SCAN TO VERIFY
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- SIGNATURE -->
+
+                                        <div style="
+                                            flex:1;
+                                            text-align:center;
+                                            min-width:140px;
+                                        ">
+
+                                            <div style="
+                                                font-family:
+                                                    'Brush Script MT',
+                                                    'Segoe Script',
+                                                    cursive;
+                                                font-size:23px;
+                                                margin-bottom:2px;
+                                                color:${navy};
+                                            ">
+                                                ${safeDirector}
+                                            </div>
+
+                                            <div style="
+                                                width:130px;
+                                                height:1px;
+                                                background:${navy};
+                                                margin:
+                                                    0 auto 3px;
+                                            "></div>
+
+                                            <div style="
+                                                font-size:10px;
+                                                font-weight:bold;
+                                                color:${navy};
+                                            ">
+                                                DIRECTOR
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- ================================= -->
+                                    <!-- VERIFICATION -->
+                                    <!-- ================================= -->
+
+                                    <div style="
+                                        margin-top:10px;
+                                        padding-top:6px;
+                                        border-top:
+                                            1px solid
+                                            rgba(201,162,39,0.45);
+                                        font-family:
+                                            Arial,
+                                            Helvetica,
+                                            sans-serif;
+                                    ">
+
+                                        <div style="
+                                            font-size:8px;
+                                            color:#888;
+                                            letter-spacing:0.5px;
+                                        ">
+                                            SCAN THE QR CODE TO VERIFY
+                                            THIS CERTIFICATE
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- ================================= -->
+                                    <!-- PRINT -->
+                                    <!-- ================================= -->
+
+                                    <button
+                                        type="button"
+                                        id="printCertificateButton"
+                                        style="
+                                            margin-top:7px;
+                                            padding:8px 18px;
+                                            background:${gold};
+                                            color:white;
+                                            border:none;
+                                            border-radius:5px;
+                                            font-size:12px;
+                                            font-weight:bold;
+                                            cursor:pointer;
+                                            font-family:
+                                                Arial,
+                                                Helvetica,
+                                                sans-serif;
+                                        "
+                                    >
+                                        🖨️ Print / Save as PDF
+                                    </button>
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+
+                    // ====================================================
+                    // DISPLAY
+                    // ====================================================
+
+                    certificatePreview.innerHTML =
+                        certificateHTML;
+
+
+                    if (previewArea) {
+
+                        previewArea.style.display =
+                            'block';
+
+                        previewArea.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+
+
+                    // ====================================================
+                    // PRINT
+                    // ====================================================
