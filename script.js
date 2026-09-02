@@ -401,4 +401,334 @@ function createPremiumFrame() {
 console.log(
     'Xylarion Session 2 premium frame loaded.'
 );
+/* =========================================================
+   SESSION 3 — LOGO, EMBLEM & PREMIUM SEAL
+========================================================= */
 
+
+/* =========================================================
+   16. CUSTOMER LOGO STORAGE
+========================================================= */
+
+let xylCustomerLogo = '';
+
+let xylCustomerLogoName = '';
+
+
+/* =========================================================
+   17. CREATE DEFAULT PROFESSIONAL EMBLEM
+   Used when the organization has no logo.
+========================================================= */
+
+function createDefaultEmblem() {
+
+    const navy = xylColor('navy');
+    const gold = xylColor('gold');
+
+    return `
+        <div
+            style="
+                width:82px;
+                height:82px;
+                border-radius:50%;
+                background:${navy};
+                border:4px solid ${gold};
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                box-sizing:border-box;
+                margin:0 auto;
+                box-shadow:
+                    0 2px 8px rgba(0,0,0,0.12);
+            "
+        >
+
+            <div
+                style="
+                    width:62px;
+                    height:62px;
+                    border-radius:50%;
+                    border:1.5px solid ${gold};
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    box-sizing:border-box;
+                "
+            >
+
+                <div
+                    style="
+                        text-align:center;
+                        color:${gold};
+                        font-family:Georgia, 'Times New Roman', serif;
+                        font-size:26px;
+                        line-height:1;
+                        font-weight:bold;
+                    "
+                >
+                    ✦
+                </div>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   18. CREATE CUSTOMER LOGO
+========================================================= */
+
+function createCustomerLogo() {
+
+    if (!xylCustomerLogo) {
+
+        return createDefaultEmblem();
+
+    }
+
+    return `
+        <div
+            style="
+                width:100px;
+                height:82px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                margin:0 auto;
+            "
+        >
+
+            <img
+                src="${xylCustomerLogo}"
+                alt="Issuer logo"
+                style="
+                    max-width:100%;
+                    max-height:82px;
+                    object-fit:contain;
+                    display:block;
+                "
+            >
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   19. PREMIUM GOLD SEAL
+========================================================= */
+
+function createPremiumSeal() {
+
+    const navy = xylColor('navy');
+    const gold = xylColor('gold');
+
+    return `
+        <div
+            style="
+                width:86px;
+                height:86px;
+                border-radius:50%;
+                background:${gold};
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                box-sizing:border-box;
+                box-shadow:
+                    0 2px 7px rgba(0,0,0,0.15);
+            "
+        >
+
+            <div
+                style="
+                    width:70px;
+                    height:70px;
+                    border-radius:50%;
+                    border:2px solid ${navy};
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    box-sizing:border-box;
+                    text-align:center;
+                    color:${navy};
+                    font-family:Georgia, 'Times New Roman', serif;
+                "
+            >
+
+                <div>
+
+                    <div
+                        style="
+                            font-size:19px;
+                            line-height:1;
+                            margin-bottom:4px;
+                        "
+                    >
+                        ✦
+                    </div>
+
+                    <div
+                        style="
+                            font-size:9px;
+                            font-weight:bold;
+                            letter-spacing:1.4px;
+                        "
+                    >
+                        VERIFIED
+                    </div>
+
+                    <div
+                        style="
+                            font-size:7px;
+                            letter-spacing:1px;
+                            margin-top:3px;
+                        "
+                    >
+                        CREDENTIAL
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   20. ISSUER HEADER
+========================================================= */
+
+function createIssuerHeader(institutionName) {
+
+    const navy = xylColor('navy');
+    const gold = xylColor('gold');
+
+    return `
+        <div
+            style="
+                position:relative;
+                z-index:10;
+                text-align:center;
+                padding-top:55px;
+                padding-left:80px;
+                padding-right:80px;
+            "
+        >
+
+            ${createCustomerLogo()}
+
+            <div
+                style="
+                    margin-top:9px;
+                    color:${navy};
+                    font-family:
+                        Georgia,
+                        'Times New Roman',
+                        serif;
+                    font-size:24px;
+                    font-weight:bold;
+                    letter-spacing:1.5px;
+                    text-transform:uppercase;
+                "
+            >
+                ${escapeHTML(institutionName || 'Organization Name')}
+            </div>
+
+            <div
+                style="
+                    width:100px;
+                    height:2px;
+                    background:${gold};
+                    margin:9px auto 0;
+                "
+            ></div>
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   21. LOGO UPLOAD HANDLER
+========================================================= */
+
+function setupCustomerLogoUpload() {
+
+    const logoInput =
+        document.getElementById('logoUpload');
+
+    if (!logoInput) {
+        return;
+    }
+
+    logoInput.addEventListener(
+        'change',
+        function (event) {
+
+            const file =
+                event.target.files &&
+                event.target.files[0];
+
+            if (!file) {
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+
+                alert(
+                    'Please select an image file for the logo.'
+                );
+
+                logoInput.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function () {
+
+                xylCustomerLogo =
+                    reader.result;
+
+                xylCustomerLogoName =
+                    file.name;
+
+                console.log(
+                    'Customer logo loaded:',
+                    xylCustomerLogoName
+                );
+
+            };
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+}
+
+
+/* =========================================================
+   22. SESSION 3 INITIALIZATION
+========================================================= */
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+        setupCustomerLogoUpload();
+
+        console.log(
+            'Xylarion Session 3 logo system loaded.'
+        );
+
+    }
+);
+
+
+/* =========================================================
+   SESSION 3 COMPLETE
+========================================================= */
