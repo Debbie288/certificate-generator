@@ -1185,3 +1185,141 @@ function renderPremiumCertificate(
 console.log(
     'Xylarion Session 4 certificate content loaded.'
 );
+/* =========================================================
+   SESSION 5 — QR VERIFICATION SYSTEM
+========================================================= */
+
+
+/* =========================================================
+   23. CREATE VERIFICATION QR
+========================================================= */
+
+function createVerificationQR(certNumber) {
+
+    const qrURL = createQRCodeURL(certNumber);
+
+    return `
+        <div
+            style="
+                width:105px;
+                text-align:center;
+                font-family:Arial, sans-serif;
+                color:${xylColor('navy')};
+            "
+        >
+
+            <div
+                style="
+                    width:88px;
+                    height:88px;
+                    margin:0 auto 6px;
+                    padding:4px;
+                    background:#FFFFFF;
+                    border:1px solid ${xylColor('gold')};
+                    box-sizing:border-box;
+                "
+            >
+
+                <img
+                    src="${qrURL}"
+                    alt="Certificate verification QR code"
+                    style="
+                        width:100%;
+                        height:100%;
+                        display:block;
+                    "
+                >
+
+            </div>
+
+            <div
+                style="
+                    font-size:8px;
+                    font-weight:bold;
+                    letter-spacing:0.8px;
+                    text-transform:uppercase;
+                "
+            >
+                Scan to Verify
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   24. VERIFICATION MESSAGE
+========================================================= */
+
+function createVerificationMessage(certNumber) {
+
+    return `
+        <div
+            style="
+                text-align:center;
+                color:${xylColor('navy')};
+                font-family:Arial, sans-serif;
+                font-size:9px;
+                letter-spacing:0.4px;
+                margin-top:8px;
+            "
+        >
+            Certificate ID:
+            <strong>
+                ${escapeHTML(certNumber)}
+            </strong>
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   25. VERIFICATION LINK
+========================================================= */
+
+function getCertificateVerificationLink(certNumber) {
+
+    return createVerificationURL(certNumber);
+}
+
+
+/* =========================================================
+   26. COPY VERIFICATION LINK
+========================================================= */
+
+async function copyVerificationLink(certNumber) {
+
+    const link =
+        getCertificateVerificationLink(certNumber);
+
+    try {
+
+        await navigator.clipboard.writeText(link);
+
+        alert(
+            'Verification link copied successfully.'
+        );
+
+    } catch (error) {
+
+        console.error(
+            'Unable to copy verification link:',
+            error
+        );
+
+        alert(
+            'Please copy the verification link manually:\n\n' +
+            link
+        );
+    }
+}
+
+
+/* =========================================================
+   SESSION 5 COMPLETE
+========================================================= */
+
+console.log(
+    'Xylarion Session 5 QR verification loaded.'
+);
