@@ -135,3 +135,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+// ==========================================
+// FIX TO CONNECT THE FORM TO THE PREVIEW AND SAVE
+// ==========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('certificateForm');
+    
+    if (form) {
+        // Listen for the submit button click
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            // 1. Collect the data using the existing functions
+            const data = collectXylarionCertificateData();
+            
+            // 2. Build the premium certificate with the FLOWERS
+            const container = document.getElementById('certificatePreview');
+            renderXylarionCertificate(data, container);
+            
+            // 3. Save to Supabase
+            const saveResult = await saveXylarionCertificateData(data);
+            if (saveResult.success) {
+                alert('✅ Certificate saved successfully!');
+            } else {
+                alert('⚠️ Certificate generated, but NOT saved: ' + saveResult.error);
+            }
+            
+            // Show the preview area
+            const previewArea = document.getElementById('previewArea');
+            if (previewArea) {
+                previewArea.style.display = 'block';
+            }
+        });
+    }
+});
