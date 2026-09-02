@@ -860,3 +860,127 @@ document.addEventListener(
                     // ====================================================
                     // PRINT
                     // ====================================================
+                    const printButton =
+                        document.getElementById(
+                            'printCertificateButton'
+                        );
+
+
+                    if (printButton) {
+
+                        printButton.addEventListener(
+                            'click',
+                            function () {
+
+                                window.print();
+
+                            }
+                        );
+                    }
+
+
+                    // ====================================================
+                    // SUPABASE CHECK
+                    // ====================================================
+
+                    if (!supabaseClient) {
+
+                        alert(
+                            '⚠️ Certificate generated, but Supabase could not be connected.'
+                        );
+
+                        return;
+                    }
+
+
+                    // ====================================================
+                    // SAVE
+                    // ====================================================
+
+                    alert(
+                        '⏳ Certificate generated. Saving to database...'
+                    );
+
+
+                    const { error } =
+                        await supabaseClient
+                            .from('certificates')
+                            .insert({
+                                student_name:
+                                    studentName,
+
+                                course_name:
+                                    courseName,
+
+                                completion_date:
+                                    completionDate,
+
+                                cert_number:
+                                    certNumber,
+
+                                institution:
+                                    institutionName,
+
+                                director:
+                                    directorName
+                            });
+
+
+                    // ====================================================
+                    // ERROR
+                    // ====================================================
+
+                    if (error) {
+
+                        console.error(
+                            'Supabase error:',
+                            error
+                        );
+
+                        alert(
+                            '❌ Certificate was generated, but it was NOT saved.\n\n' +
+                            'Supabase says:\n' +
+                            error.message
+                        );
+
+                        return;
+                    }
+
+
+                    // ====================================================
+                    // SUCCESS
+                    // ====================================================
+
+                    alert(
+                        '✅ SUCCESS!\n\n' +
+                        'Certificate generated and saved successfully.\n\n' +
+                        'Certificate Number: ' +
+                        certNumber
+                    );
+
+
+                }
+
+
+                // ========================================================
+                // GENERAL ERROR
+                // ========================================================
+
+                catch (error) {
+
+                    console.error(
+                        'Certificate error:',
+                        error
+                    );
+
+                    alert(
+                        '❌ Something went wrong:\n\n' +
+                        error.message
+                    );
+                }
+
+            }
+        );
+
+    }
+);
