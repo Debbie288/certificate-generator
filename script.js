@@ -732,3 +732,456 @@ document.addEventListener(
 /* =========================================================
    SESSION 3 COMPLETE
 ========================================================= */
+/* =========================================================
+   SESSION 4 — CERTIFICATE CONTENT
+========================================================= */
+
+
+/* =========================================================
+   23. CERTIFICATE CONTENT BUILDER
+========================================================= */
+
+function createCertificateContent(data = {}) {
+
+    const navy = xylColor('navy');
+    const gold = xylColor('gold');
+    const ivory = xylColor('ivory');
+    const silver = xylColor('silver');
+
+    const studentName =
+        escapeHTML(
+            data.studentName ||
+            data.name ||
+            'Student Full Name'
+        );
+
+    const courseName =
+        escapeHTML(
+            data.courseName ||
+            data.course ||
+            'Course / Program Name'
+        );
+
+    const institutionName =
+        escapeHTML(
+            data.institutionName ||
+            data.institution ||
+            'Organization Name'
+        );
+
+    const certificateId =
+        escapeHTML(
+            data.certificateId ||
+            data.certId ||
+            createTemporaryCertificateNumber()
+        );
+
+    const issueDate =
+        formatCertificateDate(
+            data.issueDate ||
+            data.date ||
+            new Date()
+        );
+
+    const description =
+        escapeHTML(
+            data.description ||
+            'has successfully completed the program'
+        );
+
+
+    return `
+        <div
+            style="
+                position:relative;
+                z-index:10;
+                width:100%;
+                height:100%;
+                box-sizing:border-box;
+                font-family:
+                    Georgia,
+                    'Times New Roman',
+                    serif;
+                color:${navy};
+            "
+        >
+
+            <!-- ISSUER -->
+
+            ${createIssuerHeader(institutionName)}
+
+
+            <!-- MAIN CERTIFICATE TITLE -->
+
+            <div
+                style="
+                    text-align:center;
+                    margin-top:24px;
+                "
+            >
+
+                <div
+                    style="
+                        font-size:12px;
+                        letter-spacing:4px;
+                        color:${silver};
+                        margin-bottom:8px;
+                        text-transform:uppercase;
+                    "
+                >
+                    Official Credential
+                </div>
+
+
+                <h1
+                    style="
+                        margin:0;
+                        font-size:34px;
+                        line-height:1.15;
+                        font-weight:normal;
+                        letter-spacing:3px;
+                        color:${navy};
+                    "
+                >
+                    CERTIFICATE OF COMPLETION
+                </h1>
+
+
+                <div
+                    style="
+                        width:180px;
+                        height:2px;
+                        background:${gold};
+                        margin:12px auto 16px;
+                    "
+                ></div>
+
+
+                <p
+                    style="
+                        margin:0;
+                        font-size:15px;
+                        letter-spacing:1px;
+                        color:#4D5560;
+                    "
+                >
+                    This is to certify that
+                </p>
+
+            </div>
+
+
+            <!-- STUDENT NAME -->
+
+            <div
+                style="
+                    text-align:center;
+                    margin-top:10px;
+                    padding:0 100px;
+                "
+            >
+
+                <div
+                    style="
+                        font-size:37px;
+                        line-height:1.15;
+                        font-style:italic;
+                        font-weight:normal;
+                        color:${navy};
+                        word-break:break-word;
+                    "
+                >
+                    ${studentName}
+                </div>
+
+
+                <div
+                    style="
+                        width:280px;
+                        height:1px;
+                        background:${gold};
+                        margin:10px auto 12px;
+                    "
+                ></div>
+
+
+                <p
+                    style="
+                        margin:0;
+                        font-size:14px;
+                        color:#4D5560;
+                    "
+                >
+                    ${description}
+                </p>
+
+            </div>
+
+
+            <!-- COURSE -->
+
+            <div
+                style="
+                    text-align:center;
+                    margin-top:9px;
+                    padding:0 110px;
+                "
+            >
+
+                <div
+                    style="
+                        font-size:24px;
+                        line-height:1.2;
+                        font-weight:bold;
+                        color:${navy};
+                        letter-spacing:0.5px;
+                        word-break:break-word;
+                    "
+                >
+                    ${courseName}
+                </div>
+
+            </div>
+
+
+            <!-- ISSUE DATE -->
+
+            <div
+                style="
+                    text-align:center;
+                    margin-top:10px;
+                "
+            >
+
+                <span
+                    style="
+                        font-size:13px;
+                        color:#555E68;
+                    "
+                >
+                    Awarded on
+                </span>
+
+                <strong
+                    style="
+                        font-size:13px;
+                        color:${navy};
+                        margin-left:5px;
+                    "
+                >
+                    ${escapeHTML(issueDate)}
+                </strong>
+
+            </div>
+
+
+            <!-- LOWER CERTIFICATE AREA -->
+
+            <div
+                style="
+                    position:absolute;
+                    left:70px;
+                    right:70px;
+                    bottom:55px;
+                    display:flex;
+                    align-items:flex-end;
+                    justify-content:space-between;
+                    gap:25px;
+                "
+            >
+
+
+                <!-- CERTIFICATE ID -->
+
+                <div
+                    style="
+                        width:180px;
+                        text-align:left;
+                    "
+                >
+
+                    <div
+                        style="
+                            font-size:10px;
+                            color:#7A8088;
+                            letter-spacing:1px;
+                            text-transform:uppercase;
+                            margin-bottom:4px;
+                        "
+                    >
+                        Certificate ID
+                    </div>
+
+                    <div
+                        style="
+                            font-size:12px;
+                            font-weight:bold;
+                            color:${navy};
+                            letter-spacing:0.5px;
+                            word-break:break-all;
+                        "
+                    >
+                        ${certificateId}
+                    </div>
+
+                </div>
+
+
+                <!-- VERIFIED SEAL -->
+
+                <div
+                    style="
+                        display:flex;
+                        justify-content:center;
+                        align-items:flex-end;
+                        min-width:100px;
+                    "
+                >
+
+                    ${createPremiumSeal()}
+
+                </div>
+
+
+                <!-- SIGNATURE -->
+
+                <div
+                    style="
+                        width:190px;
+                        text-align:center;
+                    "
+                >
+
+                    <div
+                        style="
+                            font-family:
+                                'Brush Script MT',
+                                'Segoe Script',
+                                cursive;
+                            font-size:25px;
+                            color:${navy};
+                            margin-bottom:1px;
+                        "
+                    >
+                        Authorized
+                    </div>
+
+
+                    <div
+                        style="
+                            width:150px;
+                            height:1px;
+                            background:${navy};
+                            margin:0 auto 5px;
+                        "
+                    ></div>
+
+
+                    <div
+                        style="
+                            font-size:11px;
+                            font-weight:bold;
+                            color:${navy};
+                            letter-spacing:0.5px;
+                        "
+                    >
+                        Authorized Signatory
+                    </div>
+
+
+                    <div
+                        style="
+                            font-size:9px;
+                            color:#666;
+                            margin-top:2px;
+                        "
+                    >
+                        ${institutionName}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SECURITY FOOTER -->
+
+            <div
+                style="
+                    position:absolute;
+                    bottom:24px;
+                    left:0;
+                    right:0;
+                    text-align:center;
+                    font-size:8px;
+                    letter-spacing:1.3px;
+                    color:#8A8F96;
+                    text-transform:uppercase;
+                "
+            >
+                Scan the verification code to confirm this credential
+            </div>
+
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   24. COMPLETE CERTIFICATE WRAPPER
+========================================================= */
+
+function buildPremiumCertificate(data = {}) {
+
+    return `
+        <div
+            class="xyl-certificate"
+            style="
+                position:relative;
+                width:${CERTIFICATE_WIDTH}px;
+                height:${CERTIFICATE_HEIGHT}px;
+                overflow:hidden;
+                background:${xylColor('ivory')};
+                box-sizing:border-box;
+                margin:0 auto;
+            "
+        >
+
+            ${createPremiumFrame()}
+
+            ${createCertificateContent(data)}
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   25. CERTIFICATE PREVIEW HELPER
+========================================================= */
+
+function renderPremiumCertificate(
+    container,
+    data = {}
+) {
+
+    if (!container) {
+        console.warn(
+            'Xylarion: certificate container not found.'
+        );
+        return;
+    }
+
+    container.innerHTML =
+        buildPremiumCertificate(data);
+}
+
+
+/* =========================================================
+   26. SESSION 4 COMPLETE
+========================================================= */
+
+console.log(
+    'Xylarion Session 4 certificate content loaded.'
+);
