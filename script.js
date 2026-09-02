@@ -850,4 +850,475 @@ document.addEventListener("DOMContentLoaded", function () {
 
             <div style="
                 position:absolute;
-                inset:
+                inset:22px;
+                border:1px solid ${GOLD};
+                z-index:2;
+                pointer-events:none;
+            "></div>
+
+
+            <!-- INNER NAVY DETAIL -->
+
+            <div style="
+                position:absolute;
+                inset:28px;
+                border:1px solid rgba(11,25,48,.35);
+                z-index:2;
+                pointer-events:none;
+            "></div>
+
+
+            <!-- FLOWERS -->
+
+            ${createFloralCorners()}
+
+
+            <!-- MAIN CONTENT -->
+
+            <div style="
+                position:relative;
+                z-index:10;
+                padding:
+                    62px
+                    95px
+                    42px;
+            ">
+
+
+                <!-- LOGO -->
+
+                ${createLogo()}
+
+
+                <!-- INSTITUTION -->
+
+                <div style="
+                    margin-top:9px;
+                    font-size:22px;
+                    font-weight:bold;
+                    letter-spacing:4px;
+                    text-transform:uppercase;
+                ">
+                    ${escapeHTML(institution)}
+                </div>
+
+
+                <!-- DECORATIVE LINE -->
+
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    gap:12px;
+                    margin:
+                        12px
+                        auto
+                        20px;
+                ">
+
+                    <div style="
+                        width:120px;
+                        height:1px;
+                        background:${GOLD};
+                    "></div>
+
+                    <div style="
+                        width:8px;
+                        height:8px;
+                        background:${GOLD};
+                        transform:rotate(45deg);
+                    "></div>
+
+                    <div style="
+                        width:120px;
+                        height:1px;
+                        background:${GOLD};
+                    "></div>
+
+                </div>
+
+
+                <!-- CERTIFY -->
+
+                <div style="
+                    font-size:14px;
+                    letter-spacing:4px;
+                    font-weight:bold;
+                ">
+                    THIS IS TO CERTIFY THAT
+                </div>
+
+
+                <!-- CERTIFICATE -->
+
+                <div style="
+                    margin-top:12px;
+                    font-size:57px;
+                    line-height:1;
+                    letter-spacing:6px;
+                    color:${NAVY};
+                ">
+                    CERTIFICATE
+                </div>
+
+
+                <!-- OF COMPLETION -->
+
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    gap:15px;
+                    margin-top:12px;
+                ">
+
+                    <div style="
+                        width:120px;
+                        height:2px;
+                        background:${GOLD};
+                    "></div>
+
+                    <div style="
+                        font-size:23px;
+                        letter-spacing:4px;
+                        color:${DARK_GOLD};
+                    ">
+                        OF COMPLETION
+                    </div>
+
+                    <div style="
+                        width:120px;
+                        height:2px;
+                        background:${GOLD};
+                    "></div>
+
+                </div>
+
+
+                <!-- ORNAMENT -->
+
+                <div style="
+                    color:${GOLD};
+                    font-size:25px;
+                    margin:8px 0 13px;
+                ">
+                    ❦
+                </div>
+
+
+                <!-- STUDENT -->
+
+                <div style="
+                    position:relative;
+                    width:78%;
+                    margin:auto;
+                    padding:
+                        12px
+                        25px;
+                    border-top:
+                        2px solid ${GOLD};
+                    border-bottom:
+                        2px solid ${GOLD};
+                ">
+
+                    <span style="
+                        position:absolute;
+                        left:-13px;
+                        top:50%;
+                        transform:
+                            translateY(-50%);
+                        color:${GOLD};
+                        font-size:27px;
+                    ">
+                        ❧
+                    </span>
+
+                    <span style="
+                        position:absolute;
+                        right:-13px;
+                        top:50%;
+                        transform:
+                            translateY(-50%)
+                            scaleX(-1);
+                        color:${GOLD};
+                        font-size:27px;
+                    ">
+                        ❧
+                    </span>
+
+                    <div style="
+                        font-size:37px;
+                        font-weight:bold;
+                        color:${NAVY};
+                    ">
+                        ${escapeHTML(student)}
+                    </div>
+
+                </div>
+
+
+                <!-- COMPLETION -->
+
+                <div style="
+                    margin-top:15px;
+                    font-size:13px;
+                    letter-spacing:3px;
+                    font-weight:bold;
+                ">
+                    HAS SUCCESSFULLY COMPLETED THE
+                </div>
+
+
+                <!-- COURSE -->
+
+                <div style="
+                    margin-top:7px;
+                    font-size:29px;
+                    color:${DARK_GOLD};
+                    font-weight:bold;
+                ">
+                    ${escapeHTML(course)}
+                </div>
+
+
+                <!-- ORNAMENT -->
+
+                <div style="
+                    color:${GOLD};
+                    font-size:20px;
+                    margin:5px 0;
+                ">
+                    ─── ❦ ───
+                </div>
+
+
+                <!-- DATE -->
+
+                <div style="
+                    margin-top:3px;
+                    font-size:13px;
+                    letter-spacing:2px;
+                ">
+
+                    AWARDED ON
+
+                    <span style="
+                        color:${DARK_GOLD};
+                        font-size:16px;
+                        margin-left:8px;
+                        font-weight:bold;
+                    ">
+                        ${formattedDate}
+                    </span>
+
+                </div>
+
+
+                <!-- BOTTOM -->
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:flex-end;
+                    gap:30px;
+                    margin-top:24px;
+                    padding:0 35px;
+                ">
+
+
+                    <!-- DIRECTOR -->
+
+                    <div style="
+                        width:220px;
+                    ">
+
+                        <div style="
+                            height:32px;
+                            font-family:
+                                'Brush Script MT',
+                                cursive;
+                            font-size:24px;
+                            color:${NAVY};
+                        ">
+                            ${escapeHTML(director)}
+                        </div>
+
+                        <div style="
+                            border-top:
+                                1px solid ${GOLD};
+                            padding-top:6px;
+                            font-size:11px;
+                            letter-spacing:2px;
+                            color:${DARK_GOLD};
+                        ">
+                            AUTHORIZED SIGNATURE
+                        </div>
+
+                    </div>
+
+
+                    <!-- CERT NUMBER -->
+
+                    <div style="
+                        width:190px;
+                    ">
+
+                        <div style="
+                            font-size:11px;
+                            letter-spacing:2px;
+                            color:${DARK_GOLD};
+                            font-weight:bold;
+                        ">
+                            CERTIFICATE NO.
+                        </div>
+
+                        <div style="
+                            margin-top:6px;
+                            padding:7px 4px;
+                            border-top:
+                                1px solid ${GOLD};
+                            border-bottom:
+                                1px solid ${GOLD};
+                            font-size:14px;
+                            font-weight:bold;
+                        ">
+                            ${escapeHTML(certNumber)}
+                        </div>
+
+                    </div>
+
+
+                    <!-- QR -->
+
+                    ${createLuxuryQR(
+                        qr.qrURL,
+                        certNumber
+                    )}
+
+                </div>
+
+            </div>
+
+
+            <!-- GOLD CORNER ACCENTS -->
+
+            <div style="
+                position:absolute;
+                left:35px;
+                top:35px;
+                width:28px;
+                height:28px;
+                border-left:3px solid ${GOLD};
+                border-top:3px solid ${GOLD};
+                z-index:20;
+            "></div>
+
+            <div style="
+                position:absolute;
+                right:35px;
+                top:35px;
+                width:28px;
+                height:28px;
+                border-right:3px solid ${GOLD};
+                border-top:3px solid ${GOLD};
+                z-index:20;
+            "></div>
+
+            <div style="
+                position:absolute;
+                left:35px;
+                bottom:35px;
+                width:28px;
+                height:28px;
+                border-left:3px solid ${GOLD};
+                border-bottom:3px solid ${GOLD};
+                z-index:20;
+            "></div>
+
+            <div style="
+                position:absolute;
+                right:35px;
+                bottom:35px;
+                width:28px;
+                height:28px;
+                border-right:3px solid ${GOLD};
+                border-bottom:3px solid ${GOLD};
+                z-index:20;
+            "></div>
+
+        </div>
+
+        `;
+
+
+        previewArea.style.display = "block";
+
+
+        /* =================================================
+           SAVE
+        ================================================= */
+
+        const saveData = {
+
+            student_name: student,
+
+            course_name: course,
+
+            completion_date: date,
+
+            cert_number: certNumber,
+
+            institution: institution,
+
+            director: director
+
+        };
+
+
+        const saveResult =
+            await saveCertificate(saveData);
+
+
+        if (saveResult.success) {
+
+            console.log(
+                "Certificate saved successfully:",
+                certNumber
+            );
+
+        } else {
+
+            console.warn(
+                "Certificate was generated but could not be saved:",
+                saveResult.error
+            );
+
+            alert(
+                "Certificate generated, but the database could not save it.\n\n" +
+                saveResult.error
+            );
+
+        }
+
+
+        /* =================================================
+           SCROLL
+        ================================================= */
+
+        previewArea.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    });
+
+
+    /* =====================================================
+       STARTUP
+    ===================================================== */
+
+    console.log(
+        "Xylarion Premium Certificate Generator loaded."
+    );
+
+});
