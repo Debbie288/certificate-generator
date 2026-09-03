@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    CertificateHub - Create & Verify Certificates
+  </title>
+
+
+  <meta
+    name="description"
+    content="CertificateHub helps organizations and individuals create professional certificates and verify them online."
+  >
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+
+    body {
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background:
+        #070b18;
+
+      color:
+        #ffffff;
+
+      min-height:
+        100vh;
+
+      overflow-x:
+        hidden;
+
+    }
+
+
+    button,
+    a {
+
+      font-family:
+        inherit;
+
+    }
+
+
+    a {
+
+      text-decoration:
+        none;
+
+    }
+
+
+    /* =====================================
+       PAGE BACKGROUND
+    ===================================== */
+
+    .page {
+
+      min-height:
+        100vh;
+
+      background:
+
+        radial-gradient(
+          circle at 50% -10%,
+          rgba(201,162,78,0.14),
+          transparent 38%
+        ),
+
+        radial-gradient(
+          circle at 100% 50%,
+          rgba(37,99,235,0.08),
+          transparent 35%
+        ),
+
+        #070b18;
+
+    }
+
+
+    /* =====================================
+       HEADER
+    ===================================== */
+
+    header {
+
+      width:
+        100%;
+
+      padding:
+        18px 5%;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        space-between;
+
+      border-bottom:
+        1px solid rgba(255,255,255,0.07);
+
+      background:
+        rgba(7,11,24,0.88);
+
+      backdrop-filter:
+        blur(12px);
+
+      position:
+        sticky;
+
+      top:
+        0;
+
+      z-index:
+        50;
+
+    }
+
+
+    .brand {
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      gap:
+        10px;
+
+    }
+
+
+    .brand-icon {
+
+      width:
+        38px;
+
+      height:
+        38px;
+
+      border-radius:
+        11px;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      background:
+        linear-gradient(
+          135deg,
+          #c9a24e,
+          #8f6b20
+        );
+
+      color:
+        #111827;
+
+      font-size:
+        20px;
+
+      font-weight:
+        900;
+
+      box-shadow:
+        0 5px 20px rgba(201,162,78,0.18);
+
+    }
+
+
+    .brand-name {
+
+      font-size:
+        19px;
+
+      font-weight:
+        800;
+
+      letter-spacing:
+        .2px;
+
+    }
+
+
+    .login-btn {
+
+      padding:
+        10px 17px;
+
+      border-radius:
+        9px;
+
+      border:
+        1px solid rgba(201,162,78,0.5);
+
+      background:
+        transparent;
+
+      color:
+        #ffffff;
+
+      font-size:
+        13px;
+
+      font-weight:
+        700;
+
+      cursor:
+        pointer;
+
+      transition:
+        .2s;
+
+    }
+
+
+    .login-btn:hover {
+
+      background:
+        rgba(201,162,78,0.12);
+
+    }
+
+
+    /* =====================================
+       MAIN
+    ===================================== */
+
+    .main {
+
+      width:
+        92%;
+
+      max-width:
+        1180px;
+
+      margin:
+        auto;
+
+    }
+
+
+  </style>
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+
+  <!-- =====================================
+       HEADER
+  ===================================== -->
+
+  <header>
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        ✦
+      </div>
+
+      <div class="brand-name">
+        CertificateHub
+      </div>
+
+    </div>
+
+
+    <a
+      href="index.html"
+      class="login-btn"
+    >
+      Log In
+    </a>
+
+  </header>
+
+
+  <main class="main">
+      <!-- =====================================
+         HERO SECTION
+    ===================================== -->
+
+    <section class="hero">
+
+
+      <div class="hero-badge">
+        ✦ PROFESSIONAL CERTIFICATE PLATFORM
+      </div>
+
+
+      <h1>
+
+        Create.
+        <span>Verify.</span>
+        Protect.
+
+      </h1>
+
+
+      <p class="hero-text">
+
+        Create professional certificates,
+        give every certificate a unique
+        verification record, and make
+        authenticity easy to check online.
+
+      </p>
+
+
+      <div class="hero-buttons">
+
+
+        <a
+          href="index.html"
+          class="primary-btn"
+        >
+          Get Started
+        </a>
+
+
+        <a
+          href="#showcase"
+          class="secondary-btn"
+        >
+          View Certificate Samples
+        </a>
+
+
+      </div>
+
+
+      <div class="hero-trust">
+
+        <div>
+          ✓ Professional designs
+        </div>
+
+        <div>
+          ✓ Unique certificate numbers
+        </div>
+
+        <div>
+          ✓ Online verification
+        </div>
+
+      </div>
+
+
+    </section>
+
+
+    <style>
+
+      /* =====================================
+         HERO
+      ===================================== */
+
+      .hero {
+
+        text-align:
+          center;
+
+        padding:
+          80px 10px 70px;
+
+      }
+
+
+      .hero-badge {
+
+        display:
+          inline-block;
+
+        padding:
+          8px 14px;
+
+        border-radius:
+          30px;
+
+        background:
+          rgba(201,162,78,0.10);
+
+        border:
+          1px solid rgba(201,162,78,0.28);
+
+        color:
+          #d7b65d;
+
+        font-size:
+          11px;
+
+        font-weight:
+          800;
+
+        letter-spacing:
+          1px;
+
+        margin-bottom:
+          20px;
+
+      }
+
+
+      .hero h1 {
+
+        font-size:
+          clamp(42px, 8vw, 76px);
+
+        line-height:
+          1.05;
+
+        letter-spacing:
+          -2px;
+
+        font-weight:
+          900;
+
+        margin-bottom:
+          22px;
+
+      }
+
+
+      .hero h1 span {
+
+        color:
+          #c9a24e;
+
+      }
+
+
+      .hero-text {
+
+        max-width:
+          680px;
+
+        margin:
+          auto;
+
+        color:
+          #9ca3af;
+
+        font-size:
+          17px;
+
+        line-height:
+          1.75;
+
+      }
+
+
+      .hero-buttons {
+
+        display:
+          flex;
+
+        justify-content:
+          center;
+
+        gap:
+          12px;
+
+        margin-top:
+          30px;
+
+        flex-wrap:
+          wrap;
+
+      }
+
+
+      .primary-btn,
+      .secondary-btn {
+
+        padding:
+          14px 22px;
+
+        border-radius:
+          10px;
+
+        font-size:
+          14px;
+
+        font-weight:
+          800;
+
+        transition:
+          .2s;
+
+      }
+
+
+      .primary-btn {
+
+        background:
+          #c9a24e;
+
+        color:
+          #111827;
+
+        box-shadow:
+          0 8px 25px rgba(201,162,78,0.15);
+
+      }
+
+
+      .primary-btn:hover {
+
+        transform:
+          translateY(-2px);
+
+      }
+
+
+      .secondary-btn {
+
+        border:
+          1px solid rgba(255,255,255,0.15);
+
+        background:
+          rgba(255,255,255,0.04);
+
+        color:
+          #ffffff;
+
+      }
+
+
+      .secondary-btn:hover {
+
+        background:
+          rgba(255,255,255,0.08);
+
+      }
+
+
+      .hero-trust {
+
+        margin-top:
+          30px;
+
+        display:
+          flex;
+
+        justify-content:
+          center;
+
+        gap:
+          22px;
+
+        flex-wrap:
+          wrap;
+
+        color:
+          #6b7280;
+
+        font-size:
+          12px;
+
+      }
+
+
+      @media(max-width:600px) {
+
+        .hero {
+
+          padding:
+            60px 5px 55px;
+
+        }
+
+
+        .hero h1 {
+
+          letter-spacing:
+            -1.5px;
+
+        }
+
+
+        .hero-text {
+
+          font-size:
+            15px;
+
+        }
+
+      }
+
+    </style>
