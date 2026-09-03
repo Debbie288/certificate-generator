@@ -762,5 +762,85 @@ form.addEventListener("submit", function (event) {
                     </div>  
 
                     <div style="  
-                        margin-top:7px;  
+                        margin-top:7px;
+                            font-size:13px;
+                        ">
+                            Authorized Signatory
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- GOLD SEAL -->
+
+                <div style="
+                    position:absolute;
+                    right:15px;
+                    bottom:18px;
+                    width:92px;
+                    height:92px;
+                    border-radius:50%;
+                    background:
+                        radial-gradient(
+                            circle,
+                            #F3D889 0%,
+                            #C8A45D 55%,
+                            #9A7028 100%
+                        );
+                    border:4px solid #C8A45D;
+                    box-shadow:0 2px 8px rgba(0,0,0,.25);
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                ">
+
+                    <div style="
+                        width:68px;
+                        height:68px;
+                        border:2px solid #0B1930;
+                        border-radius:50%;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        color:#0B1930;
+                        font-size:30px;
+                    ">
+                        ♕
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        `;
+
+
+        /* =========================
+           SHOW PREVIEW
+        ========================= */
+
+        previewArea.style.display = "block";
+
+        previewArea.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+
+        console.log(
+            "Certificate generated:",
+            certNumber
+        );
+
+        console.log(
+            "Verification URL:",
+            qr.verificationURL
+        );
+
+    });
+
+});  
   
