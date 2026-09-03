@@ -810,6 +810,343 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <div class="xyl-certificate">
 
-                <div class="xyl-inner-border"></div>
+                class="xyl-inner-border"></div>
+
+                ${ornamentSVG()}
+
+                <div class="xyl-content">
+
+                    <div class="xyl-logo-wrap">
+                        ${logoHTML}
+                    </div>
+
+                    <div class="xyl-institution">
+                        ${safeInstitution}
+                    </div>
+
+                    <div class="xyl-small-line"></div>
+
+                    <div class="xyl-cert-intro">
+                        THIS IS TO CERTIFY THAT
+                    </div>
+
+                    <div class="xyl-title">
+                        CERTIFICATE
+                    </div>
+
+                    <div class="xyl-subtitle">
+                        OF COMPLETION
+                    </div>
+
+                    <div class="xyl-student">
+                        ${safeStudent}
+                    </div>
+
+                    <div class="xyl-completed">
+                        HAS SUCCESSFULLY COMPLETED
+                    </div>
+
+                    <div class="xyl-course">
+                        ${safeCourse}
+                    </div>
+
+                    <div class="xyl-bottom">
+
+                        <!-- LEFT -->
+
+                        <div class="xyl-bottom-left">
+
+                            <div class="xyl-label">
+                                CERTIFICATE NO.
+                            </div>
+
+                            <div class="xyl-number">
+                                ${safeNumber}
+                            </div>
+
+                            <div class="xyl-date">
+                                Awarded: ${prettyDate}
+                            </div>
+
+                        </div>
+
+
+                        <!-- CENTER QR -->
+
+                        <div>
+
+                            <div class="xyl-qr-box">
+
+                                <img
+                                    class="xyl-qr"
+                                    src="${qr}"
+                                    alt="Certificate Verification QR Code"
+                                >
+
+                            </div>
+
+                            <div class="xyl-verify">
+                                OFFICIAL VERIFICATION
+                            </div>
+
+                        </div>
+
+
+                        <!-- RIGHT -->
+
+                        <div class="xyl-bottom-right">
+
+                            <div class="xyl-signature">
+                                ${safeDirector}
+                            </div>
+
+                            <div class="xyl-sign-line"></div>
+
+                            <div class="xyl-authorized">
+                                Authorized Signatory
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- GOLD SEAL -->
+
+                <div class="xyl-seal">
+
+                    <div class="xyl-seal-main">
+                        VERIFIED
+                    </div>
+
+                    <div class="xyl-seal-small">
+                        OFFICIAL
+                    </div>
+
+                    <div class="xyl-seal-small">
+                        CERTIFICATE
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="xyl-actions">
+
+                <button
+                    type="button"
+                    class="xyl-action-btn"
+                    id="printCertificateBtn"
+                >
+                    🖨️ Save / Print PDF
+                </button>
+
+            </div>
+        `;
+
+        previewArea.style.display = "block";
+
+        const printButton =
+            document.getElementById("printCertificateBtn");
+
+        if (printButton) {
+
+            printButton.addEventListener("click", () => {
+
+                window.print();
+
+            });
+        }
+    }
+
+
+    /* =========================
+       GENERATE
+    ========================= */
+
+    form.addEventListener("submit", async function (event) {
+
+        event.preventDefault();
+
+        const button =
+            document.getElementById("generateBtn");
+
+        const institution =
+            titleCase(
+                document.getElementById("institutionName").value
+            );
+
+        const student =
+            titleCase(
+                document.getElementById("studentName").value
+            );
+
+        const course =
+            titleCase(
+                document.getElementById("courseName").value
+            );
+
+        const date =
+            document.getElementById("completionDate").value;
+
+        const director =
+            titleCase(
+                document.getElementById("directorName").value
+            );
+
+        let certNumber =
+            certNumberInput.value.trim();
+
+        const autoGenerated =
+            !certNumber;
+
+        if (!certNumber) {
+            certNumber = generateCertificateNumber();
+        }
+
+        if (
+            !institution ||
+            !student ||
+            !course ||
+            !date ||
+            !director
+        ) {
+            alert("Please complete all required fields.");
+            return;
+        }
+
+
+        /* Show processing */
+
+        if (button) {
+
+            button.disabled = true;
+            button.textContent =
+                "⏳ Creating Certificate...";
+        }
+
+
+        const data = {
+            institution,
+            student,
+            course,
+            date,
+            director,
+            certNumber
+        };
+
+
+        try {
+
+            /*
+              Save FIRST.
+
+              This is important because the QR code
+              points to the verification record.
+            */
+
+            certNumber =
+                await saveCertificate(
+                    data,
+                    autoGenerated
+                );
+
+            data.certNumber = certNumber;
+
+            /* Show final number in form */
+
+            if (certNumberInput) {
+                certNumberInput.value = certNumber;
+            }
+
+
+            /* Render certificate */
+
+            renderCertificate(data);
+
+
+            /*
+              Success message
+            */
+
+            const success =
+                document.createElement("div");
+
+            success.className =
+                "xyl-success";
+
+            success.textContent =
+                "✓ Certificate created and saved successfully.";
+
+            preview.insertBefore(
+                success,
+                preview.firstChild
+            );
+
+
+            /*
+              Scroll to certificate
+            */
+
+            setTimeout(() => {
+
+                previewArea.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            }, 200);
+
+
+        } catch (error) {
+
+            console.error(
+                "Certificate creation error:",
+                error
+            );
+
+            /*
+              Still show the certificate so the user
+              can see what went wrong.
+            */
+
+            renderCertificate(data);
+
+            const warning =
+                document.createElement("div");
+
+            warning.className =
+                "xyl-warning";
+
+            warning.textContent =
+                "Certificate was generated, but it could not be saved for online verification. Check your Supabase INSERT policy.";
+
+            preview.insertBefore(
+                warning,
+                preview.firstChild
+            );
+
+            alert(
+                "The certificate could not be saved to the verification database.\n\n" +
+                "Error: " +
+                (error.message || error)
+            );
+
+        } finally {
+
+            if (button) {
+
+                button.disabled = false;
+
+                button.textContent =
+                    "🎓 Generate Certificate";
+            }
+        }
+
+    });
+
+});
 
     
