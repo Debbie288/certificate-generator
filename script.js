@@ -762,4 +762,221 @@ document.addEventListener("DOMContentLoaded", () => {
                             margin-top:6px;
                             font-size:11px;
                             font-weight:bold;
+                            letter-spacing:2px;
+                            color:#9A7028;
+                        ">
+                            SCAN TO VERIFY
+                        </div>
+
+                    </div>
+
+
+                    <!-- SIGNATURE -->
+
+                    <div style="
+                        text-align:center;
+                        padding-top:20px;
+                    ">
+
+                        <div style="
+                            height:42px;
+                            border-bottom:1px solid #0B1930;
+                            display:flex;
+                            justify-content:center;
+                            align-items:flex-end;
+                            font-family:cursive;
+                            font-size:25px;
+                            font-style:italic;
+                        ">
+                            ${director}
+                        </div>
+
+                        <div style="
+                            margin-top:7px;
+                            font-size:13px;
+                            font-weight:bold;
+                        ">
+                            Authorized Signatory
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- GOLD SEAL -->
+
+                <div style="
+                    position:absolute;
+                    right:34px;
+                    bottom:22px;
+                    width:78px;
+                    height:78px;
+                    border-radius:50%;
+                    background:
+                        radial-gradient(
+                            circle,
+                            #F4DB92 0%,
+                            #C8A45D 58%,
+                            #9A7028 100%
+                        );
+                    border:3px solid #C8A45D;
+                    box-shadow:0 2px 8px rgba(0,0,0,.20);
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                ">
+
+                    <div style="
+                        width:60px;
+                        height:60px;
+                        border:2px solid #0B1930;
+                        border-radius:50%;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        font-size:25px;
+                        color:#0B1930;
+                    ">
+                        ♕
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DOWNLOAD BUTTON -->
+
+        <div style="
+            text-align:center;
+            margin-top:20px;
+        ">
+
+            <button
+                id="downloadCertificate"
+                type="button"
+                style="
+                    background:#0B1930;
+                    color:#FFFFFF;
+                    border:none;
+                    padding:13px 25px;
+                    border-radius:8px;
+                    font-size:16px;
+                    font-weight:bold;
+                    cursor:pointer;
+                "
+            >
+                📄 Download Certificate PDF
+            </button>
+
+        </div>
+
+        `;
+
+
+        /* =================================================
+           SHOW
+        ================================================= */
+
+        previewArea.style.display = "block";
+
+        previewArea.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+
+        /* =================================================
+           SAVE TO SUPABASE
+        ================================================= */
+
+        await saveCertificate({
+            institution,
+            student,
+            course,
+            date,
+            director,
+            certNumber
+        });
+
+
+        /* =================================================
+           PDF DOWNLOAD
+        ================================================= */
+
+        const downloadBtn =
+            document.getElementById("downloadCertificate");
+
+        downloadBtn.addEventListener("click", async () => {
+
+            if (!window.html2pdf) {
+
+                const script =
+                    document.createElement("script");
+
+                script.src =
+                    "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+
+                document.head.appendChild(script);
+
+                await new Promise(resolve => {
+                    script.onload = resolve;
+                });
+            }
+
+
+            const certificate =
+                document.getElementById(
+                    "certificateToPrint"
+                );
+
+
+            html2pdf()
+                .set({
+
+                    margin: 0,
+
+                    filename:
+                        `Certificate-${certNumber}.pdf`,
+
+                    image: {
+                        type: "jpeg",
+                        quality: 0.98
+                    },
+
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        backgroundColor: "#ffffff"
+                    },
+
+                    jsPDF: {
+                        unit: "px",
+                        format: [1200, 850],
+                        orientation: "landscape"
+                    }
+
+                })
+                .from(certificate)
+                .save();
+
+        });
+
+
+        console.log(
+            "Certificate generated:",
+            certNumber
+        );
+
+        console.log(
+            "Verification:",
+            qr.verifyURL
+        );
+
+    });
+
+});
                  
