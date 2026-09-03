@@ -302,38 +302,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const formattedDate = formatDate(date);
 
-            /* SAVE TO SUPABASE */
+            /* SAVE TO SUPABASE WITH LOGGED-IN USER ID */
 
-            const { error } =
-                await supabaseClient
-                    .from("certificates")
-                    .insert([{
-                        student_name: student,
-                        course_name: course,
-                        completion_date: date,
-                        cert_number: certNumber,
-                        institution: institution,
-                        director: director
-                    }]);
+const {
+    data: {
+        user
+    },
+    error: userError
+} = await supabaseClient.auth.getUser();
 
-            if (error) {
+if (userError) {
+    throw userError;
+}
 
-                if (
-                    error.code === "23505" ||
-                    error.message
-                        .toLowerCase()
-                        .includes("duplicate")
-                ) {
+if (!user) {
+    alert("Please log in before generating a certificate.");
+    return;
+}
 
-                    alert(
-                        "This certificate number already exists. Please enter another number."
-                    );
+const { error } =
+    await supabaseClient
+        .from("certificates")
+        .insert([{
+            user_id: user.id,
+            student_name: student,
+            course_name: course,
+            completion_date: date,
+            cert_number: certNumber,
+            institution: institution,
+            director: director
+        }]);
 
-                    return;
-                }
+if (error) {
 
-                throw error;
-            }
+    if (
+        error.code === "23505" ||
+        error.message
+            .toLowerCase()
+            .includes("duplicate")
+    ) {
+
+        alert(
+            "This certificate number already exists. Please enter another number."
+        );
+
+        return;
+    }
+
+    throw error;
+}
 
             /* LOAD QR */
 
