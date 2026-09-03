@@ -908,3 +908,630 @@
   </style>
 
   </head>
+  <body>
+
+  <!-- =========================================
+       HEADER
+  ========================================= -->
+
+  <header>
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        ✦
+      </div>
+
+      <div class="brand-name">
+        CertificateHub
+      </div>
+
+    </div>
+
+
+    <button
+      class="logout-btn"
+      id="logoutBtn"
+    >
+      Log Out
+    </button>
+
+  </header>
+
+
+  <!-- =========================================
+       MAIN CONTENT
+  ========================================= -->
+
+  <main class="container">
+
+
+    <!-- ERROR MESSAGE -->
+
+    <div
+      id="errorBox"
+      class="error-box"
+    ></div>
+
+
+    <!-- =========================================
+         WELCOME
+    ========================================= -->
+
+    <section class="welcome">
+
+      <h1>
+        Welcome back
+        <span>👋</span>
+      </h1>
+
+      <p id="userEmail">
+        Loading your account...
+      </p>
+
+    </section>
+
+
+    <!-- =========================================
+         FIRST LOGIN SHOWCASE
+    ========================================= -->
+
+    <section
+      class="showcase"
+      id="welcomeShowcase"
+    >
+
+      <h2>
+        Welcome to CertificateHub
+      </h2>
+
+      <p>
+        Create professional certificates,
+        verify certificates instantly, and
+        securely manage your certificate records
+        from one place.
+      </p>
+
+
+      <div class="showcase-grid">
+
+
+        <!-- CARD 1 -->
+
+        <div class="showcase-card">
+
+          <div class="showcase-icon">
+            📜
+          </div>
+
+          <h3>
+            Professional Certificates
+          </h3>
+
+          <p>
+            Create elegant certificates with
+            your organization name, student name,
+            course, date, signature and seal.
+          </p>
+
+        </div>
+
+
+        <!-- CARD 2 -->
+
+        <div class="showcase-card">
+
+          <div class="showcase-icon">
+            🔍
+          </div>
+
+          <h3>
+            Instant Verification
+          </h3>
+
+          <p>
+            Every certificate can be verified
+            using its unique certificate number
+            and QR code.
+          </p>
+
+        </div>
+
+
+        <!-- CARD 3 -->
+
+        <div class="showcase-card">
+
+          <div class="showcase-icon">
+            🔐
+          </div>
+
+          <h3>
+            Secure Records
+          </h3>
+
+          <p>
+            Your certificate records are connected
+            to your account so you can access
+            them from your dashboard.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================
+           CERTIFICATE SAMPLE
+      ====================================== -->
+
+      <div class="certificate-showcase">
+
+        <div class="sample-content">
+
+          <div class="sample-top">
+            CERTIFICATE OF ACHIEVEMENT
+          </div>
+
+          <div class="sample-title">
+            CERTIFICATE
+          </div>
+
+          <div class="sample-name">
+            John Doe
+          </div>
+
+          <div class="sample-course">
+            Web Development
+          </div>
+
+          <div class="sample-note">
+            This is a sample certificate design.
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================
+         STATISTICS
+    ========================================= -->
+
+    <section class="stats">
+
+
+      <!-- TOTAL -->
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Total Certificates
+        </div>
+
+        <div
+          class="stat-number"
+          id="totalCertificates"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <!-- THIS YEAR -->
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Certificates This Year
+        </div>
+
+        <div
+          class="stat-number"
+          id="yearCertificates"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <!-- VERIFICATION -->
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Verification System
+        </div>
+
+        <div class="verified">
+          ✓ Active
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================
+         QUICK ACTIONS
+    ========================================= -->
+
+    <section>
+
+      <h2 class="section-title">
+        Quick Actions
+      </h2>
+
+
+      <div class="actions">
+
+
+        <!-- GENERATE -->
+
+        <button
+          class="action-btn"
+          onclick="goToGenerator()"
+        >
+
+          <div class="action-icon">
+            🎓
+          </div>
+
+          Generate Certificate
+
+          <span class="action-sub">
+            Create a new professional certificate.
+          </span>
+
+        </button>
+
+
+        <!-- VERIFY -->
+
+        <button
+          class="action-btn"
+          onclick="goToVerification()"
+        >
+
+          <div class="action-icon">
+            🔍
+          </div>
+
+          Verify Certificate
+
+          <span class="action-sub">
+            Check whether a certificate is authentic.
+          </span>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================
+         YOUR CERTIFICATES
+    ========================================= -->
+
+    <section>
+
+      <div class="certificates-box">
+
+
+        <div class="certificates-header">
+
+          <h2
+            class="section-title"
+            style="margin-bottom:0;"
+          >
+            Your Certificates
+          </h2>
+
+        </div>
+
+
+        <div id="certificateList">
+
+          <div class="empty">
+
+            <div class="empty-icon">
+              ⏳
+            </div>
+
+            Loading your certificates...
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================
+         POLICY / RULES
+    ========================================= -->
+
+    <section
+      class="policy-section"
+      style="margin-top:35px;"
+    >
+
+      <h2 class="section-title">
+        Rules & Policies
+      </h2>
+
+
+      <button
+        class="policy-card"
+        onclick="openPolicy()"
+      >
+
+        <div class="policy-icon">
+          ⚖️
+        </div>
+
+
+        <div class="policy-content">
+
+          <h3>
+            CertificateHub Rules & Policies
+          </h3>
+
+          <p>
+            Read our certificate usage,
+            verification, account and
+            responsible-use policies.
+          </p>
+
+        </div>
+
+
+        <div class="policy-arrow">
+          ›
+        </div>
+
+      </button>
+
+    </section>
+
+
+  </main>
+
+
+  <!-- =========================================
+       POLICY MODAL
+  ========================================= -->
+
+  <div
+    class="policy-modal"
+    id="policyModal"
+  >
+
+    <div class="policy-modal-box">
+
+
+      <div class="policy-modal-header">
+
+        <h2>
+          Rules & Policies
+        </h2>
+
+
+        <button
+          class="close-policy"
+          onclick="closePolicy()"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- POLICY 1 -->
+
+      <div class="policy-item">
+
+        <h3>
+          1. Certificate Authenticity
+        </h3>
+
+        <p>
+          Certificates generated through
+          CertificateHub must contain truthful
+          and accurate information. Users must
+          not create certificates intended to
+          falsely represent qualifications,
+          achievements or education.
+        </p>
+
+      </div>
+
+
+      <!-- POLICY 2 -->
+
+      <div class="policy-item">
+
+        <h3>
+          2. No Fraudulent Certificates
+        </h3>
+
+        <p>
+          CertificateHub must not be used to
+          create, alter or distribute fraudulent
+          certificates or documents intended
+          to deceive another person,
+          organization or institution.
+        </p>
+
+      </div>
+
+
+      <!-- POLICY 3 -->
+
+      <div class="policy-item">
+
+        <h3>
+          3. Verification
+        </h3>
+
+        <p>
+          Each certificate may be associated
+          with a unique certificate number and
+          verification record. Users should use
+          the verification system whenever
+          authenticity needs to be confirmed.
+        </p>
+
+      </div>
+
+
+      <!-- POLICY 4 -->
+
+      <div class="policy-item">
+
+        <h3>
+          4. Account Responsibility
+        </h3>
+
+        <p>
+          Users are responsible for keeping
+          their account credentials secure.
+          Do not share your password with
+          other people.
+        </p>
+
+      </div>
+
+
+      <!-- POLICY 5 -->
+
+      <div class="policy-item">
+
+        <h3>
+          5. Personal Information
+        </h3>
+
+        <p>
+          Only provide information that you
+          are authorized to use. Do not upload
+          another person's private information
+          without appropriate permission.
+        </p>
+
+      </div>
+
+
+      <!-- POLICY 6 -->
+
+      <div class="policy-item">
+
+        <h3>
+          6. Responsible Use
+        </h3>
+
+        <p>
+          CertificateHub is designed to help
+          organizations, educators, trainers,
+          businesses and individuals create and
+          manage legitimate certificates.
+        </p>
+
+      </div>
+
+
+      <!-- POLICY 7 -->
+
+      <div class="policy-item">
+
+        <h3>
+          7. Prohibited Activities
+        </h3>
+
+        <p>
+          Users must not use CertificateHub
+          for fraud, impersonation, deception,
+          unlawful activities, harassment or
+          any activity that violates applicable
+          laws.
+        </p>
+
+      </div>
+
+
+      <!-- POLICY 8 -->
+
+      <div class="policy-item">
+
+        <h3>
+          8. Service Availability
+        </h3>
+
+        <p>
+          CertificateHub may be updated,
+          improved or temporarily unavailable
+          from time to time as features and
+          security systems are maintained.
+        </p>
+
+      </div>
+
+
+      <!-- POLICY 9 -->
+
+      <div class="policy-item">
+
+        <h3>
+          9. Certificate Ownership
+        </h3>
+
+        <p>
+          Users are responsible for ensuring
+          that they have the necessary rights
+          and permission to issue certificates
+          using names, logos, signatures and
+          other organization information.
+        </p>
+
+      </div>
+
+
+      <!-- POLICY 10 -->
+
+      <div class="policy-item">
+
+        <h3>
+          10. Agreement
+        </h3>
+
+        <p>
+          By using CertificateHub, you agree
+          to use the service responsibly and
+          comply with these rules and policies.
+        </p>
+
+      </div>
+
+
+      <div class="policy-footer">
+
+        CertificateHub • Professional
+        Certificate Generation & Verification
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================
+       JAVASCRIPT STARTS IN SECTION 3
+  ========================================= -->
