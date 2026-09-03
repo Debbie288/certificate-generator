@@ -760,4 +760,166 @@ document.addEventListener("DOMContentLoaded", () => {
                         ${institution}
                     </div>
 
-                    <div class="line"></
+                          <div class="line"></div>
+
+                    <div class="title">
+                        CERTIFICATE OF COMPLETION
+                    </div>
+
+                    <div class="ornament">
+                        ─── ❦ ───
+                    </div>
+
+                    <div class="certify">
+                        THIS IS TO CERTIFY THAT
+                    </div>
+
+                    <div class="student">
+                        ${student}
+                    </div>
+
+                    <div class="studentLine"></div>
+
+                    <div class="completed">
+                        HAS SUCCESSFULLY COMPLETED THE COURSE IN
+                    </div>
+
+                    <div class="course">
+                        ${course}
+                    </div>
+
+                    <div class="awarded">
+                        AWARDED ON ${formattedDate.toUpperCase()}
+                    </div>
+
+                    <!-- BOTTOM -->
+
+                    <div class="bottom">
+
+                        <!-- LEFT -->
+
+                        <div class="certNo">
+
+                            <div class="smallGold">
+                                CERTIFICATE NUMBER
+                            </div>
+
+                            <div class="number">
+                                ${certNumber}
+                            </div>
+
+                        </div>
+
+                        <!-- CENTER -->
+
+                        <div class="qrBox">
+
+                            <div class="qrFrame">
+                                <div id="qrCode"></div>
+                            </div>
+
+                            <div class="verifyText">
+                                OFFICIAL VERIFICATION
+                            </div>
+
+                        </div>
+
+                        <!-- RIGHT -->
+
+                        <div class="signature">
+
+                            <div class="signatureName">
+                                ${director}
+                            </div>
+
+                            <div class="signatureTitle">
+                                AUTHORIZED SIGNATORY
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- SEAL -->
+
+                    <div class="seal">
+
+                        <div class="sealInner">
+                            ♕
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button
+                class="printBtn"
+                onclick="window.print()"
+            >
+                🖨️ Save Certificate as PDF
+            </button>
+            `;
+
+            /* CREATE QR */
+
+            new QRCode(
+                document.getElementById("qrCode"),
+                {
+                    text: verificationURL,
+                    width:128,
+                    height:128,
+                    correctLevel:
+                        QRCode.CorrectLevel.H
+                }
+            );
+
+            /* SHOW */
+
+            previewArea.style.display = "block";
+
+            previewArea.scrollIntoView({
+                behavior:"smooth",
+                block:"start"
+            });
+
+            console.log(
+                "Certificate generated:",
+                certNumber
+            );
+
+            console.log(
+                "Verification URL:",
+                verificationURL
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Certificate generation error:",
+                error
+            );
+
+            alert(
+                "Certificate could not be generated.\n\n" +
+                error.message
+            );
+
+        }
+
+        finally {
+
+            if (button) {
+                button.disabled = false;
+                button.textContent =
+                    "🎓 Generate Certificate";
+            }
+
+        }
+
+    });
+
+});
