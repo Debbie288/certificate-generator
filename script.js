@@ -1305,4 +1305,93 @@ document.addEventListener("DOMContentLoaded", () => {
 
                             <div class="verifyText">
                                 OFFICIAL VERIFICATION
+                            </div>
+
+                        </div>
+
+                        <!-- RIGHT -->
+
+                        <div class="signature">
+
+                            <div class="signatureName">
+                                ${director}
+                            </div>
+
+                            <div class="signatureTitle">
+                                AUTHORIZED SIGNATORY
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- GOLD SEAL -->
+
+                    <div class="seal">
+
+                        <div class="sealInner">
+                            ♕
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button
+                class="printBtn"
+                onclick="window.print()"
+            >
+                🖨️ Save Certificate as PDF
+            </button>
+
+            `;
+
+            /* CREATE QR */
+
+            new QRCode(
+                document.getElementById("qrCode"),
+                {
+                    text: verificationURL,
+                    width:128,
+                    height:128,
+                    correctLevel:QRCode.CorrectLevel.H
+                }
+            );
+
+            /* SHOW PREVIEW */
+
+            previewArea.style.display = "block";
+
+            previewArea.scrollIntoView({
+                behavior:"smooth",
+                block:"start"
+            });
+
+            console.log(
+                "Certificate:",
+                certNumber
+            );
+
+            console.log(
+                "Verification:",
+                verificationURL
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Certificate could not be generated.\n\n" +
+                error.message
+            );
+        }
+
+    });
+
+});
                                 
