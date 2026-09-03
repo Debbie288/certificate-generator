@@ -819,4 +819,737 @@ document.addEventListener("DOMContentLoaded", function () {
                     border:5px solid ${COLORS.gold};
                     background:#fff;
                     padding:6px;
-                    bo
+                    box-shadow:
+                        0 3px 12px rgba(0,0,0,.18);
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                ">
+
+                    <img
+                        src="${logoData}"
+                        alt="Organization Logo"
+                        style="
+                            width:100%;
+                            height:100%;
+                            border-radius:50%;
+                            object-fit:contain;
+                            display:block;
+                        "
+                    >
+
+                </div>
+
+            `;
+
+        }
+
+
+        return `
+
+            <div style="
+                width:105px;
+                height:105px;
+                margin:0 auto 12px;
+                border-radius:50%;
+                background:${COLORS.navy};
+                border:5px solid ${COLORS.gold};
+                box-shadow:
+                    0 3px 12px rgba(0,0,0,.20);
+                display:flex;
+                align-items:center;
+                justify-content:center;
+            ">
+
+                <div style="
+                    width:86px;
+                    height:86px;
+                    border-radius:50%;
+                    border:2px solid ${COLORS.gold};
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    color:${COLORS.gold};
+                    font-family:Georgia,serif;
+                    font-size:42px;
+                ">
+                    ✦
+                </div>
+
+            </div>
+
+        `;
+    }
+
+
+    /* =====================================================
+       14. GOLD SEAL
+    ===================================================== */
+
+    function createGoldSeal() {
+
+        return `
+
+            <div style="
+                width:100px;
+                height:100px;
+                border-radius:50%;
+                background:
+                    radial-gradient(
+                        circle,
+                        #F3D67A 0%,
+                        ${COLORS.gold} 45%,
+                        ${COLORS.darkGold} 100%
+                    );
+                border:4px solid ${COLORS.gold};
+                box-shadow:
+                    0 4px 12px rgba(0,0,0,.20);
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                flex-shrink:0;
+            ">
+
+                <div style="
+                    width:82px;
+                    height:82px;
+                    border-radius:50%;
+                    border:2px solid ${COLORS.navy};
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    text-align:center;
+                    color:${COLORS.navy};
+                    font-family:Georgia,serif;
+                ">
+
+                    <div>
+
+                        <div style="
+                            font-size:24px;
+                            margin-bottom:3px;
+                        ">
+                            ♛
+                        </div>
+
+                        <div style="
+                            font-size:9px;
+                            font-weight:bold;
+                            letter-spacing:1px;
+                        ">
+                            VERIFIED
+                        </div>
+
+                        <div style="
+                            font-size:7px;
+                            letter-spacing:1px;
+                            margin-top:2px;
+                        ">
+                            CREDENTIAL
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+    }
+
+
+    /* =====================================================
+       15. SAVE CERTIFICATE TO SUPABASE
+    ===================================================== */
+
+    async function saveCertificate(data) {
+
+        if (!supabaseClient) {
+
+            return {
+                success: false,
+                error:
+                    "Supabase connection is not available."
+            };
+        }
+
+
+        try {
+
+            const result =
+                await supabaseClient
+                    .from("certificates")
+                    .insert([
+                        {
+                            student_name:
+                                data.studentName,
+
+                            course_name:
+                                data.courseName,
+
+                            completion_date:
+                                data.completionDate,
+
+                            cert_number:
+                                data.certNumber,
+
+                            institution:
+                                data.institution,
+
+                            director:
+                                data.director
+                        }
+                    ]);
+
+
+            if (result.error) {
+
+                return {
+                    success: false,
+                    error:
+                        result.error.message
+                };
+            }
+
+
+            return {
+                success: true,
+                data: result.data
+            };
+
+        }
+
+        catch (error) {
+
+            return {
+                success: false,
+                error:
+                    error.message ||
+                    "Unknown database error."
+            };
+
+        }
+
+    }
+
+
+    /* =====================================================
+       16. CERTIFICATE HTML
+    ===================================================== */
+
+    function createCertificate(data) {
+
+        const qrURL =
+            createQRCodeURL(
+                data.certNumber
+            );
+
+
+        return `
+
+        <div
+            id="printableCertificate"
+            style="
+                position:relative;
+                width:1200px;
+                min-height:850px;
+                max-width:100%;
+                margin:0 auto;
+                overflow:hidden;
+                background:
+                    radial-gradient(
+                        circle at center,
+                        #FFFFFF 0%,
+                        ${COLORS.ivory} 68%,
+                        #F1E8D2 100%
+                    );
+                border:12px solid ${COLORS.navy};
+                box-shadow:
+                    0 10px 35px rgba(0,0,0,.20);
+                color:${COLORS.navy};
+                text-align:center;
+                font-family:
+                    Georgia,
+                    'Times New Roman',
+                    serif;
+                box-sizing:border-box;
+            "
+        >
+
+
+            <!-- =================================================
+                 GOLD BORDER
+            ================================================== -->
+
+            <div style="
+                position:absolute;
+                inset:13px;
+                border:3px solid ${COLORS.gold};
+                pointer-events:none;
+                z-index:2;
+            "></div>
+
+
+            <div style="
+                position:absolute;
+                inset:23px;
+                border:1px solid ${COLORS.gold};
+                pointer-events:none;
+                z-index:2;
+            "></div>
+
+
+            <!-- =================================================
+                 FLOWERS
+            ================================================== -->
+
+            ${createFloralCorners()}
+
+
+            <!-- =================================================
+                 MAIN CONTENT
+            ================================================== -->
+
+            <div style="
+                position:relative;
+                z-index:10;
+                padding:
+                    42px
+                    80px
+                    28px;
+            ">
+
+
+                <!-- LOGO -->
+
+                ${createLogo()}
+
+
+                <!-- INSTITUTION -->
+
+                <div style="
+                    font-size:23px;
+                    font-weight:bold;
+                    letter-spacing:4px;
+                    text-transform:uppercase;
+                    margin-bottom:12px;
+                ">
+                    ${escapeHTML(
+                        data.institution
+                    )}
+                </div>
+
+
+                <!-- GOLD ORNAMENT LINE -->
+
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    gap:12px;
+                    margin-bottom:16px;
+                ">
+
+                    <div style="
+                        width:105px;
+                        height:1px;
+                        background:${COLORS.gold};
+                    "></div>
+
+                    <div style="
+                        width:8px;
+                        height:8px;
+                        background:${COLORS.gold};
+                        transform:rotate(45deg);
+                    "></div>
+
+                    <div style="
+                        width:105px;
+                        height:1px;
+                        background:${COLORS.gold};
+                    "></div>
+
+                </div>
+
+
+                <!-- TITLE -->
+
+                <div style="
+                    font-size:58px;
+                    line-height:1;
+                    letter-spacing:5px;
+                    font-weight:normal;
+                    color:${COLORS.navy};
+                ">
+                    CERTIFICATE
+                </div>
+
+
+                <div style="
+                    font-size:27px;
+                    letter-spacing:6px;
+                    color:${COLORS.darkGold};
+                    margin-top:9px;
+                    margin-bottom:11px;
+                ">
+                    OF COMPLETION
+                </div>
+
+
+                <!-- ORNAMENT -->
+
+                <div style="
+                    color:${COLORS.gold};
+                    font-size:25px;
+                    margin-bottom:8px;
+                ">
+                    ─── ❦ ───
+                </div>
+
+
+                <!-- THIS IS TO CERTIFY -->
+
+                <div style="
+                    font-size:16px;
+                    letter-spacing:4px;
+                    font-weight:bold;
+                    margin-bottom:8px;
+                ">
+                    THIS IS TO CERTIFY THAT
+                </div>
+
+
+                <!-- STUDENT -->
+
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    gap:18px;
+                    margin:0 auto 12px;
+                    width:82%;
+                ">
+
+                    <div style="
+                        flex:1;
+                        height:1px;
+                        background:${COLORS.gold};
+                    "></div>
+
+                    <div style="
+                        font-size:45px;
+                        color:${COLORS.darkGold};
+                        white-space:nowrap;
+                    ">
+                        ${escapeHTML(
+                            data.studentName
+                        )}
+                    </div>
+
+                    <div style="
+                        flex:1;
+                        height:1px;
+                        background:${COLORS.gold};
+                    "></div>
+
+                </div>
+
+
+                <!-- COMPLETION -->
+
+                <div style="
+                    font-size:15px;
+                    letter-spacing:3px;
+                    font-weight:bold;
+                    margin-top:4px;
+                ">
+                    HAS SUCCESSFULLY COMPLETED THE COURSE IN
+                </div>
+
+
+                <!-- COURSE -->
+
+                <div style="
+                    font-size:31px;
+                    color:${COLORS.navy};
+                    margin-top:7px;
+                    margin-bottom:4px;
+                ">
+                    ${escapeHTML(
+                        data.courseName
+                    )}
+                </div>
+
+
+                <!-- COURSE ORNAMENT -->
+
+                <div style="
+                    color:${COLORS.gold};
+                    font-size:20px;
+                    margin-bottom:5px;
+                ">
+                    ─── ❦ ───
+                </div>
+
+
+                <!-- DATE -->
+
+                <div style="
+                    font-size:15px;
+                    letter-spacing:2px;
+                    margin-bottom:20px;
+                ">
+
+                    AWARDED ON
+
+                    <span style="
+                        color:${COLORS.darkGold};
+                        font-size:17px;
+                        margin-left:9px;
+                    ">
+                        ${escapeHTML(
+                            data.formattedDate
+                        )}
+                    </span>
+
+                </div>
+
+
+                <!-- =================================================
+                     BOTTOM SECTION
+                     LEFT = NUMBER
+                     CENTER = QR
+                     RIGHT = SIGNATURE + SEAL
+                ================================================== -->
+
+                <div style="
+                    display:grid;
+                    grid-template-columns:
+                        1fr
+                        190px
+                        1fr;
+                    align-items:center;
+                    gap:45px;
+                    width:88%;
+                    margin:0 auto;
+                    min-height:165px;
+                ">
+
+
+                    <!-- LEFT -->
+
+                    <div style="
+                        text-align:center;
+                    ">
+
+                        <div style="
+                            font-size:14px;
+                            font-weight:bold;
+                            letter-spacing:2px;
+                            color:${COLORS.darkGold};
+                        ">
+                            CERTIFICATE NO.
+                        </div>
+
+                        <div style="
+                            margin-top:9px;
+                            padding:8px 5px;
+                            border-top:
+                                1px solid ${COLORS.gold};
+                            border-bottom:
+                                1px solid ${COLORS.gold};
+                            font-size:17px;
+                            letter-spacing:1px;
+                        ">
+                            ${escapeHTML(
+                                data.certNumber
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    <!-- CENTER QR -->
+
+                    <div style="
+                        text-align:center;
+                        display:flex;
+                        flex-direction:column;
+                        align-items:center;
+                        justify-content:center;
+                    ">
+
+                        <div style="
+                            display:inline-flex;
+                            align-items:center;
+                            justify-content:center;
+                            padding:8px;
+                            background:#FFFFFF;
+                            border:3px solid ${COLORS.gold};
+                            box-shadow:
+                                0 2px 8px rgba(0,0,0,.15);
+                        ">
+
+                            <img
+                                src="${qrURL}"
+                                alt="Certificate Verification QR Code"
+                                style="
+                                    width:125px;
+                                    height:125px;
+                                    display:block;
+                                "
+                            >
+
+                        </div>
+
+
+                        <div style="
+                            margin-top:7px;
+                            font-size:11px;
+                            font-weight:bold;
+                            letter-spacing:2px;
+                            color:${COLORS.darkGold};
+                        ">
+                            SCAN TO VERIFY
+                        </div>
+
+                    </div>
+
+
+                    <!-- RIGHT -->
+
+                    <div style="
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        gap:15px;
+                        text-align:center;
+                    ">
+
+
+                        <!-- SIGNATURE -->
+
+                        <div style="
+                            min-width:155px;
+                        ">
+
+                            <div style="
+                                font-family:
+                                    'Brush Script MT',
+                                    'Segoe Script',
+                                    cursive;
+                                font-size:30px;
+                                color:${COLORS.navy};
+                                margin-bottom:4px;
+                            ">
+                                ${escapeHTML(
+                                    data.director
+                                )}
+                            </div>
+
+                            <div style="
+                                width:155px;
+                                height:1px;
+                                background:${COLORS.gold};
+                                margin:auto;
+                            "></div>
+
+                            <div style="
+                                margin-top:7px;
+                                font-size:12px;
+                                letter-spacing:1px;
+                                font-weight:bold;
+                            ">
+                                AUTHORIZED SIGNATORY
+                            </div>
+
+                        </div>
+
+
+                        <!-- SEAL -->
+
+                        ${createGoldSeal()}
+
+                    </div>
+
+                </div>
+
+
+                <!-- BOTTOM ORNAMENT -->
+
+                <div style="
+                    margin-top:12px;
+                    color:${COLORS.gold};
+                    font-size:19px;
+                ">
+                    ───── ❦ ─────
+                </div>
+
+
+            </div>
+
+        </div>
+
+        `;
+    }
+
+
+    /* =====================================================
+       17. PRINT / SAVE AS PDF
+    ===================================================== */
+
+    function createPrintButton() {
+
+        const oldButtons =
+            document.getElementById(
+                "certificateActions"
+            );
+
+        if (oldButtons) {
+            oldButtons.remove();
+        }
+
+
+        const actions =
+            document.createElement("div");
+
+        actions.id =
+            "certificateActions";
+
+        actions.style.cssText = `
+            display:flex;
+            justify-content:center;
+            gap:12px;
+            flex-wrap:wrap;
+            margin-top:20px;
+        `;
+
+
+        actions.innerHTML = `
+
+            <button
+                type="button"
+                id="printCertificateBtn"
+                style="
+                    padding:13px 22px;
+                    border:none;
+                    border-radius:8px;
+                    background:#0B1930;
+                    color:white;
+                    font-size:15px;
+                    font-weight:bold;
+                    cursor:pointer;
+                "
+            >
+                🖨️ Print / Save PDF
+            </button>
+
+        `;
+
+
+        previewArea.appendChild(actions);
+
+
+        document
+            .getElementById(
+       
