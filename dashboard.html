@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>CertificateHub - Customer Dashboard</title>
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- GOOGLE FONTS -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Great+Vibes&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    /* =========================================
+       RESET
+    ========================================= */
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+
+    /* =========================================
+       BODY
+    ========================================= */
+
+    body {
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background:
+        linear-gradient(
+          135deg,
+          #020617,
+          #0f172a,
+          #111827
+        );
+
+      color: #ffffff;
+
+      min-height: 100vh;
+    }
+
+
+    /* =========================================
+       HEADER
+    ========================================= */
+
+    header {
+      width: 100%;
+
+      background:
+        rgba(2, 6, 23, 0.95);
+
+      border-bottom:
+        1px solid
+        rgba(201,162,78,0.25);
+
+      padding:
+        17px 22px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      position: sticky;
+
+      top: 0;
+
+      z-index: 100;
+    }
+
+
+    .brand {
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+    }
+
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+
+      border-radius: 10px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background:
+        linear-gradient(
+          135deg,
+          #C9A24E,
+          #8f681f
+        );
+
+      color: #071A35;
+
+      font-size: 20px;
+
+      font-weight: bold;
+    }
+
+
+    .brand-name {
+      font-size: 21px;
+
+      font-weight: 800;
+
+      letter-spacing: 0.5px;
+
+      color: #ffffff;
+    }
+
+
+    .logout-btn {
+      background: transparent;
+
+      border:
+        1px solid
+        rgba(201,162,78,0.5);
+
+      color: #ffffff;
+
+      padding:
+        9px 16px;
+
+      border-radius: 8px;
+
+      cursor: pointer;
+
+      font-size: 14px;
+
+      font-weight: 600;
+
+      transition: 0.2s;
+    }
+
+
+    .logout-btn:hover {
+      background:
+        rgba(201,162,78,0.15);
+
+      border-color:
+        #C9A24E;
+    }
+
+
+    /* =========================================
+       MAIN CONTAINER
+    ========================================= */
+
+    .container {
+
+      width: 92%;
+
+      max-width: 1150px;
+
+      margin:
+        30px auto 60px;
+    }
+
+
+    /* =========================================
+       WELCOME
+    ========================================= */
+
+    .welcome {
+
+      margin-bottom: 28px;
+    }
+
+
+    .welcome h1 {
+
+      font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+      font-size: 38px;
+
+      color: #ffffff;
+
+      margin-bottom: 7px;
+    }
+
+
+    .welcome h1 span {
+
+      color: #C9A24E;
+    }
+
+
+    .welcome p {
+
+      color: #94a3b8;
+
+      font-size: 15px;
+
+      word-break: break-word;
+    }
+
+
+    /* =========================================
+       FIRST VISIT SHOWCASE
+    ========================================= */
+
+    .showcase {
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(201,162,78,0.12),
+          rgba(15,23,42,0.95)
+        );
+
+      border:
+        1px solid
+        rgba(201,162,78,0.35);
+
+      border-radius: 18px;
+
+      padding: 25px;
+
+      margin-bottom: 30px;
+
+      box-shadow:
+        0 12px 40px
+        rgba(0,0,0,0.25);
+    }
+
+
+    .showcase h2 {
+
+      font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+      font-size: 28px;
+
+      color: #C9A24E;
+
+      margin-bottom: 8px;
+    }
+
+
+    .showcase > p {
+
+      color: #cbd5e1;
+
+      font-size: 14px;
+
+      line-height: 1.6;
+
+      margin-bottom: 20px;
+    }
+
+
+    .showcase-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 15px;
+    }
+
+
+    .showcase-card {
+
+      background:
+        rgba(2,6,23,0.75);
+
+      border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+      border-radius: 14px;
+
+      padding: 18px;
+
+      text-align: center;
+    }
+
+
+    .showcase-icon {
+
+      font-size: 32px;
+
+      margin-bottom: 10px;
+    }
+
+
+    .showcase-card h3 {
+
+      color: #ffffff;
+
+      font-size: 16px;
+
+      margin-bottom: 7px;
+    }
+
+
+    .showcase-card p {
+
+      color: #94a3b8;
+
+      font-size: 13px;
+
+      line-height: 1.5;
+    }
+
+
+    /* =========================================
+       CERTIFICATE SAMPLE
+    ========================================= */
+
+    .certificate-showcase {
+
+      margin-top: 22px;
+
+      background:
+        #fbf7ed;
+
+      border:
+        7px solid
+        #071A35;
+
+      position: relative;
+
+      min-height: 210px;
+
+      padding: 25px;
+
+      text-align: center;
+
+      color: #071A35;
+
+      overflow: hidden;
+
+      box-shadow:
+        0 10px 30px
+        rgba(0,0,0,0.3);
+    }
+
+
+    .certificate-showcase::before {
+
+      content: "";
+
+      position: absolute;
+
+      inset: 8px;
+
+      border:
+        2px solid
+        #C9A24E;
+
+      pointer-events: none;
+    }
+
+
+    .certificate-showcase::after {
+
+      content: "";
+
+      position: absolute;
+
+      inset: 15px;
+
+      border:
+        1px solid
+        #C9A24E;
+
+      pointer-events: none;
+    }
+
+
+    .sample-content {
+
+      position: relative;
+
+      z-index: 2;
+    }
+
+
+    .sample-top {
+
+      color: #A27727;
+
+      font-size: 11px;
+
+      letter-spacing: 3px;
+
+      font-weight: bold;
+
+      margin-bottom: 5px;
+    }
+
+
+    .sample-title {
+
+      font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+      font-size: 32px;
+
+      letter-spacing: 3px;
+
+      font-weight: 700;
+    }
+
+
+    .sample-name {
+
+      font-family:
+        "Great Vibes",
+        cursive;
+
+      font-size: 38px;
+
+      color: #071A35;
+
+      margin: 5px 0;
+    }
+
+
+    .sample-course {
+
+      color: #A27727;
+
+      font-size: 17px;
+
+      font-weight: 600;
+    }
+
+
+    .sample-note {
+
+      font-size: 11px;
+
+      color: #64748b;
+
+      margin-top: 5px;
+    }
+
+
+    /* =========================================
+       STATS
+    ========================================= */
+
+    .stats {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 16px;
+
+      margin-bottom: 30px;
+    }
+
+
+    .stat-card {
+
+      background:
+        rgba(15,23,42,0.92);
+
+      border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+      border-radius: 15px;
+
+      padding: 22px;
+
+      box-shadow:
+        0 5px 20px
+        rgba(0,0,0,0.2);
+    }
+
+
+    .stat-label {
+
+      color: #94a3b8;
+
+      font-size: 14px;
+
+      margin-bottom: 9px;
+    }
+
+
+    .stat-number {
+
+      font-size: 31px;
+
+      font-weight: 800;
+
+      color: #ffffff;
+    }
+
+
+    .verified {
+
+      color: #4ade80;
+
+      font-size: 17px;
+
+      font-weight: 700;
+    }
+
+
+    /* =========================================
+       SECTION TITLE
+    ========================================= */
+
+    .section-title {
+
+      font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+      font-size: 25px;
+
+      font-weight: 700;
+
+      margin-bottom: 15px;
+
+      color: #ffffff;
+    }
+
+
+    /* =========================================
+       QUICK ACTIONS
+    ========================================= */
+
+    .actions {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap: 15px;
+
+      margin-bottom: 35px;
+    }
+
+
+    .action-btn {
+
+      border:
+        1px solid
+        rgba(201,162,78,0.25);
+
+      border-radius: 14px;
+
+      padding: 20px;
+
+      font-size: 16px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      text-align: left;
+
+      background:
+        rgba(15,23,42,0.92);
+
+      color: #ffffff;
+
+      box-shadow:
+        0 5px 18px
+        rgba(0,0,0,0.2);
+
+      transition: 0.2s;
+    }
+
+
+    .action-btn:hover {
+
+      transform:
+        translateY(-2px);
+
+      border-color:
+        #C9A24E;
+    }
+
+
+    .action-icon {
+
+      font-size: 27px;
+
+      margin-bottom: 8px;
+    }
+
+
+    .action-sub {
+
+      display: block;
+
+      font-size: 13px;
+
+      font-weight: 400;
+
+      color: #94a3b8;
+
+      margin-top: 5px;
+    }
+
+
+    /* =========================================
+       CERTIFICATES BOX
+    ========================================= */
+
+    .certificates-box {
+
+      background:
+        rgba(15,23,42,0.95);
+
+      border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+      border-radius: 15px;
+
+      overflow: hidden;
+
+      box-shadow:
+        0 5px 20px
+        rgba(0,0,0,0.2);
+    }
+
+
+    .certificates-header {
+
+      padding: 20px;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,0.08);
+    }
+
+
+    .certificate-list {
+
+      padding: 0;
+    }
+
+
+    .certificate-card {
+
+      padding: 20px;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,0.08);
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      gap: 15px;
+    }
+
+
+    .certificate-card:last-child {
+
+      border-bottom: none;
+    }
+
+
+    .certificate-info h3 {
+
+      font-size: 18px;
+
+      margin-bottom: 7px;
+
+      color: #ffffff;
+    }
+
+
+    .certificate-info p {
+
+      font-size: 13px;
+
+      color: #94a3b8;
+
+      margin: 4px 0;
+    }
+
+
+    .certificate-number {
+
+      color: #C9A24E !important;
+
+      font-weight: 700;
+    }
+
+
+    .view-btn {
+
+      background:
+        #C9A24E;
+
+      color:
+        #071A35;
+
+      border: none;
+
+      padding:
+        10px 16px;
+
+      border-radius: 8px;
+
+      cursor: pointer;
+
+      font-weight: 800;
+
+      white-space: nowrap;
+    }
+
+
+    .view-btn:hover {
+
+      background:
+        #e2bd68;
+    }
+
+
+    /* =========================================
+       EMPTY STATE
+    ========================================= */
+
+    .empty {
+
+      padding: 45px 20px;
+
+      text-align: center;
+
+      color: #94a3b8;
+    }
+
+
+    .empty-icon {
+
+      font-size: 40px;
+
+      margin-bottom: 12px;
+    }
+
+
+    .empty h3 {
+
+      color: #ffffff;
+
+      margin-bottom: 8px;
+    }
+
+
+    .generate-btn {
+
+      margin-top: 18px;
+
+      background:
+        #C9A24E;
+
+      color:
+        #071A35;
+
+      border: none;
+
+      padding:
+        12px 20px;
+
+      border-radius: 9px;
+
+      font-weight: 800;
+
+      cursor: pointer;
+    }
+
+
+    /* =========================================
+       ERROR
+    ========================================= */
+
+    .error-box {
+
+      background:
+        rgba(127,29,29,0.3);
+
+      color:
+        #fca5a5;
+
+      border:
+        1px solid
+        rgba(248,113,113,0.4);
+
+      padding: 15px;
+
+      border-radius: 10px;
+
+      margin-bottom: 20px;
+
+      display: none;
+    }
+
+
+    /* =========================================
+       MOBILE
+    ========================================= */
+
+    @media (max-width: 700px) {
+
+      .container {
+
+        width: 94%;
+
+        margin-top: 22px;
+      }
+
+
+      .welcome h1 {
+
+        font-size: 30px;
+      }
+
+
+      .stats {
+
+        grid-template-columns: 1fr;
+      }
+
+
+      .actions {
+
+        grid-template-columns: 1fr;
+      }
+
+
+      .showcase-grid {
+
+        grid-template-columns: 1fr;
+      }
+
+
+      .certificate-card {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+      }
+
+
+      .view-btn {
+
+        width: 100%;
+      }
+
+
+      .sample-title {
+
+        font-size: 25px;
+      }
+
+
+      .sample-name {
+
+        font-size: 31px;
+      }
+
+    }
+
+  </style>
+
+  </head>
