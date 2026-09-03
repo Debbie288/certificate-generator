@@ -1551,5 +1551,360 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         document
-            .getElementById(
+             .getElementById(
+                "printCertificateBtn"
+            )
+            .addEventListener(
+                "click",
+                function () {
+
+                    printCertificate();
+
+                }
+            );
+
+    }
+
+
+    /* =====================================================
+       18. PRINT FUNCTION
+    ===================================================== */
+
+    function printCertificate() {
+
+        const certificate =
+            document.getElementById(
+                "printableCertificate"
+            );
+
+        if (!certificate) {
+
+            alert(
+                "Please generate a certificate first."
+            );
+
+            return;
+        }
+
+
+        const printWindow =
+            window.open(
+                "",
+                "_blank"
+            );
+
+
+        if (!printWindow) {
+
+            alert(
+                "Please allow pop-ups to print the certificate."
+            );
+
+            return;
+        }
+
+
+        printWindow.document.write(`
+
+            <!DOCTYPE html>
+
+            <html>
+
+            <head>
+
+                <title>
+                    Certificate
+                </title>
+
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0"
+                >
+
+                <style>
+
+                    @page {
+                        size: A4 landscape;
+                        margin: 0;
+                    }
+
+                    html,
+                    body {
+                        margin:0;
+                        padding:0;
+                        width:100%;
+                        height:100%;
+                        background:white;
+                    }
+
+                    body {
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                    }
+
+                    #printCertificate {
+                        width:100vw;
+                        height:100vh;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                    }
+
+                    #printCertificate > div {
+                        width:96vw !important;
+                        max-width:none !important;
+                        transform:none !important;
+                    }
+
+                </style>
+
+            </head>
+
+            <body>
+
+                <div id="printCertificate">
+
+                    ${certificate.outerHTML}
+
+                </div>
+
+                <script>
+
+                    window.onload = function() {
+
+                        setTimeout(
+                            function() {
+
+                                window.print();
+
+                            },
+                            700
+                        );
+
+                    };
+
+                <\/script>
+
+            </body>
+
+            </html>
+
+        `);
+
+
+        printWindow.document.close();
+
+    }
+
+
+    /* =====================================================
+       19. FORM SUBMISSION
+    ===================================================== */
+
+    form.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            /* ---------------------------------------------
+               GET FORM DATA
+            --------------------------------------------- */
+
+            const institution =
+                properCase(
+                    document
+                        .getElementById(
+                            "institutionName"
+                        )
+                        .value
+                );
+
+
+            const studentName =
+                properCase(
+                    document
+                        .getElementById(
+                            "studentName"
+                        )
+                        .value
+                );
+
+
+            const courseName =
+                properCase(
+                    document
+                        .getElementById(
+                            "courseName"
+                        )
+                        .value
+                );
+
+
+            const completionDate =
+                document
+                    .getElementById(
+                        "completionDate"
+                    )
+                    .value;
+
+
+            const certInput =
+                document
+                    .getElementById(
+                        "certNumber"
+                    )
+                    .value
+                    .trim();
+
+
+            const director =
+                properCase(
+                    document
+                        .getElementById(
+                            "directorName"
+                        )
+                        .value
+                );
+
+
+            const certNumber =
+                certInput ||
+                createCertificateNumber();
+
+
+            /* ---------------------------------------------
+               VALIDATION
+            --------------------------------------------- */
+
+            if (
+                !institution ||
+                !studentName ||
+                !courseName ||
+                !completionDate ||
+                !director
+            ) {
+
+                alert(
+                    "Please complete all required fields."
+                );
+
+                return;
+            }
+
+
+            /* ---------------------------------------------
+               DATA OBJECT
+            --------------------------------------------- */
+
+            const certificateData = {
+
+                institution:
+                    institution,
+
+                studentName:
+                    studentName,
+
+                courseName:
+                    courseName,
+
+                completionDate:
+                    completionDate,
+
+                formattedDate:
+                    formatDate(
+                        completionDate
+                    ),
+
+                certNumber:
+                    certNumber,
+
+                director:
+                    director
+
+            };
+
+
+            /* ---------------------------------------------
+               SHOW PREVIEW
+            --------------------------------------------- */
+
+            preview.innerHTML =
+                createCertificate(
+                    certificateData
+                );
+
+
+            previewArea.style.display =
+                "block";
+
+
+            createPrintButton();
+
+
+            /* ---------------------------------------------
+               SCROLL TO CERTIFICATE
+            --------------------------------------------- */
+
+            setTimeout(
+                function () {
+
+                    previewArea.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+
+                },
+                100
+            );
+
+
+            /* ---------------------------------------------
+               SAVE TO SUPABASE
+            --------------------------------------------- */
+
+            const saveResult =
+                await saveCertificate(
+                    certificateData
+                );
+
+
+            if (saveResult.success) {
+
+                console.log(
+                    "Certificate saved successfully:",
+                    certificateData.certNumber
+                );
+
+            } else {
+
+                console.error(
+                    "Certificate save failed:",
+                    saveResult.error
+                );
+
+
+                alert(
+                    "Certificate generated successfully, but it could not be saved to the verification database.\n\n" +
+                    "Database message:\n" +
+                    saveResult.error
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       20. INITIAL MESSAGE
+    ===================================================== */
+
+    console.log(
+        "Xylarion Premium Certificate Generator loaded successfully."
+    );
+
+});
        
