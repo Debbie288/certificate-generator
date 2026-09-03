@@ -1,0 +1,249 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f7fc;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+.container {
+    background: white;
+    max-width: 750px;
+    width: 100%;
+    padding: 2rem 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 1.8rem;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+}
+
+p {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: #334155;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+input[type="file"] {
+    padding: 0.5rem;
+    border: 2px dashed #cbd5e1;
+    background: #f8fafc;
+    cursor: pointer;
+}
+
+button {
+    width: 100%;
+    padding: 0.8rem;
+    background: #2563eb;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+small {
+    display: block;
+    margin-top: 0.3rem;
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+#previewArea {
+    margin-top: 2rem;
+    width: 100%;
+    overflow-x: auto;
+}
+
+#previewArea h2 {
+    color: #1e293b;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+}
+
+footer {
+    display: none !important;
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 500px) {
+
+    .container {
+        padding: 1.5rem;
+    }
+
+    h1 {
+        font-size: 1.3rem;
+    }
+
+    button {
+        font-size: 1rem;
+    }
+
+}
+
+
+/* ==========================================
+   CERTIFICATE PDF PRINTING
+   LANDSCAPE — ONE PAGE
+========================================== */
+
+@page {
+    size: A4 landscape;
+    margin: 0;
+}
+
+@media print {
+
+    html,
+    body {
+        width: 297mm !important;
+        height: 210mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+    }
+
+    body {
+        display: block !important;
+    }
+
+    body * {
+        visibility: hidden !important;
+    }
+
+    #previewArea,
+    #previewArea * {
+        visibility: visible !important;
+    }
+
+    #previewArea {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 297mm !important;
+        height: 210mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+
+    #previewArea h2 {
+        display: none !important;
+    }
+
+    #certificatePreview {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 297mm !important;
+        height: 210mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+
+    #certificatePreview .certificate {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+
+        width: 297mm !important;
+        height: 210mm !important;
+
+        max-width: none !important;
+        min-height: 0 !important;
+
+        margin: 0 !important;
+
+        transform: none !important;
+
+        page-break-before: avoid !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+
+        overflow: hidden !important;
+    }
+
+    #certificatePreview .printBtn {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    footer {
+        display: none !important;
+    }
+}
+
+
+/* ==========================================
+   PROFESSIONAL SIGNATURE
+========================================== */
+
+.signature-name {
+    font-family: "Brush Script MT", "Segoe Script", cursive;
+    font-size: 1.8rem;
+    font-style: italic;
+    color: #1e293b;
+    margin-bottom: 5px;
+}
+
+.signature-line {
+    width: 180px;
+    border-top: 1px solid #334155;
+    margin: 0 auto 6px;
+}
+
+.signature-title {
+    font-size: 0.8rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
