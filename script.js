@@ -1551,7 +1551,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         document
-             .getElementById(
+            .getElementById(
                 "printCertificateBtn"
             )
             .addEventListener(
