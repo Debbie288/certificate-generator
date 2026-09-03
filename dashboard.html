@@ -1015,3 +1015,260 @@
 
 
 <!-- SECTION 2 GOES DIRECTLY BELOW THIS LINE -->
+    <script>
+const SUPABASE_URL = "https://gdophhworvapqctpmyia.supabase.co";
+const SUPABASE_KEY = "sb_publishable_PUMkwRHzr6lwQQzTQyO1bQ_DCmmQ9ww";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+let isSignUp = false;
+
+const loginScreen = document.getElementById("loginScreen");
+const dashboard = document.getElementById("dashboard");
+const authForm = document.getElementById("authForm");
+const authButton = document.getElementById("authButton");
+const switchButton = document.getElementById("switchButton");
+const switchText = document.getElementById("switchText");
+const authSubtitle = document.getElementById("authSubtitle");
+const authMessage = document.getElementById("authMessage");
+
+function showMessage(text, type) {
+    authMessage.textContent = text;
+    authMessage.className = "message " + type;
+    authMessage.style.display = "block";
+}
+
+function clearMessage() {
+    authMessage.style.display = "none";
+}
+
+function showLogin() {
+    loginScreen.style.display = "flex";
+    dashboard.style.display = "none";
+}
+
+function showDashboard(user) {
+    loginScreen.style.display = "none";
+    dashboard.style.display = "block";
+
+    document.getElementById("userEmail").textContent =
+        user.email || "Your account";
+
+    loadCertificates(user.id);
+}
+
+switchButton.addEventListener("click", () => {
+    isSignUp = !isSignUp;
+    clearMessage();
+
+    if (isSignUp) {
+        authButton.textContent = "Create Account";
+        switchText.textContent = "Already have an account?";
+        switchButton.textContent = "Sign in";
+        authSubtitle.textContent = "Create your certificate platform account";
+    } else {
+        authButton.textContent = "Sign In";
+        switchText.textContent = "Don't have an account?";
+        switchButton.textContent = "Create account";
+        authSubtitle.textContent = "Sign in to manage your certificates";
+    }
+});
+
+authForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    clearMessage();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    authButton.disabled = true;
+    authButton.textContent = isSignUp
+        ? "Creating Account..."
+        : "Signing In...";
+
+    try {
+        if (isSignUp) {
+            const { data, error } =
+                await supabaseClient.auth.signUp({
+                    email,
+                    password
+                });
+
+            if (error) throw error;
+
+            if (data.session) {
+                showDashboard(data.user);
+            } else {
+                showMessage(
+                    "Account created successfully. Please check your email to confirm your account.",
+                    "success"
+                );
+            }
+        } else {
+            const { data, error } =
+                await supabaseClient.auth.signInWithPassword({
+                    email,
+                    password
+                });
+
+            if (error) throw error;
+
+            showDashboard(data.user);
+        }
+    } catch (error) {
+        showMessage(error.message, "error");
+    } finally {
+        authButton.disabled = false;
+        authButton.textContent = isSignUp
+            ? "Create Account"
+            : "Sign In";
+    }
+});
+
+document.getElementById("logoutButton").addEventListener(
+    "click",
+    async () => {
+        await supabaseClient.auth.signOut();
+        showLogin();
+    }
+);
+
+async function loadCertificates(userId) {
+    const loading =
+        document.getElementById("certificateLoading");
+
+    const empty =
+        document.getElementById("emptyCertificates");
+
+    const list =
+        document.getElementById("certificateList");
+
+    try {
+        loading.style.display = "block";
+        empty.style.display = "none";
+        list.innerHTML = "";
+
+        const { data, error } = await supabaseClient
+            .from("certificates")
+            .select(`
+                student_name,
+                course_name,
+                completion_date,
+                cert_number,
+                institution,
+                director
+            `)
+            .eq("user_id", userId)
+            .order("completion_date", {
+                ascending: false
+            });
+
+        if (error) throw error;
+
+        loading.style.display = "none";
+
+        const certificates = data || [];
+
+        document.getElementById("totalCertificates").textContent =
+            certificates.length;
+
+        const currentYear = new Date().getFullYear();
+
+        const thisYear = certificates.filter(cert => {
+            if (!cert.completion_date) return false;
+
+            return new Date(cert.completion_date).getFullYear()
+                === currentYear;
+        });
+
+        document.getElementById("yearCertificates").textContent =
+            thisYear.length;
+
+        if (certificates.length === 0) {
+            empty.style.display = "block";
+            return;
+        }
+
+        certificates.forEach(cert => {
+            const item = document.createElement("div");
+
+            item.className = "certificate-item";
+
+            const formattedDate = cert.completion_date
+                ? new Date(cert.completion_date)
+                    .toLocaleDateString()
+                : "No date";
+
+            item.innerHTML = `
+                <div class="certificate-info">
+                    <h3>${escapeHTML(cert.student_name || "Unnamed Student")}</h3>
+                    <p><strong>Course:</strong> ${escapeHTML(cert.course_name || "N/A")}</p>
+                    <p><strong>Certificate:</strong> ${escapeHTML(cert.cert_number || "N/A")}</p>
+                    <p><strong>Date:</strong> ${formattedDate}</p>
+                </div>
+
+                <a
+                    class="verify-link"
+                    href="verify.html?cert=${encodeURIComponent(cert.cert_number)}"
+                    target="_blank"
+                >
+                    Verify
+                </a>
+            `;
+
+            list.appendChild(item);
+        });
+
+    } catch (error) {
+        loading.style.display = "none";
+
+        list.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">⚠️</div>
+                <h3>Unable to load certificates</h3>
+                <p>${escapeHTML(error.message)}</p>
+            </div>
+        `;
+    }
+}
+
+function escapeHTML(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+async function checkUser() {
+    const {
+        data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (session && session.user) {
+        showDashboard(session.user);
+    } else {
+        showLogin();
+    }
+}
+
+supabaseClient.auth.onAuthStateChange(
+    (event, session) => {
+        if (session && session.user) {
+            showDashboard(session.user);
+        } else {
+            showLogin();
+        }
+    }
+);
+
+checkUser();
+</script>
+
+</body>
+</html>
