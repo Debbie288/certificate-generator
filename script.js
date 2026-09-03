@@ -1022,6 +1022,129 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="bottom">
 
 
-                        <!-- CERTIFICATE NUMBER -->
+                        CERTIFICATE NUMBER -->
+
+                        <div class="certNo">
+
+                            <div class="smallGold">
+                                CERTIFICATE NUMBER
+                            </div>
+
+                            <div class="number">
+                                ${certNumber}
+                            </div>
+
+                        </div>
+
+
+                        <!-- QR -->
+
+                        <div class="qrBox">
+
+                            <div class="qrFrame">
+
+                                <div id="qrCode"></div>
+
+                            </div>
+
+                            <div class="verifyText">
+                                OFFICIAL VERIFICATION
+                            </div>
+
+                        </div>
+
+
+                        <!-- SIGNATURE -->
+
+                        <div class="signature">
+
+                            <div class="signatureName">
+                                ${director}
+                            </div>
+
+                            <div class="signatureTitle">
+                                AUTHORIZED SIGNATORY
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- SEAL -->
+
+                    <div class="seal">
+
+                        <div class="sealInner">
+                            ♕
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="printBtn"
+                onclick="window.print()"
+            >
+                🖨️ Save Certificate as PDF
+            </button>
+
+            `;
+
+
+            /* CREATE QR */
+
+            new QRCode(
+                document.getElementById("qrCode"),
+                {
+                    text:verificationURL,
+                    width:128,
+                    height:128,
+                    correctLevel:
+                        QRCode.CorrectLevel.H
+                }
+            );
+
+
+            /* SHOW */
+
+            previewArea.style.display = "block";
+
+            previewArea.scrollIntoView({
+                behavior:"smooth",
+                block:"start"
+            });
+
+
+            console.log(
+                "Certificate:",
+                certNumber
+            );
+
+            console.log(
+                "Verification:",
+                verificationURL
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Certificate could not be generated.\n\n" +
+                error.message
+            );
+        }
+
+    });
+
+});
 
       
