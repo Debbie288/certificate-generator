@@ -671,4 +671,638 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     inset:22px;
 
-                    border:1px solid 
+                    border:1px solid #C9A24E;
+
+                    pointer-events:none;
+                }
+
+                /* MAIN CONTENT */
+
+                .content {
+
+                    position:relative;
+
+                    z-index:5;
+
+                    width:100%;
+                    height:100%;
+
+                    text-align:center;
+
+                    padding:42px 70px;
+
+                    box-sizing:border-box;
+                }
+
+                /* LOGO */
+
+                .logo {
+
+                    width:112px;
+                    height:112px;
+
+                    border:3px solid #C9A24E;
+
+                    outline:1px solid #C9A24E;
+
+                    outline-offset:5px;
+
+                    margin:0 auto 15px;
+
+                    display:flex;
+
+                    align-items:center;
+                    justify-content:center;
+
+                    background:#fffdf7;
+
+                    overflow:hidden;
+                }
+
+                .logo img {
+
+                    width:88px;
+                    height:88px;
+
+                    object-fit:contain;
+                }
+
+                .logo span {
+
+                    font-size:48px;
+
+                    color:#C9A24E;
+                }
+
+                /* INSTITUTION */
+
+                .institution {
+
+                    font-size:28px;
+
+                    font-weight:700;
+
+                    letter-spacing:5px;
+
+                    text-transform:uppercase;
+                }
+
+                .line {
+
+                    width:420px;
+
+                    height:2px;
+
+                    background:#C9A24E;
+
+                    margin:13px auto 20px;
+                }
+
+                /* TITLE */
+
+                .title {
+
+                    font-size:57px;
+
+                    font-weight:600;
+
+                    letter-spacing:4px;
+
+                    line-height:1;
+                }
+
+                .ornament {
+
+                    color:#C9A24E;
+
+                    font-size:27px;
+
+                    font-weight:bold;
+
+                    margin:8px 0;
+                }
+
+                .certify {
+
+                    font-size:17px;
+
+                    letter-spacing:4px;
+
+                    margin-top:5px;
+                }
+
+                /* STUDENT */
+
+                .student {
+
+                    font-family:
+                        "Great Vibes",
+                        cursive;
+
+                    font-size:70px;
+
+                    color:#071A35;
+
+                    margin:3px 0 0;
+                }
+
+                .studentLine {
+
+                    width:520px;
+
+                    height:2px;
+
+                    background:#C9A24E;
+
+                    margin:0 auto 12px;
+                }
+
+                .completed {
+
+                    font-size:17px;
+
+                    letter-spacing:3px;
+                }
+
+                .course {
+
+                    font-size:38px;
+
+                    color:#A27727;
+
+                    margin-top:4px;
+                }
+
+                .awarded {
+
+                    font-size:17px;
+
+                    letter-spacing:2px;
+
+                    margin-top:5px;
+                }
+
+                /* =================================================
+                   BOTTOM
+                   LEFT = NUMBER
+                   CENTER = QR
+                   RIGHT = SIGNATURE
+                   ================================================= */
+
+                .bottom {
+
+                    position:absolute;
+
+                    left:75px;
+                    right:75px;
+
+                    bottom:48px;
+
+                    height:185px;
+
+                    display:grid;
+
+                    grid-template-columns:
+                        1fr
+                        210px
+                        1fr;
+
+                    grid-template-areas:
+                        "number qr signature";
+
+                    align-items:end;
+
+                    column-gap:45px;
+
+                    z-index:10;
+                }
+
+                /* NUMBER */
+
+                .certNo {
+
+                    grid-area:number;
+
+                    text-align:center;
+
+                    width:100%;
+                }
+
+                .smallGold {
+
+                    color:#A27727;
+
+                    font-size:15px;
+
+                    font-weight:bold;
+
+                    letter-spacing:2px;
+                }
+
+                .number {
+
+                    font-size:20px;
+
+                    margin-top:8px;
+
+                    border-top:1px solid #C9A24E;
+
+                    border-bottom:1px solid #C9A24E;
+
+                    padding:7px;
+                }
+
+                /* QR CENTER */
+
+                .qrBox {
+
+                    grid-area:qr;
+
+                    width:210px;
+
+                    text-align:center;
+
+                    display:flex;
+
+                    flex-direction:column;
+
+                    align-items:center;
+
+                    justify-content:flex-end;
+                }
+
+                .qrFrame {
+
+                    width:150px;
+
+                    height:150px;
+
+                    margin:0 auto;
+
+                    padding:9px;
+
+                    background:#ffffff;
+
+                    border:3px solid #C9A24E;
+
+                    box-shadow:
+                        0 2px 8px rgba(0,0,0,.15);
+
+                    display:flex;
+
+                    align-items:center;
+
+                    justify-content:center;
+                }
+
+                #qrCode {
+
+                    width:128px;
+
+                    height:128px;
+
+                    display:flex;
+
+                    align-items:center;
+
+                    justify-content:center;
+                }
+
+                #qrCode img,
+                #qrCode canvas {
+
+                    width:128px !important;
+
+                    height:128px !important;
+
+                    display:block !important;
+                }
+
+                .verifyText {
+
+                    margin-top:7px;
+
+                    color:#A27727;
+
+                    font-size:13px;
+
+                    font-weight:bold;
+
+                    letter-spacing:2px;
+
+                    white-space:nowrap;
+                }
+
+                /* SIGNATURE RIGHT */
+
+                .signature {
+
+                    grid-area:signature;
+
+                    text-align:center;
+
+                    width:100%;
+
+                    padding-left:10px;
+                }
+
+                .signatureName {
+
+                    font-family:
+                        "Great Vibes",
+                        cursive;
+
+                    font-size:40px;
+
+                    border-bottom:1px solid #071A35;
+
+                    padding-bottom:3px;
+
+                    min-width:230px;
+
+                    display:inline-block;
+                }
+
+                .signatureTitle {
+
+                    margin-top:7px;
+
+                    font-size:16px;
+
+                    letter-spacing:2px;
+                }
+
+                /* GOLD SEAL */
+
+                .seal {
+
+                    position:absolute;
+
+                    right:55px;
+
+                    bottom:45px;
+
+                    width:105px;
+
+                    height:105px;
+
+                    border-radius:50%;
+
+                    background:
+                        radial-gradient(
+                            circle,
+                            #f6dc91 0%,
+                            #D4AE58 45%,
+                            #C9A24E 65%,
+                            #9B7024 100%
+                        );
+
+                    border:4px solid #C9A24E;
+
+                    box-shadow:
+                        0 3px 9px rgba(0,0,0,.2);
+
+                    display:flex;
+
+                    align-items:center;
+                    justify-content:center;
+
+                    z-index:20;
+
+                    -webkit-print-color-adjust:exact;
+                    print-color-adjust:exact;
+                }
+
+                .sealInner {
+
+                    width:78px;
+                    height:78px;
+
+                    border:2px solid #071A35;
+
+                    border-radius:50%;
+
+                    display:flex;
+
+                    align-items:center;
+                    justify-content:center;
+
+                    color:#071A35;
+
+                    font-size:30px;
+                }
+
+                /* PRINT BUTTON */
+
+                .printBtn {
+
+                    display:block;
+
+                    margin:25px auto;
+
+                    padding:13px 28px;
+
+                    border:0;
+
+                    border-radius:8px;
+
+                    background:#071A35;
+
+                    color:white;
+
+                    font-weight:bold;
+
+                    font-size:16px;
+
+                    cursor:pointer;
+                }
+
+                /* =================================================
+                   PDF / PRINT
+                   ================================================= */
+
+                @page {
+
+                    size:A4 landscape;
+
+                    margin:0;
+                }
+
+                @media print {
+
+                    html,
+                    body {
+
+                        width:297mm !important;
+
+                        height:210mm !important;
+
+                        margin:0 !important;
+
+                        padding:0 !important;
+
+                        background:white !important;
+
+                        overflow:hidden !important;
+                    }
+
+                    body * {
+
+                        visibility:hidden;
+                    }
+
+                    #certificatePreview,
+                    #certificatePreview * {
+
+                        visibility:visible;
+                    }
+
+                    #certificatePreview {
+
+                        position:absolute !important;
+
+                        left:0 !important;
+
+                        top:0 !important;
+
+                        width:297mm !important;
+
+                        height:210mm !important;
+
+                        margin:0 !important;
+
+                        padding:0 !important;
+                    }
+
+                    .certificate {
+
+                        position:absolute !important;
+
+                        left:0 !important;
+
+                        top:0 !important;
+
+                        width:297mm !important;
+
+                        height:210mm !important;
+
+                        margin:0 !important;
+
+                        overflow:hidden !important;
+
+                        box-shadow:none !important;
+
+                        page-break-inside:avoid !important;
+
+                        break-inside:avoid !important;
+
+                        -webkit-print-color-adjust:exact !important;
+
+                        print-color-adjust:exact !important;
+                    }
+
+                    .printBtn {
+
+                        display:none !important;
+                    }
+                }
+
+            </style>
+
+            <div class="certificate">
+
+                <!-- GOLD BORDERS -->
+
+                <div class="goldBorder"></div>
+
+                <div class="goldBorder2"></div>
+
+                <!-- STRONG GOLD FLORAL DESIGN -->
+
+                ${flowers()}
+
+                <div class="content">
+
+                    <!-- CUSTOMER LOGO -->
+
+                    ${logoHTML}
+
+                    <!-- INSTITUTION -->
+
+                    <div class="institution">
+                        ${institution}
+                    </div>
+
+                    <div class="line"></div>
+
+                    <!-- TITLE -->
+
+                    <div class="title">
+                        CERTIFICATE OF COMPLETION
+                    </div>
+
+                    <div class="ornament">
+                        ✦ ─── ❦ ─── ✦
+                    </div>
+
+                    <!-- CERTIFICATION -->
+
+                    <div class="certify">
+                        THIS IS TO CERTIFY THAT
+                    </div>
+
+                    <!-- STUDENT -->
+
+                    <div class="student">
+                        ${student}
+                    </div>
+
+                    <div class="studentLine"></div>
+
+                    <!-- COURSE -->
+
+                    <div class="completed">
+                        HAS SUCCESSFULLY COMPLETED THE COURSE IN
+                    </div>
+
+                    <div class="course">
+                        ${course}
+                    </div>
+
+                    <div class="awarded">
+                        AWARDED ON ${formattedDate.toUpperCase()}
+                    </div>
+
+                    <!-- =================================================
+                         BOTTOM THREE SECTIONS
+                         ================================================= -->
+
+                    <div class="bottom">
+
+                        <!-- LEFT -->
+
+                        <div class="certNo">
+
+                            <div class="smallGold">
+                                CERTIFICATE NUMBER
+                            </div>
+
+                            <div class="number">
+                                ${certNumber}
+                            </div>
+
+                        </div>
+
+                        <!-- CENTER -->
+
+                        <div class="qrBox">
+
+                            <div class="qrFrame">
+
+                                <div id="qrCode"></div>
+
+                            </div>
+
+                            <div class="verifyText">
+                                OFFICIAL VERIFICATION
+                                
