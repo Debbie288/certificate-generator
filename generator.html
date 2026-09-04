@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Certificate Generator | CertificateHub</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            background: #f5f1e8;
+            color: #071A35;
+        }
+
+        .generator-page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        .generator-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .generator-header h1 {
+            color: #071A35;
+            margin-bottom: 8px;
+        }
+
+        .generator-header p {
+            color: #666;
+        }
+
+        #certificateForm {
+            background: #ffffff;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,.08);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            color: #071A35;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d6d6d6;
+            border-radius: 7px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #C9A24E;
+        }
+
+        #generateBtn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #071A35;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #generateBtn:hover {
+            background: #0b2850;
+        }
+
+        #previewArea {
+            display: none;
+            margin-top: 40px;
+            overflow-x: auto;
+        }
+
+        #certificatePreview {
+            min-width: 1200px;
+        }
+
+        @media (max-width: 600px) {
+            .generator-page {
+                padding: 20px 12px 40px;
+            }
+
+            #certificateForm {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="generator-page">
+
+        <div class="generator-header">
+            <h1>Certificate Generator</h1>
+            <p>Create a professional CertificateHub certificate.</p>
+        </div>
+
+        <form id="certificateForm">
+
+            <div class="form-group">
+                <label for="institutionName">
+                    Institution / Organization Name
+                </label>
+                <input
+                    type="text"
+                    id="institutionName"
+                    name="institutionName"
+                    placeholder="Enter institution name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="studentName">
+                    Recipient / Student Name
+                </label>
+                <input
+                    type="text"
+                    id="studentName"
+                    name="studentName"
+                    placeholder="Enter recipient name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="courseName">
+                    Course Name
+                </label>
+                <input
+                    type="text"
+                    id="courseName"
+                    name="courseName"
+                    placeholder="Enter course name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="completionDate">
+                    Completion Date
+                </label>
+                <input
+                    type="date"
+                    id="completionDate"
+                    name="completionDate"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="directorName">
+                    Director / Authorized Signatory
+                </label>
+                <input
+                    type="text"
+                    id="directorName"
+                    name="directorName"
+                    placeholder="Enter director's name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="certNumber">
+                    Certificate Number
+                </label>
+                <input
+                    type="text"
+                    id="certNumber"
+                    name="certNumber"
+                    placeholder="Leave blank to generate automatically"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="logoUpload">
+                    Organization Logo
+                </label>
+                <input
+                    type="file"
+                    id="logoUpload"
+                    name="logoUpload"
+                    accept="image/*"
+                >
+            </div>
+
+            <button type="submit" id="generateBtn">
+                🎓 Generate Certificate
+            </button>
+
+        </form>
+
+        <section id="previewArea">
+            <div id="certificatePreview"></div>
+        </section>
+
+    </main>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Your recovered OLD certificate-generation script -->
+    <script src="script.js"></script>
+
+</body>
+</html>
