@@ -466,3 +466,310 @@
       font-size: 13px;
       margin-bottom: 18px;
     }
+        .recent-card {
+      background: var(--ink-2);
+      border: 1px solid rgba(198, 161, 91, 0.15);
+      border-radius: 14px;
+      padding: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .recent-details h3 {
+      font-family: "Fraunces", serif;
+      font-size: 21px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .recent-details p {
+      color: var(--slate);
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--gold);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    .footer {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 26px 24px 38px;
+      border-top: 1px solid rgba(198, 161, 91, 0.12);
+      color: var(--slate);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer-brand {
+      font-family: "Fraunces", serif;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+    }
+
+    .loading {
+      color: var(--slate);
+      font-size: 13px;
+      padding: 20px 0;
+    }
+
+    @media (max-width: 900px) {
+      .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .preview-section {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .nav-inner {
+        padding: 16px 18px;
+      }
+
+      .nav-links {
+        gap: 14px;
+      }
+
+      .nav-links a {
+        font-size: 12px;
+      }
+
+      .main {
+        padding: 38px 18px 55px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .certificate-stage {
+        padding: 14px;
+      }
+
+      .certificate {
+        min-height: 290px;
+        padding: 20px;
+      }
+
+      .certificate-bottom {
+        padding: 0 8px;
+      }
+
+      .certificate-row,
+      .recent-card {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .view-btn {
+        align-self: flex-start;
+      }
+
+      .footer {
+        flex-direction: column;
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .brand {
+        font-size: 15px;
+      }
+
+      .nav-links {
+        gap: 10px;
+      }
+
+      .nav-links a {
+        font-size: 11px;
+      }
+
+      .page-heading h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="dashboard.html" class="brand">CertificateHub</a>
+
+      <div class="nav-links">
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="verification.html">Verify</a>
+        <a href="#" id="logoutBtn">Log Out</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <header class="page-heading">
+      <h1>Dashboard</h1>
+      <p>
+        Manage your certificates, create new certificates, and verify certificate
+        records from one secure workspace.
+      </p>
+    </header>
+
+    <section class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Certificates</div>
+        <div class="stat-value" id="totalCertificates">—</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Certificates This Year</div>
+        <div class="stat-value" id="yearCertificates">—</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Verification System</div>
+        <div class="stat-value">✓ Active</div>
+      </div>
+    </section>
+        <section class="section">
+      <div class="section-heading">
+        <h2>Quick Actions</h2>
+      </div>
+
+      <div class="quick-actions">
+
+        <a href="generator.html" class="action-card">
+          <div class="action-icon">✦</div>
+          <h3>Generate Certificate</h3>
+          <p>Create a new professional certificate</p>
+        </a>
+
+        <a href="certificate.html" class="action-card">
+          <div class="action-icon">▣</div>
+          <h3>My Certificates</h3>
+          <p>View and manage your certificates</p>
+        </a>
+
+        <a href="verification.html" class="action-card">
+          <div class="action-icon">✓</div>
+          <h3>Verify Certificate</h3>
+          <p>Check certificate authenticity</p>
+        </a>
+
+        <a href="verification.html" class="action-card">
+          <div class="action-icon">⌕</div>
+          <h3>View Verification</h3>
+          <p>Search and confirm certificate records</p>
+        </a>
+
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="preview-section">
+
+        <div class="certificate-stage">
+
+          <div class="certificate">
+
+            <div class="certificate-status">VERIFIED</div>
+
+            <div class="certificate-label">CERTIFICATEHUB</div>
+
+            <h3>Professional Achievement</h3>
+
+            <div class="certificate-recipient">
+              Your Recipient Name
+            </div>
+
+            <p class="certificate-description">
+              This certificate is proudly presented in recognition of
+              outstanding achievement, dedication, and professional excellence.
+            </p>
+
+            <div class="certificate-bottom">
+
+              <div class="signature">
+                <div class="signature-line"></div>
+                <span>Authorized Signature</span>
+              </div>
+
+              <div class="seal">CH<br>2026</div>
+
+              <div class="certificate-number">
+                CH-2026-001
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="preview-info">
+          <div class="eyebrow">Designed for trust</div>
+
+          <h2>Professional certificate design.</h2>
+
+          <p>
+            Create certificates that look credible, polished, and ready
+            for verification.
+          </p>
+
+          <ul class="feature-list">
+            <li>Professional certificate design</li>
+            <li>Unique certificate number</li>
+            <li>Verification-ready records</li>
+          </ul>
+
+          <a href="generator.html" class="primary-btn">
+            Generate Certificate
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <h2>Your Certificates</h2>
+      </div>
+
+      <div id="certificatesList" class="certificates-list">
+        <div class="loading">Loading your certificates...</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <h2>Recent Certificate</h2>
+      </div>
+
+      <div id="recentCertificate">
+        <div class="loading">Loading recent certificate...</div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-brand">CertificateHub</div>
+    <div>Create. Verify. Protect.</div>
+  </footer>
