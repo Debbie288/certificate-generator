@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Generate Certificate | CertificateHub</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Generate Certificate</h1>
+
+    <p>
+        Create a professional certificate with a unique certificate number
+        and verification-ready record.
+    </p>
+
+    <form id="certificateForm">
+
+        <div class="form-group">
+            <label for="certificateTitle">Certificate Title</label>
+            <input
+                type="text"
+                id="certificateTitle"
+                placeholder="e.g. Professional Achievement"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="recipientName">Recipient Name</label>
+            <input
+                type="text"
+                id="recipientName"
+                placeholder="Enter recipient's full name"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="description">Certificate Description</label>
+            <textarea
+                id="description"
+                placeholder="This certificate is awarded in recognition of..."
+                required
+            ></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="issuerName">Authorized Signatory</label>
+            <input
+                type="text"
+                id="issuerName"
+                placeholder="Enter authorized person's name"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="issueDate">Issue Date</label>
+            <input
+                type="date"
+                id="issueDate"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="certificateType">Certificate Type</label>
+
+            <select id="certificateType">
+                <option value="Achievement">Achievement</option>
+                <option value="Completion">Completion</option>
+                <option value="Participation">Participation</option>
+                <option value="Excellence">Excellence</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="logoUpload">Organization Logo</label>
+            <input
+                type="file"
+                id="logoUpload"
+                accept="image/*"
+            >
+
+            <small>
+                Optional. Upload a PNG or JPG logo.
+            </small>
+        </div>
+
+        <button type="submit">
+            Generate Certificate
+        </button>
+
+    </form>
+
+    <section id="previewArea" style="display:none;">
+
+        <h2>Certificate Preview</h2>
+
+        <div id="certificatePreview">
+
+            <div
+                class="certificate"
+                id="certificate"
+                style="
+                    width:100%;
+                    max-width:900px;
+                    min-height:620px;
+                    margin:auto;
+                    padding:60px;
+                    display:flex;
+                    flex-direction:column;
+                    align-items:center;
+                    justify-content:center;
+                    text-align:center;
+                "
+            >
+
+                <div
+                    id="certificateLogo"
+                    style="
+                        width:90px;
+                        height:90px;
+                        margin-bottom:18px;
+                        display:none;
+                    "
+                ></div>
+
+                <div
+                    style="
+                        font-family:'Inter',sans-serif;
+                        color:#8A7239;
+                        font-size:13px;
+                        letter-spacing:4px;
+                        font-weight:600;
+                        margin-bottom:12px;
+                    "
+                >
+                    CERTIFICATEHUB
+                </div>
+
+                <div
+                    style="
+                        font-family:'Inter',sans-serif;
+                        color:#7A2331;
+                        font-size:12px;
+                        font-weight:600;
+                        letter-spacing:3px;
+                        margin-bottom:20px;
+                    "
+                >
+                    VERIFIED
+                </div>
+
+                <div
+                    id="previewType"
+                    style="
+                        font-family:'Fraunces',serif;
+                        color:#101B2D;
+                        font-size:15px;
+                        letter-spacing:2px;
+                        margin-bottom:8px;
+                        text-transform:uppercase;
+                    "
+                >
+                    CERTIFICATE OF ACHIEVEMENT
+                </div>
+
+                <h2
+                    id="previewTitle"
+                    style="
+                        font-family:'Fraunces',serif;
+                        color:#101B2D;
+                        font-size:38px;
+                        font-weight:500;
+                        margin:0 0 22px;
+                    "
+                >
+                    Professional Achievement
+                </h2>
+
+                <div
+                    style="
+                        color:#5C6478;
+                        font-family:'Inter',sans-serif;
+                        font-size:13px;
+                        margin-bottom:8px;
+                    "
+                >
+                    This certificate is proudly presented to
+                </div>
+
+                <div
+                    id="previewRecipient"
+                    style="
+                        font-family:'Fraunces',serif;
+                        font-size:34px;
+                        font-style:italic;
+                        color:#101B2D;
+                        border-bottom:1px solid #8A7239;
+                        padding:0 30px 8px;
+                        margin-bottom:20px;
+                    "
+                >
+                    Your Recipient Name
+                </div>
+
+                <p
+                    id="previewDescription"
+                    style="
+                        max-width:650px;
+                        color:#5C6478;
+                        font-family:'Inter',sans-serif;
+                        font-size:14px;
+                        line-height:1.7;
+                        margin-bottom:35px;
+                    "
+                >
+                    This certificate is awarded in recognition of outstanding achievement.
+                </p>
+
+                <div
+                    style="
+                        width:100%;
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:flex-end;
+                        gap:30px;
+                        margin-top:10px;
+                    "
+                >
+
+                    <div style="text-align:center;">
+                        <div
+                            id="previewSignature"
+                            class="signature-name"
+                        >
+                            Authorized Signature
+                        </div>
+
+                        <div class="signature-line"></div>
+
+                        <div class="signature-title">
+                            Authorized Signature
+                        </div>
+                    </div>
+
+                    <div
+                        style="
+                            width:75px;
+                            height:75px;
+                            border-radius:50%;
+                            background:#7A2331;
+                            color:#F6F1E4;
+                            border:4px double #C6A15B;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            text-align:center;
+                            font-family:'Fraunces',serif;
+                            font-size:13px;
+                            line-height:1.1;
+                        "
+                    >
+                        CH<br>
+                        <span style="font-size:9px;">2026</span>
+                    </div>
+
+                    <div style="text-align:center;">
+                        <div
+                            id="previewNumber"
+                            style="
+                                font-family:'Inter',sans-serif;
+                                font-size:12px;
+                                font-weight:600;
+                                color:#101B2D;
+                                margin-bottom:6px;
+                            "
+                        >
+                            CH-2026-001
+                        </div>
+
+                        <div
+                            id="previewDate"
+                            style="
+                                font-family:'Inter',sans-serif;
+                                font-size:11px;
+                                color:#5C6478;
+                            "
+                        >
+                            2026
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <button
+            type="button"
+            class="printBtn"
+            onclick="window.print()"
+        >
+            Print / Save as PDF
+        </button>
+
+    </section>
+
+</div>
+
+<script>
+    const form = document.getElementById("certificateForm");
+
+    const previewArea = document.getElementById("previewArea");
+
+    const previewTitle = document.getElementById("previewTitle");
+    const previewRecipient = document.getElementById("previewRecipient");
+    const previewDescription = document.getElementById("previewDescription");
+    const previewSignature = document.getElementById("previewSignature");
+    const previewDate = document.getElementById("previewDate");
+    const previewType = document.getElementById("previewType");
+    const previewNumber = document.getElementById("previewNumber");
+
+    const logoUpload = document.getElementById("logoUpload");
+    const certificateLogo = document.getElementById("certificateLogo");
+
+    document.getElementById("issueDate").value =
+        new Date().toISOString().split("T")[0];
+
+    form.addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const title =
+            document.getElementById("certificateTitle").value.trim();
+
+        const recipient =
+            document.getElementById("recipientName").value.trim();
+
+        const description =
+            document.getElementById("description").value.trim();
+
+        const issuer =
+            document.getElementById("issuerName").value.trim();
+
+        const date =
+            document.getElementById("issueDate").value;
+
+        const type =
+            document.getElementById("certificateType").value;
+
+        previewTitle.textContent =
+            title || "Professional Achievement";
+
+        previewRecipient.textContent =
+            recipient || "Your Recipient Name";
+
+        previewDescription.textContent =
+            description ||
+            "This certificate is awarded in recognition of outstanding achievement.";
+
+        previewSignature.textContent =
+            issuer || "Authorized Signature";
+
+        previewType.textContent =
+            "CERTIFICATE OF " + type.toUpperCase();
+
+        if (date) {
+            const formattedDate =
+                new Date(date + "T00:00:00").toLocaleDateString(
+                    "en-US",
+                    {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                    }
+                );
+
+            previewDate.textContent = formattedDate;
+        }
+
+        const year =
+            date
+                ? new Date(date + "T00:00:00").getFullYear()
+                : new Date().getFullYear();
+
+        const randomNumber =
+            Math.floor(100 + Math.random() * 900);
+
+        previewNumber.textContent =
+            "CH-" + year + "-" + randomNumber;
+
+        previewArea.style.display = "block";
+
+        previewArea.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    });
+
+    logoUpload.addEventListener("change", function() {
+
+        const file = this.files[0];
+
+        if (!file) {
+            certificateLogo.style.display = "none";
+            certificateLogo.innerHTML = "";
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+
+            certificateLogo.style.display = "block";
+
+            certificateLogo.innerHTML = `
+                <img
+                    src="${event.target.result}"
+                    alt="Organization logo"
+                    style="
+                        width:90px;
+                        height:90px;
+                        object-fit:contain;
+                    "
+                >
+            `;
+        };
+
+        reader.readAsDataURL(file);
+    });
+</script>
+
+</body>
+</html>
