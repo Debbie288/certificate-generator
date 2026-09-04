@@ -773,3 +773,314 @@
     <div class="footer-brand">CertificateHub</div>
     <div>Create. Verify. Protect.</div>
   </footer>
+    <script>
+    function getSupabaseConfig() {
+      if (window.CERTIFICATEHUB_CONFIG) {
+        return {
+          url: window.CERTIFICATEHUB_CONFIG.supabaseUrl,
+          anonKey: window.CERTIFICATEHUB_CONFIG.supabaseAnonKey
+        };
+      }
+
+      if (window.__SUPABASE_CONFIG__) {
+        return {
+          url: window.__SUPABASE_CONFIG__.url,
+          anonKey: window.__SUPABASE_CONFIG__.anonKey
+        };
+      }
+
+      if (window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+        return {
+          url: window.SUPABASE_URL,
+          anonKey: window.SUPABASE_ANON_KEY
+        };
+      }
+
+      return null;
+    }
+
+    function getValue(obj, keys, fallback = "") {
+      for (const key of keys) {
+        if (
+          obj &&
+          obj[key] !== undefined &&
+          obj[key] !== null &&
+          obj[key] !== ""
+        ) {
+          return obj[key];
+        }
+      }
+
+      return fallback;
+    }
+
+    function normalizeCertificate(row) {
+      return {
+        id: row.id,
+        title: getValue(row, [
+          "title",
+          "certificate_title",
+          "name"
+        ], "Certificate"),
+
+        recipient: getValue(row, [
+          "recipient_name",
+          "recipient",
+          "student_name",
+          "holder_name"
+        ], "Recipient"),
+
+        number: getValue(row, [
+          "certificate_number",
+          "certificate_no",
+          "verification_number",
+          "verification_code",
+          "certificate_id"
+        ], "—"),
+
+        date: getValue(row, [
+          "created_at",
+          "issued_at",
+          "date_created",
+          "created"
+        ], null),
+
+        status: getValue(row, [
+          "verification_status",
+          "status",
+          "verified_status"
+        ], "Active")
+      };
+    }
+
+    function formatDate(value) {
+      if (!value) return "—";
+
+      const date = new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        return "—";
+      }
+
+      return date.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderCertificates(certificates) {
+      const container = document.getElementById("certificatesList");
+
+      if (!certificates.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h3>Your certificate collection is empty</h3>
+            <p>
+              Create your first professional certificate and it will appear here.
+            </p>
+            <a href="generator.html" class="primary-btn">
+              Generate Certificate
+            </a>
+          </div>
+        `;
+
+        return;
+      }
+
+      container.innerHTML = certificates.map(cert => `
+        <div class="certificate-row">
+          <div class="certificate-row-main">
+            <h3>${escapeHtml(cert.title)}</h3>
+            <p>
+              ${escapeHtml(cert.recipient)}
+              · ${escapeHtml(cert.number)}
+              · ${escapeHtml(formatDate(cert.date))}
+            </p>
+          </div>
+
+          <a
+            href="certificate.html?id=${encodeURIComponent(cert.id)}"
+            class="view-btn"
+          >
+            View
+          </a>
+        </div>
+      `).join("");
+    }
+
+    function renderRecent(certificates) {
+      const container = document.getElementById("recentCertificate");
+
+      if (!certificates.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h3>No recent certificate</h3>
+            <p>
+              Your latest certificate will appear here after you create one.
+            </p>
+          </div>
+        `;
+
+        return;
+      }
+
+      const cert = certificates[0];
+
+      container.innerHTML = `
+        <div class="recent-card">
+          <div class="recent-details">
+            <h3>${escapeHtml(cert.title)}</h3>
+
+            <p>
+              Recipient: ${escapeHtml(cert.recipient)}
+            </p>
+
+            <p>
+              Certificate Number: ${escapeHtml(cert.number)}
+            </p>
+
+            <p>
+              Date: ${escapeHtml(formatDate(cert.date))}
+            </p>
+
+            <div class="status">
+              ✓ ${escapeHtml(cert.status)}
+            </div>
+          </div>
+
+          <a
+            href="certificate.html?id=${encodeURIComponent(cert.id)}"
+            class="view-btn"
+          >
+            View Certificate
+          </a>
+        </div>
+      `;
+    }
+
+    async function loadDashboard() {
+      const config = getSupabaseConfig();
+
+      if (!config || !config.url || !config.anonKey) {
+        document.getElementById("totalCertificates").textContent = "—";
+        document.getElementById("yearCertificates").textContent = "—";
+
+        renderCertificates([]);
+        renderRecent([]);
+
+        return;
+      }
+
+      const supabaseClient = window.supabase.createClient(
+        config.url,
+        config.anonKey
+      );
+
+      const {
+        data: {
+          user
+        },
+        error: userError
+      } = await supabaseClient.auth.getUser();
+
+      if (userError || !user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from("certificates")
+        .select("*")
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("Certificate loading error:", error);
+
+        document.getElementById("totalCertificates").textContent = "—";
+        document.getElementById("yearCertificates").textContent = "—";
+
+        renderCertificates([]);
+        renderRecent([]);
+
+        return;
+      }
+
+      const certificates = (data || [])
+        .map(normalizeCertificate)
+        .sort((a, b) => {
+          const dateA = a.date
+            ? new Date(a.date).getTime()
+            : 0;
+
+          const dateB = b.date
+            ? new Date(b.date).getTime()
+            : 0;
+
+          return dateB - dateA;
+        });
+
+      const currentYear = new Date().getFullYear();
+
+      const certificatesThisYear = certificates.filter(cert => {
+        if (!cert.date) return false;
+
+        const date = new Date(cert.date);
+
+        return (
+          !Number.isNaN(date.getTime()) &&
+          date.getFullYear() === currentYear
+        );
+      });
+
+      document.getElementById("totalCertificates").textContent =
+        certificates.length;
+
+      document.getElementById("yearCertificates").textContent =
+        certificatesThisYear.length;
+
+      renderCertificates(certificates);
+      renderRecent(certificates);
+    }
+
+    document
+      .getElementById("logoutBtn")
+      .addEventListener("click", async function(event) {
+        event.preventDefault();
+
+        const config = getSupabaseConfig();
+
+        if (
+          config &&
+          config.url &&
+          config.anonKey &&
+          window.supabase
+        ) {
+          const supabaseClient = window.supabase.createClient(
+            config.url,
+            config.anonKey
+          );
+
+          await supabaseClient.auth.signOut();
+        }
+
+        window.location.href = "login.html";
+      });
+
+    loadDashboard();
+  </script>
+
+</body>
+</html>
