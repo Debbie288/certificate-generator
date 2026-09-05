@@ -302,12 +302,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const formattedDate = formatDate(date);
 
-            /* TEST MODE — GENERATE CERTIFICATE WITHOUT LOGIN */
+/* SAVE CERTIFICATE TO SUPABASE */
 
-// No Supabase login required for testing.
-// Certificate will still generate and create a verification code.
+const {
+    data: {
+        user
+    },
+    error: userError
+} = await supabaseClient.auth.getUser();
 
-console.log("Test mode: Supabase save skipped.");
+if (userError) {
+    console.error("Auth error:", userError);
+    throw userError;
+}
+
+if (!user) {
+    alert("Please log in before generating a certificate.");
+    return;
+}
+
+const { error: saveError } =
+    await supabaseClient
+        .from("certificates")
+        .insert([{
+            user_id: user.id,
+            student_name: student,
+            course_name: course,
+            completion_date: date,
+            cert_number: certNumber,
+            institution: institution,
+            director: director
+        }]);
+
+if (saveError) {
+    console.error("Save error:", saveError);
+
+    if (
+        saveError.code === "23505" ||
+        saveError.message
+            .toLowerCase()
+            .includes("duplicate")
+    ) {
+        alert(
+            "This certificate number already exists. Please enter another number."
+        );
+        return;
+    }
+
+    throw saveError;
+}
+
+console.log("Certificate saved successfully.");
+
 
             /* LOAD QR */
 
