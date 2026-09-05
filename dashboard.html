@@ -680,3 +680,8 @@ async function init(){
       errorStateHtml("We couldn't load your certificates.", 'window.location.reload()');
   }
   }
+  document.addEventListener('DOMContentLoaded', () => { setTimeout(init, 0); });
+</script>
+
+</body>
+</html>
