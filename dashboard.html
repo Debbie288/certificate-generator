@@ -396,4 +396,287 @@ function showSection(target){
   document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.toggle('active', b.dataset.target === target));  
   window.scrollTo({ top: 0, behavior: 'smooth' });  
 }  
-document.querySelectorAll('[data-
+document.querySelectorAll('[data-target]').forEach(el => {
+  el.addEventListener('click', () => showSection(el.dataset.target));
+});
+/* ============ GREETING (time-of-day aware) ============ */
+function setGreeting(){
+  const hour = new Date().getHours();
+  const period = hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
+  document.getElementById('greetingHeading').textContent = `Good ${period}, Admin`;
+}
+setGreeting();
+/* ============ AUTH GUARD ============
+   Uses the existing Supabase auth — no separate/fake login system.
+   Redirects to admin-login.html if there is no authenticated session. */
+async function requireAuth(){
+  if (!window.supabase) {
+    console.error('Supabase library failed to load.');
+    return null;
+  }
+  supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+  const { data, error } = await supabaseClient.auth.getUser();
+  if (error || !data || !data.user) {
+    window.location.href = 'admin-login.html';
+    return null;
+  }
+  document.getElementById('adminEmail').textContent = data.user.email || '';
+  return data.user;
+}
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  try { if (supabaseClient) await supabaseClient.auth.signOut(); }
+  catch (err) { console.error('Logout error:', err); }
+  window.location.href = 'admin-login.html';
+});
+/* =====================================================================
+   DATA LOADING
+   ASSUMPTION: the "certificates" table's date field is completion_date
+   (confirmed via verify.html). If the table also has a created_at
+   timestamp, "This Month" / recency below would be more accurate using
+   that instead — swap completion_date for created_at here if you add one.
+===================================================================== */
+async function loadCertificates(){
+  const { data, error } = await supabaseClient
+    .from('certificates')
+    .select('student_name, course_name, completion_date, cert_number, institution, director');
+  if (error) throw error;
+  return data || [];
+}
+/* ============ STATS ============ */
+function renderStats(certs){
+  const grid = document.getElementById('statsGrid');
+  const now = new Date();
+  const total = certs.length;
+  const thisMonth = certs.filter(c => {
+    if (!c.completion_date) return false;
+    const d = new Date(c.completion_date + 'T00:00:00');
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+  const totalCourses = new Set(certs.map(c => (c.course_name || '').trim().toLowerCase()).filter(Boolean)).size;
+  const totalInstitutions = new Set(certs.map(c => (c.institution || '').trim().toLowerCase()).filter(Boolean)).size;
+  const cards = [
+    { label:'Total Certificates', num:total, hint:'Certificates generated' },
+    { label:'This Month', num:thisMonth, hint:'Issued this calendar month' },
+    { label:'Total Courses', num:totalCourses, hint:'Distinct courses issued' },
+    { label:'Institutions', num:totalInstitutions, hint:'Organizations using CertificateHub' },
+  ];
+  grid.innerHTML = cards.map(c => `
+    <div class="stat-card">
+      <span class="stat-label">${c.label}</span>
+      <div class="stat-num">${c.num}</div>
+      <div class="stat-hint">${c.hint}</div>
+    </div>
+  `).join('');
+}
+function renderStatsError(){
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card" style="grid-column:1/-1;">
+      <span class="stat-label" style="color:var(--error);">Statistics unavailable</span>
+      <div class="stat-hint">Couldn't load certificate counts. Try refreshing.</div>
+    </div>
+  `;
+}
+/* ============ RECENT CERTIFICATES (dashboard) ============ */
+function sortByDateDesc(certs){
+  return [...certs].sort((a, b) => {
+    const da = a.completion_date ? new Date(a.completion_date) : new Date(0);
+    const db = b.completion_date ? new Date(b.completion_date) : new Date(0);
+    return db - da;
+  });
+}
+function certRowHtml(c){
+  return `
+    <div class="cert-row">
+      <div class="cert-row-top">
+        <span class="cert-row-name">${escapeHtml(c.student_name || 'Unnamed')}</span>
+        <span class="cert-row-num">${escapeHtml(c.cert_number || '—')}</span>
+      </div>
+      <div class="cert-row-meta">
+        <span>Course: <strong>${escapeHtml(c.course_name || '—')}</strong></span>
+        <span>Institution: <strong>${escapeHtml(c.institution || '—')}</strong></span>
+        <span>Date: <strong>${formatDate(c.completion_date)}</strong></span>
+      </div>
+      <button class="cert-row-view" data-cert="${escapeAttr(c.cert_number || '')}">View</button>
+    </div>
+  `;
+}
+function renderRecent(certs){
+  const wrap = document.getElementById('recentCertWrap');
+  if (!certs || certs.length === 0) {
+    wrap.innerHTML = emptyStateHtml(
+      'No certificates yet',
+      'Your generated certificates will appear here.',
+      'Generate Certificate', 'index.html'
+    );
+    return;
+  }
+  const recent = sortByDateDesc(certs).slice(0, 5);
+  wrap.innerHTML = `<div class="cert-list">${recent.map(certRowHtml).join('')}</div>`;
+  wireViewButtons(wrap);
+}
+/* ============ CERTIFICATES PAGE (search + sort) ============ */
+function renderCertList(){
+  const wrap = document.getElementById('certListWrap');
+  const query = document.getElementById('certSearch').value.trim().toLowerCase();
+  const sort = document.getElementById('certSort').value;
+  let filtered = allCertificates;
+  if (query) {
+    filtered = filtered.filter(c =>
+      (c.student_name || '').toLowerCase().includes(query) ||
+      (c.cert_number || '').toLowerCase().includes(query) ||
+      (c.institution || '').toLowerCase().includes(query)
+    );
+  }
+  filtered = sortByDateDesc(filtered);
+  if (sort === 'oldest') filtered = filtered.reverse();
+  document.getElementById('resultCount').textContent =
+    `${filtered.length} certificate${filtered.length === 1 ? '' : 's'}`;
+  if (filtered.length === 0) {
+    wrap.innerHTML = allCertificates.length === 0
+      ? emptyStateHtml('No certificates yet', 'Your generated certificates will appear here.', 'Generate Certificate', 'index.html')
+      : emptyStateHtml('No matches found', 'Try a different name, certificate number, or institution.', null, null);
+    return;
+  }
+  wrap.innerHTML = `
+    <div class="cert-list as-table">
+      <div class="table-head-row">
+        <span>Student</span><span>Course</span><span>Institution</span><span>Cert No.</span><span>Date</span><span></span>
+      </div>
+      ${filtered.map(certRowHtml).join('')}
+    </div>
+  `;
+  wireViewButtons(wrap);
+}
+document.getElementById('certSearch').addEventListener('input', renderCertList);
+document.getElementById('certSort').addEventListener('change', renderCertList);
+/* ============ CERTIFICATE DETAIL MODAL ============ */
+function wireViewButtons(container){
+  container.querySelectorAll('[data-cert]').forEach(btn => {
+    btn.addEventListener('click', () => openDetailModal(btn.dataset.cert));
+  });
+}
+function openDetailModal(certNumber){
+  const cert = allCertificates.find(c => c.cert_number === certNumber);
+  if (!cert) return;
+  document.getElementById('detailModalBody').innerHTML = `
+    <div class="modal-row"><span>Student Name</span><span>${escapeHtml(cert.student_name || '—')}</span></div>
+    <div class="modal-row"><span>Course</span><span>${escapeHtml(cert.course_name || '—')}</span></div>
+    <div class="modal-row"><span>Institution</span><span>${escapeHtml(cert.institution || '—')}</span></div>
+    <div class="modal-row"><span>Certificate Number</span><span>${escapeHtml(cert.cert_number || '—')}</span></div>
+    <div class="modal-row"><span>Completion Date</span><span>${formatDate(cert.completion_date)}</span></div>
+    <div class="modal-row"><span>Director</span><span>${escapeHtml(cert.director || '—')}</span></div>
+    <div class="modal-row"><span>Status</span><span>On Record ✓</span></div>
+  `;
+  document.getElementById('detailModal').classList.add('open');
+}
+document.getElementById('detailModalClose').addEventListener('click', () => {
+  document.getElementById('detailModal').classList.remove('open');
+});
+document.getElementById('detailModal').addEventListener('click', (e) => {
+  if (e.target.id === 'detailModal') e.currentTarget.classList.remove('open');
+});
+/* =====================================================================
+   VERIFICATION — mirrors verify.html's exact query logic so admin and
+   public verification always agree.
+===================================================================== */
+document.getElementById('verifyForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const certNumber = document.getElementById('verifyInput').value.trim();
+  const resultEl = document.getElementById('verifyResult');
+  if (!certNumber) return;
+  resultEl.innerHTML = `<p style="color:var(--gray);">Checking certificate…</p>`;
+  try {
+    const { data, error } = await supabaseClient
+      .from('certificates')
+      .select('student_name, course_name, completion_date, cert_number, institution, director')
+      .eq('cert_number', certNumber)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) {
+      resultEl.innerHTML = `
+        <div class="verify-card invalid">
+          <div class="verify-status invalid-text">Certificate Not Found</div>
+          <p style="color:var(--gray); font-size:13.5px;">No certificate with the number <strong style="color:var(--cream);">${escapeHtml(certNumber)}</strong> was found in our database.</p>
+        </div>
+      `;
+      return;
+    }
+    resultEl.innerHTML = `
+      <div class="verify-card valid">
+        <div class="verify-status valid-text">Certificate Verified</div>
+        <div class="verify-detail-row"><span>Student Name</span><span>${escapeHtml(data.student_name || '—')}</span></div>
+        <div class="verify-detail-row"><span>Course</span><span>${escapeHtml(data.course_name || '—')}</span></div>
+        <div class="verify-detail-row"><span>Institution</span><span>${escapeHtml(data.institution || '—')}</span></div>
+        <div class="verify-detail-row"><span>Certificate Number</span><span>${escapeHtml(data.cert_number || '—')}</span></div>
+        <div class="verify-detail-row"><span>Completion Date</span><span>${formatDate(data.completion_date)}</span></div>
+        <div class="verify-detail-row"><span>Director</span><span>${escapeHtml(data.director || '—')}</span></div>
+      </div>
+    `;
+  } catch (err) {
+    console.error('Verification error:', err);
+    resultEl.innerHTML = `
+      <div class="verify-card invalid">
+        <div class="verify-status invalid-text">Something Went Wrong</div>
+        <p style="color:var(--gray); font-size:13.5px;">Please try again in a moment.</p>
+      </div>
+    `;
+  }
+});
+/* ============ EMPTY / ERROR STATE HELPERS ============ */
+function emptyStateHtml(title, desc, btnLabel, btnHref){
+  return `
+    <div class="state-block">
+      <div class="state-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+      </div>
+      <h3>${escapeHtml(title)}</h3>
+      <p>${escapeHtml(desc)}</p>
+      ${btnLabel ? `<button class="state-btn" onclick="window.location.href='${btnHref}'">${escapeHtml(btnLabel)}</button>` : ''}
+    </div>
+  `;
+}
+function errorStateHtml(message, retryFn){
+  return `
+    <div class="state-block error">
+      <div class="state-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      </div>
+      <h3>Unable to load</h3>
+      <p>${escapeHtml(message)}</p>
+      <button class="state-btn outline" onclick="${retryFn}">Try Again</button>
+    </div>
+  `;
+}
+/* ============ UTILITIES ============ */
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+function escapeAttr(str){ return escapeHtml(str).replace(/"/g, '&quot;'); }
+function formatDate(dateStr){
+  if (!dateStr) return '—';
+  const d = new Date(dateStr + 'T00:00:00');
+  if (isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+}
+
+/* ============ INIT ============ */
+async function init(){
+  const user = await requireAuth();
+  if (!user) return;
+
+  try {
+    allCertificates = await loadCertificates();
+    renderStats(allCertificates);
+    renderRecent(allCertificates);
+    renderCertList();
+  } catch (err) {
+    console.error('Failed to load certificates:', err);
+    renderStatsError();
+    document.getElementById('recentCertWrap').innerHTML =
+      errorStateHtml("We couldn't load your certificates.", 'window.location.reload()');
+    document.getElementById('certListWrap').innerHTML =
+      errorStateHtml("We couldn't load your certificates.", 'window.location.reload()');
+  }
+  }
