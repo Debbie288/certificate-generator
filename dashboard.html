@@ -1,0 +1,399 @@
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+<meta charset="UTF-8" />  
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+<title>Admin Portal — CertificateHub</title>  
+<link rel="preconnect" href="https://fonts.googleapis.com">  
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">  
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>  
+<style>  
+  :root{  
+    --navy:#0A1220;  
+    --navy-2:#0F1B2E;  
+    --card:#121F35;  
+    --card-elevated:#17274240;  
+    --card-elevated-solid:#172742;  
+    --border:rgba(245,241,232,0.09);  
+    --gold:#C9A24E;  
+    --gold-soft:#DFC17E;  
+    --cream:#F5F1E8;  
+    --gray:#8A93A6;  
+    --gray-soft:#5E6779;  
+    --success:#6FA787;  
+    --error:#D98B8B;  
+    --radius:14px;  
+  }  
+  *{box-sizing:border-box; margin:0; padding:0;}  
+  html{scroll-behavior:smooth;}  
+  body{  
+    background:radial-gradient(ellipse 800px 500px at 50% -10%, rgba(201,162,78,0.07), transparent), var(--navy);  
+    color:var(--cream);  
+    font-family:'Inter', sans-serif;  
+    -webkit-font-smoothing:antialiased;  
+    min-height:100vh;  
+    padding-bottom:76px; /* space for mobile bottom nav */  
+  }  
+  @media (min-width:900px){ body{ padding-bottom:0; } }  
+  @media (prefers-reduced-motion: reduce){  
+    *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }  
+  }  
+  a{ color:inherit; text-decoration:none; }  
+  button{ font-family:inherit; cursor:pointer; }  
+  ul,ol{ list-style:none; }  
+  :focus-visible{ outline:2px solid var(--gold-soft); outline-offset:2px; border-radius:4px; }  
+  ::selection{ background:rgba(201,162,78,.3); }  
+  /* ============ HEADER ============ */  
+  .app-header{  
+    position:sticky; top:0; z-index:50;  
+    background:rgba(10,18,32,0.92);  
+    backdrop-filter:blur(14px);  
+    border-bottom:1px solid var(--border);  
+  }  
+  .header-top{  
+    max-width:1200px; margin:0 auto; padding:18px 20px 14px;  
+    display:flex; align-items:center; justify-content:space-between; gap:16px;  
+  }  
+  @media (min-width:640px){ .header-top{ padding:22px 32px 16px; } }  
+  .brand-block{ display:flex; flex-direction:column; }  
+  .brand-title{  
+    font-family:'Cormorant Garamond', serif; font-weight:700; font-size:20px;  
+    color:var(--cream); letter-spacing:.01em; display:flex; align-items:center; gap:8px;  
+  }  
+  .brand-title .gold-dot{ width:6px; height:6px; border-radius:50%; background:var(--gold); }  
+  .brand-sub{ font-size:10.5px; letter-spacing:.16em; color:var(--gold-soft); text-transform:uppercase; margin-top:2px; }  
+  .header-right{ display:flex; align-items:center; gap:12px; }  
+  .admin-email{  
+    font-size:12.5px; color:var(--gray); display:none; max-width:200px;  
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;  
+  }  
+  @media (min-width:640px){ .admin-email{ display:block; } }  
+  .logout-btn{  
+    background:transparent; border:1px solid var(--border); color:var(--cream);  
+    font-size:13px; font-weight:500; padding:9px 16px; border-radius:9px;  
+    transition:border-color .15s ease, color .15s ease; min-height:40px;  
+  }  
+  .logout-btn:hover{ border-color:var(--error); color:var(--error); }  
+  /* Desktop horizontal nav — one straight line */  
+  .desktop-nav{  
+    display:none; max-width:1200px; margin:0 auto; padding:0 32px 16px;  
+    gap:6px;  
+  }  
+  @media (min-width:900px){ .desktop-nav{ display:flex; } }  
+  .nav-tab{  
+    display:flex; align-items:center; gap:8px;  
+    padding:10px 18px; border-radius:9px; font-size:14px; font-weight:600;  
+    color:var(--gray); transition:background .15s ease, color .15s ease;  
+  }  
+  .nav-tab svg{ width:16px; height:16px; }  
+  .nav-tab:hover{ color:var(--cream); background:rgba(245,241,232,.04); }  
+  .nav-tab.active{ color:var(--gold-soft); background:rgba(201,162,78,.1); }  
+  /* Mobile bottom nav — app-like */  
+  .bottom-nav{  
+    display:flex; position:fixed; bottom:0; left:0; right:0; z-index:50;  
+    background:rgba(10,18,32,0.97); backdrop-filter:blur(14px);  
+    border-top:1px solid var(--border);  
+    padding:8px 8px calc(8px + env(safe-area-inset-bottom, 0px));  
+  }  
+  @media (min-width:900px){ .bottom-nav{ display:none; } }  
+  .bottom-nav-item{  
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;  
+    padding:8px 4px; border-radius:10px; color:var(--gray); font-size:10.5px; font-weight:600;  
+    min-height:52px; justify-content:center;  
+  }  
+  .bottom-nav-item svg{ width:20px; height:20px; }  
+  .bottom-nav-item.active{ color:var(--gold-soft); }  
+  /* ============ CONTENT ============ */  
+  .content{ max-width:1200px; margin:0 auto; padding:28px 20px 48px; }  
+  @media (min-width:640px){ .content{ padding:32px 32px 56px; } }  
+  .page-section{ display:none; animation:fadeIn .4s ease both; }  
+  .page-section.active{ display:block; }  
+  @keyframes fadeIn{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }  
+  /* ============ GREETING ============ */  
+  .greeting h1{  
+    font-family:'Cormorant Garamond', serif; font-weight:700;  
+    font-size:clamp(30px, 6vw, 40px); margin-bottom:6px; color:var(--cream);  
+  }  
+  .greeting p{ color:var(--gray); font-size:15px; margin-bottom:32px; }  
+  /* ============ STATS ============ */  
+  .stats-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:36px; }  
+  @media (min-width:640px){ .stats-grid{ grid-template-columns:repeat(4, 1fr); } }  
+  .stat-card{  
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);  
+    padding:22px 20px; position:relative; overflow:hidden;  
+  }  
+  .stat-card::after{  
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;  
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);  
+    opacity:.5;  
+  }  
+  .stat-label{  
+    font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--gray);  
+    font-weight:600; margin-bottom:12px; display:block;  
+  }  
+  .stat-num{  
+    font-family:'Cormorant Garamond', serif; font-weight:700; color:var(--gold-soft);  
+    font-size:clamp(30px, 8vw, 38px); line-height:1; margin-bottom:6px;  
+  }  
+  .stat-hint{ font-size:11px; color:var(--gray-soft); }  
+  .skeleton{  
+    background:linear-gradient(90deg, rgba(245,241,232,.04) 25%, rgba(245,241,232,.09) 37%, rgba(245,241,232,.04) 63%);  
+    background-size:400% 100%; animation:shimmer 1.6s ease infinite; border-radius:6px;  
+  }  
+  @keyframes shimmer{ 0%{ background-position:100% 0;} 100%{ background-position:0 0;} }  
+  /* ============ PANELS ============ */  
+  .panel{  
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);  
+    padding:24px; margin-bottom:24px;  
+  }  
+  .panel-head{  
+    display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:20px;  
+  }  
+  .panel-head h2{ font-family:'Cormorant Garamond', serif; font-weight:700; font-size:21px; margin-bottom:4px; }  
+  .panel-head p{ color:var(--gray); font-size:13px; }  
+  .panel-link{  
+    font-size:13px; color:var(--gold-soft); font-weight:600; white-space:nowrap; flex-shrink:0;  
+    padding:6px 4px;  
+  }  /* Recent / certificate list — cards (mobile) /
+.cert-list{ display:flex; flex-direction:column; gap:10px; }
+.cert-row{
+background:var(--navy-2); border:1px solid var(--border); border-radius:11px;
+padding:16px; display:flex; flex-direction:column; gap:10px;
+transition:border-color .15s ease;
+}
+.cert-row:hover{ border-color:rgba(201,162,78,.3); }
+.cert-row-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+.cert-row-name{ font-family:'Cormorant Garamond', serif; font-weight:600; font-size:17px; }
+.cert-row-num{ font-size:11px; color:var(--gold-soft); font-weight:600; white-space:nowrap; }
+.cert-row-meta{ display:flex; flex-wrap:wrap; gap:4px 14px; font-size:12.5px; color:var(--gray); }
+.cert-row-meta span strong{ color:var(--cream); font-weight:500; }
+.cert-row-view{
+align-self:flex-start; background:rgba(201,162,78,.1); border:1px solid rgba(201,162,78,.3);
+color:var(--gold-soft); font-size:12.5px; font-weight:600; padding:8px 16px; border-radius:8px;
+min-height:38px;
+}
+/ Desktop table look for certificate list /
+@media (min-width:760px){
+.cert-list.as-table{ display:block; }
+.cert-list.as-table .cert-row{
+display:grid; grid-template-columns:1.6fr 1.4fr 1.2fr 1fr .9fr auto;
+align-items:center; gap:14px; padding:14px 16px;
+}
+.cert-list.as-table .cert-row-top{ display:contents; }
+.cert-list.as-table .cert-row-meta{ display:contents; }
+.cert-list.as-table .cert-row-name{ font-size:15px; }
+.table-head-row{
+display:none;
+}
+.cert-list.as-table .table-head-row{
+display:grid; grid-template-columns:1.6fr 1.4fr 1.2fr 1fr .9fr auto;
+gap:14px; padding:0 16px 10px; font-size:10.5px; letter-spacing:.06em;
+text-transform:uppercase; color:var(--gray-soft); font-weight:700;
+}
+}
+/ ============ EMPTY / ERROR STATES ============ /
+.state-block{
+display:flex; flex-direction:column; align-items:center; text-align:center;
+gap:14px; padding:40px 20px;
+}
+.state-icon{
+width:52px; height:52px; border-radius:14px; background:rgba(201,162,78,.1);
+color:var(--gold); display:flex; align-items:center; justify-content:center;
+}
+.state-icon svg{ width:24px; height:24px; }
+.state-block h3{ font-family:'Cormorant Garamond', serif; font-weight:700; font-size:19px; }
+.state-block p{ color:var(--gray); font-size:13.5px; max-width:320px; line-height:1.5; }
+.state-block.error .state-icon{ background:rgba(217,139,139,.12); color:var(--error); }
+.state-btn{
+background:var(--gold); color:var(--navy); border:none; font-weight:700; font-size:13.5px;
+padding:12px 22px; border-radius:9px; min-height:46px; margin-top:2px;
+}
+.state-btn.outline{ background:transparent; border:1px solid var(--border); color:var(--cream); }
+/ ============ CERTIFICATES PAGE — filters ============ /
+.filter-bar{ display:flex; flex-direction:column; gap:10px; margin-bottom:18px; }
+@media (min-width:640px){ .filter-bar{ flex-direction:row; align-items:center; } }
+.search-input{
+flex:1; background:var(--navy-2); border:1px solid var(--border); color:var(--cream);
+padding:12px 16px; border-radius:10px; font-size:14px; min-height:46px;
+}
+.search-input::placeholder{ color:var(--gray-soft); }
+.sort-select{
+background:var(--navy-2); border:1px solid var(--border); color:var(--cream);
+padding:12px 14px; border-radius:10px; font-size:14px; min-height:46px;
+}
+.result-count{ font-size:12.5px; color:var(--gray); margin-bottom:14px; }
+/ ============ VERIFICATION PAGE ============ /
+.verify-form{
+display:flex; flex-direction:column; gap:12px; max-width:460px; margin-bottom:8px;
+}
+@media (min-width:560px){ .verify-form{ flex-direction:row; } }
+.verify-input{
+flex:1; background:var(--navy-2); border:1px solid var(--border); color:var(--cream);
+padding:14px 16px; border-radius:10px; font-size:15px; min-height:50px;
+}
+.verify-btn{
+background:var(--gold); color:var(--navy); border:none; font-weight:700; font-size:14.5px;
+padding:14px 24px; border-radius:10px; min-height:50px; white-space:nowrap;
+}
+.verify-result{ margin-top:24px; max-width:520px; }
+.verify-card{
+border-radius:var(--radius); padding:26px; border:1px solid var(--border);
+}
+.verify-card.valid{ background:rgba(111,167,135,.08); border-color:rgba(111,167,135,.35); }
+.verify-card.invalid{ background:rgba(217,139,139,.08); border-color:rgba(217,139,139,.35); }
+.verify-status{
+display:flex; align-items:center; gap:10px; margin-bottom:18px;
+font-family:'Cormorant Garamond', serif; font-weight:700; font-size:20px;
+}
+.verify-status.valid-text{ color:var(--success); }
+.verify-status.invalid-text{ color:var(--error); }
+.verify-detail-row{
+display:flex; justify-content:space-between; gap:12px; padding:10px 0;
+border-bottom:1px solid var(--border); font-size:13.5px;
+}
+.verify-detail-row:last-child{ border-bottom:none; }
+.verify-detail-row span:first-child{ color:var(--gray); }
+.verify-detail-row span:last-child{ color:var(--cream); font-weight:500; text-align:right; }
+/ ============ MODAL ============ */
+.modal-overlay{
+position:fixed; inset:0; background:rgba(5,9,16,.7);
+display:none; align-items:center; justify-content:center; z-index:100; padding:20px;
+}
+.modal-overlay.open{ display:flex; }
+.modal{
+background:var(--card-elevated-solid); border:1px solid var(--border); border-radius:16px;
+max-width:440px; width:100%; max-height:82vh; overflow-y:auto; padding:28px 24px;
+position:relative;
+}
+.modal-close{
+position:absolute; top:16px; right:16px; background:none; border:none; color:var(--gray);
+font-size:22px; line-height:1; width:32px; height:32px;
+}
+.modal h3{ font-family:'Cormorant Garamond', serif; font-weight:700; font-size:22px; margin-bottom:20px; }
+.modal-row{ display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); font-size:14px; }
+.modal-row:last-child{ border-bottom:none; }
+.modal-row span:first-child{ color:var(--gray); }
+.modal-row span:last-child{ color:var(--cream); font-weight:500; text-align:right; }
+</style>
+
+</head>  
+<body>  
+<!-- ============ HEADER ============ -->  
+<header class="app-header">  
+  <div class="header-top">  
+    <div class="brand-block">  
+      <span class="brand-title"><span class="gold-dot"></span>CertificateHub</span>  
+      <span class="brand-sub">Admin Portal</span>  
+    </div>  
+    <div class="header-right">  
+      <span class="admin-email" id="adminEmail">Loading…</span>  
+      <button class="logout-btn" id="logoutBtn">Logout</button>  
+    </div>  
+  </div>  
+  <nav class="desktop-nav" aria-label="Primary navigation">  
+    <button class="nav-tab active" data-target="dashboard" type="button">  
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>  
+      Dashboard  
+    </button>  
+    <button class="nav-tab" data-target="certificates" type="button">  
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>  
+      Certificates  
+    </button>  
+    <button class="nav-tab" data-target="verification" type="button">  
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="m9.5 12 1.8 1.8L14.5 10"/></svg>  
+      Verification  
+    </button>  
+  </nav>  
+</header>  
+<main class="content">  
+  <!-- ============ DASHBOARD ============ -->  
+  <section class="page-section active" id="dashboard">  
+    <div class="greeting">  
+      <h1 id="greetingHeading">Good morning, Admin</h1>  
+      <p>Here's what's happening with CertificateHub.</p>  
+    </div>  
+    <div class="stats-grid" id="statsGrid">  
+      <div class="stat-card"><span class="stat-label">Total Certificates</span><div class="skeleton" style="width:56px; height:34px;"></div></div>  
+      <div class="stat-card"><span class="stat-label">This Month</span><div class="skeleton" style="width:56px; height:34px;"></div></div>  
+      <div class="stat-card"><span class="stat-label">Total Courses</span><div class="skeleton" style="width:56px; height:34px;"></div></div>  
+      <div class="stat-card"><span class="stat-label">Institutions</span><div class="skeleton" style="width:56px; height:34px;"></div></div>  
+    </div>  
+    <div class="panel">  
+      <div class="panel-head">  
+        <div>  
+          <h2>Recent Certificates</h2>  
+          <p>Your latest issued certificates</p>  
+        </div>  
+        <button class="panel-link" data-target="certificates" type="button">View All →</button>  
+      </div>  
+      <div id="recentCertWrap"></div>  
+    </div>  
+  </section>  
+  <!-- ============ CERTIFICATES ============ -->  
+  <section class="page-section" id="certificates">  
+    <div class="greeting">  
+      <h1 style="font-size:clamp(24px,5vw,30px);">Certificates</h1>  
+      <p>Search and manage every certificate on record.</p>  
+    </div>  
+    <div class="filter-bar">  
+      <input type="text" class="search-input" id="certSearch" placeholder="Search student, certificate number, or institution…">  
+      <select class="sort-select" id="certSort">  
+        <option value="newest">Newest first</option>  
+        <option value="oldest">Oldest first</option>  
+      </select>  
+    </div>  
+    <p class="result-count" id="resultCount"></p>  
+    <div id="certListWrap"></div>  
+  </section>  
+  <!-- ============ VERIFICATION ============ -->  
+  <section class="page-section" id="verification">  
+    <div class="greeting">  
+      <h1 style="font-size:clamp(24px,5vw,30px);">Verify Certificate</h1>  
+      <p>Enter a certificate number to confirm its authenticity.</p>  
+    </div>  
+    <form class="verify-form" id="verifyForm">  
+      <input type="text" class="verify-input" id="verifyInput" placeholder="e.g. 2026-001" required>  
+      <button type="submit" class="verify-btn">Verify Certificate</button>  
+    </form>  
+    <div class="verify-result" id="verifyResult"></div>  
+  </section>  
+</main>  
+<!-- ============ MOBILE BOTTOM NAV ============ -->  
+<nav class="bottom-nav" aria-label="Mobile navigation">  
+  <button class="bottom-nav-item active" data-target="dashboard" type="button">  
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>  
+    Dashboard  
+  </button>  
+  <button class="bottom-nav-item" data-target="certificates" type="button">  
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>  
+    Certificates  
+  </button>  
+  <button class="bottom-nav-item" data-target="verification" type="button">  
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="m9.5 12 1.8 1.8L14.5 10"/></svg>  
+    Verify  
+  </button>  
+</nav>  
+<!-- ============ CERTIFICATE DETAIL MODAL ============ -->  
+<div class="modal-overlay" id="detailModal">  
+  <div class="modal">  
+    <button class="modal-close" id="detailModalClose" aria-label="Close">×</button>  
+    <h3>Certificate Details</h3>  
+    <div id="detailModalBody"></div>  
+  </div>  
+</div>  
+<script>  
+/* =====================================================================  
+   SUPABASE — reusing the exact project already used by admin-login.html  
+   and verify.html. Do not swap this for a different project.  
+===================================================================== */  
+const supabaseUrl = 'https://gdophhworvapqctpmyia.supabase.co';  
+const supabaseKey = 'sb_publishable_PUMkwRHzr6lwQQzTQyO1bQ_DCmmQ9ww';  
+let supabaseClient = null;  
+let allCertificates = []; // cached after first load, reused across Dashboard/Certificates/detail modal  
+/* ============ NAVIGATION (single-page section toggle) ============ */  
+function showSection(target){  
+  document.querySelectorAll('.page-section').forEach(s => s.classList.toggle('active', s.id === target));  
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.toggle('active', b.dataset.target === target));  
+  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.toggle('active', b.dataset.target === target));  
+  window.scrollTo({ top: 0, behavior: 'smooth' });  
+}  
+document.querySelectorAll('[data-
