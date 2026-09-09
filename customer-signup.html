@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | CertificateHub</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --navy: #0A1220;
+            --navy-2: #0F1B2E;
+            --card: #121F35;
+            --gold: #C9A24E;
+            --gold-soft: #DFC17E;
+            --cream: #F5F1E8;
+            --gray: #8A93A6;
+            --border: rgba(245, 241, 232, 0.10);
+            --error: #D98B8B;
+            --success: #6FA787;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at top,
+                    #162640 0%,
+                    var(--navy) 48%,
+                    #060B13 100%
+                );
+            color: var(--cream);
+            font-family: "Inter", sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 470px;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .brand-mark {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 14px;
+            border: 1px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold-soft);
+            font-family: "Cormorant Garamond", serif;
+            font-size: 27px;
+            font-weight: 700;
+        }
+
+        .brand h1 {
+            font-family: "Cormorant Garamond", serif;
+            font-size: 42px;
+            line-height: 1;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .brand p {
+            margin-top: 8px;
+            color: var(--gray);
+            font-size: 13px;
+            letter-spacing: 0.4px;
+        }
+
+        .card {
+            background: rgba(18, 31, 53, 0.96);
+            border: 1px solid var(--border);
+            padding: 34px 28px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+        }
+
+        .card-header {
+            margin-bottom: 26px;
+        }
+
+        .card-header h2 {
+            font-family: "Cormorant Garamond", serif;
+            font-size: 31px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .card-header p {
+            color: var(--gray);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            color: var(--cream);
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.2px;
+        }
+
+        input {
+            width: 100%;
+            height: 50px;
+            background: #0D182A;
+            color: var(--cream);
+            border: 1px solid var(--border);
+            outline: none;
+            padding: 0 14px;
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        input::placeholder {
+            color: #596477;
+        }
+
+        input:focus {
+            border-color: var(--gold);
+        }
+
+        .password-note {
+            color: var(--gray);
+            font-size: 11px;
+            margin-top: 7px;
+        }
+
+        button {
+            width: 100%;
+            height: 52px;
+            border: none;
+            background: var(--gold);
+            color: #101722;
+            font-family: "Inter", sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 5px;
+        }
+
+        button:hover {
+            background: var(--gold-soft);
+        }
+
+        button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .message {
+            display: none;
+            margin-top: 18px;
+            padding: 13px 14px;
+            font-size: 12px;
+            line-height: 1.5;
+            border: 1px solid transparent;
+        }
+
+        .message.error {
+            display: block;
+            color: var(--error);
+            background: rgba(217, 139, 139, 0.08);
+            border-color: rgba(217, 139, 139, 0.18);
+        }
+
+        .message.success {
+            display: block;
+            color: var(--success);
+            background: rgba(111, 167, 135, 0.08);
+            border-color: rgba(111, 167, 135, 0.18);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 22px;
+            color: var(--gray);
+            font-size: 13px;
+        }
+
+        .login-link a {
+            color: var(--gold-soft);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 22px;
+            color: #596477;
+            font-size: 11px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 18px;
+            }
+
+            .card {
+                padding: 28px 21px;
+            }
+
+            .brand h1 {
+                font-size: 38px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="brand">
+        <div class="brand-mark">CH</div>
+
+        <h1>CertificateHub</h1>
+
+        <p>Create. Verify. Protect.</p>
+    </div>
+
+    <div class="card">
+
+        <div class="card-header">
+            <h2>Create your account</h2>
+
+            <p>
+                Create an account to manage your certificates
+                securely from any device.
+            </p>
+        </div>
+
+        <form id="signupForm">
+
+            <div class="field">
+                <label for="organization">
+                    ORGANIZATION NAME
+                </label>
+
+                <input
+                    type="text"
+                    id="organization"
+                    placeholder="e.g. Bright Future Academy"
+                    autocomplete="organization"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label for="email">
+                    EMAIL ADDRESS
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label for="password">
+                    PASSWORD
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Create a password"
+                    autocomplete="new-password"
+                    minlength="6"
+                    required
+                >
+
+                <div class="password-note">
+                    Password must contain at least 6 characters.
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="confirmPassword">
+                    CONFIRM PASSWORD
+                </label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Enter your password again"
+                    autocomplete="new-password"
+                    minlength="6"
+                    required
+                >
+            </div>
+
+            <button type="submit" id="signupButton">
+                CREATE ACCOUNT
+            </button>
+
+        </form>
+
+        <div id="message" class="message"></div>
+
+        <div class="login-link">
+            Already have an account?
+            <a href="customer-login.html">Log in</a>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        © 2026 CertificateHub
+    </div>
+
+</div>
+
+<script>
+
+    /* ==========================================
+       SUPABASE CONFIGURATION
+       ========================================== */
+
+    const SUPABASE_URL =
+        "https://gdophhworvapqctpmyia.supabase.co";
+
+    const SUPABASE_KEY =
+        "sb_publishable_PUMkwRHzr6lwQQzTQyO1bQ_DCmmQ9ww";
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+
+    /* ==========================================
+       ELEMENTS
+       ========================================== */
+
+    const signupForm =
+        document.getElementById("signupForm");
+
+    const signupButton =
+        document.getElementById("signupButton");
+
+    const message =
+        document.getElementById("message");
+
+
+    /* ==========================================
+       MESSAGE FUNCTION
+       ========================================== */
+
+    function showMessage(text, type) {
+
+        message.textContent = text;
+
+        message.className =
+            "message " + type;
+
+    }
+
+
+    /* ==========================================
+       SIGNUP
+       ========================================== */
+
+    signupForm.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const organization =
+            document.getElementById("organization")
+                .value.trim();
+
+        const email =
+            document.getElementById("email")
+                .value.trim();
+
+        const password =
+            document.getElementById("password")
+                .value;
+
+        const confirmPassword =
+            document.getElementById("confirmPassword")
+                .value;
+
+
+        /* Validate organization */
+
+        if (!organization) {
+
+            showMessage(
+                "Please enter your organization name.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        /* Validate email */
+
+        if (!email) {
+
+            showMessage(
+                "Please enter your email address.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        /* Validate password */
+
+        if (password.length < 6) {
+
+            showMessage(
+                "Your password must contain at least 6 characters.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        /* Confirm password */
+
+        if (password !== confirmPassword) {
+
+            showMessage(
+                "The passwords do not match.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        /* Loading state */
+
+        signupButton.disabled = true;
+
+        signupButton.textContent =
+            "CREATING ACCOUNT...";
+
+        message.className = "message";
+
+        try {
+
+            /* ==========================================
+               CREATE SUPABASE AUTH ACCOUNT
+               ========================================== */
+
+            const {
+                data,
+                error
+            } = await supabaseClient.auth.signUp({
+
+                email: email,
+
+                password: password,
+
+                options: {
+
+                    data: {
+
+                        organization_name:
+                            organization
+
+                    }
+
+                }
+
+            });
+
+
+            if (error) {
+
+                console.error(
+                    "Signup error:",
+                    error
+                );
+
+                throw error;
+            }
+
+
+            /* ==========================================
+               SUCCESS
+               ========================================== */
+
+            /*
+             Supabase may require email confirmation.
+             If confirmation is enabled, there may be
+             no active session immediately after signup.
+            */
+
+            if (data.session) {
+
+                showMessage(
+                    "Account created successfully. Opening your dashboard...",
+                    "success"
+                );
+
+                setTimeout(function() {
+
+                    window.location.href =
+                        "customer-dashboard.html";
+
+                }, 1200);
+
+            } else {
+
+                showMessage(
+                    "Account created successfully. Please check your email and confirm your account, then log in.",
+                    "success"
+                );
+
+                signupButton.disabled = false;
+
+                signupButton.textContent =
+                    "CREATE ACCOUNT";
+            }
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            let errorMessage =
+                error.message ||
+                "Unable to create your account.";
+
+            /*
+             Make common Supabase messages
+             easier to understand.
+            */
+
+            if (
+                errorMessage
+                    .toLowerCase()
+                    .includes("already registered")
+            ) {
+
+                errorMessage =
+                    "An account with this email already exists. Please log in instead.";
+            }
+
+            else if (
+                errorMessage
+                    .toLowerCase()
+                    .includes("password")
+            ) {
+
+                errorMessage =
+                    "Please choose a password with at least 6 characters.";
+            }
+
+            showMessage(
+                errorMessage,
+                "error"
+            );
+
+            signupButton.disabled = false;
+
+            signupButton.textContent =
+                "CREATE ACCOUNT";
+        }
+
+    });
+
+</script>
+
+</body>
+  </html>
