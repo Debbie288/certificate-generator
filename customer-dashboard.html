@@ -1,0 +1,432 @@
+<script>
+
+const SUPABASE_URL =
+  "https://gdophhworvapqctpmyia.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_PUMkwRHzr6lwQQzTQyO1bQ_DCmmQ9ww";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+const organizationName =
+  document.getElementById("organizationName");
+
+const customerEmail =
+  document.getElementById("customerEmail");
+
+const totalCertificates =
+  document.getElementById("totalCertificates");
+
+const latestDate =
+  document.getElementById("latestDate");
+
+const certificateCountLabel =
+  document.getElementById("certificateCountLabel");
+
+const certificatesList =
+  document.getElementById("certificatesList");
+
+const loadingState =
+  document.getElementById("loadingState");
+
+const emptyState =
+  document.getElementById("emptyState");
+
+const errorBox =
+  document.getElementById("errorBox");
+
+const logoutBtn =
+  document.getElementById("logoutBtn");
+
+
+function showError(message){
+
+  errorBox.textContent = message;
+  errorBox.style.display = "block";
+
+}
+
+
+function formatDate(value){
+
+  if(!value) return "—";
+
+  const date = new Date(value);
+
+  if(Number.isNaN(date.getTime())){
+    return value;
+  }
+
+  return date.toLocaleDateString(
+    "en-US",
+    {
+      year:"numeric",
+      month:"short",
+      day:"numeric"
+    }
+  );
+}
+
+
+function escapeHTML(value){
+
+  if(value === null || value === undefined){
+    return "";
+  }
+
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+async function loadCustomerDashboard(){
+
+  try{
+
+    /*
+      1. Confirm the customer has
+         an active Supabase session.
+    */
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.getUser();
+
+
+    if(error){
+      throw error;
+    }
+
+
+    const user = data.user;
+
+
+    if(!user){
+
+      window.location.href =
+        "customer-login.html";
+
+      return;
+
+    }
+
+
+    /*
+      2. Display the customer's email.
+    */
+
+    customerEmail.textContent =
+      user.email || "";
+
+
+    /*
+      3. Load the customer's profile.
+    */
+
+    const {
+      data: profile,
+      error: profileError
+    } =
+      await supabaseClient
+        .from("profiles")
+        .select("organization_name,email")
+        .eq("id",user.id)
+        .maybeSingle();
+
+
+    if(profileError){
+      console.warn(
+        "Profile could not be loaded:",
+        profileError
+      );
+    }
+
+
+    if(profile && profile.organization_name){
+
+      organizationName.textContent =
+        profile.organization_name;
+
+    }
+    else if(
+      user.user_metadata &&
+      user.user_metadata.organization_name
+    ){
+
+      organizationName.textContent =
+        user.user_metadata.organization_name;
+
+    }
+    else{
+
+      organizationName.textContent =
+        "there";
+
+    }
+
+
+    /*
+      4. Load ONLY certificates
+         belonging to this customer.
+    */
+
+    const {
+      data: certificates,
+      error: certificatesError
+    } =
+      await supabaseClient
+        .from("certificates")
+        .select(
+          "id,student_name,course_name,completion_date,cert_number,institution,director"
+        )
+        .eq("user_id",user.id)
+        .order("completion_date",{
+          ascending:false
+        });
+
+
+    if(certificatesError){
+
+      throw certificatesError;
+
+    }
+
+
+    const records =
+      certificates || [];
+
+
+    /*
+      5. Update statistics.
+    */
+
+    totalCertificates.textContent =
+      records.length;
+
+
+    certificateCountLabel.textContent =
+      records.length === 1
+        ? "1 certificate"
+        : `${records.length} certificates`;
+
+
+    if(records.length > 0){
+
+      latestDate.textContent =
+        formatDate(
+          records[0].completion_date
+        );
+
+    }
+    else{
+
+      latestDate.textContent =
+        "—";
+
+    }
+
+
+    /*
+      6. Display empty state
+       when there are no certificates.
+    */
+
+    if(records.length === 0){
+
+      loadingState.style.display =
+        "none";
+
+      certificatesList.style.display =
+        "none";
+
+      emptyState.style.display =
+        "block";
+
+      return;
+
+    }
+
+
+    /*
+      7. Build the customer's
+         certificate list.
+    */
+
+    certificatesList.innerHTML =
+      records.map(cert => {
+
+        const certNumber =
+          escapeHTML(cert.cert_number);
+
+        const student =
+          escapeHTML(cert.student_name);
+
+        const course =
+          escapeHTML(cert.course_name);
+
+        const institution =
+          escapeHTML(cert.institution);
+
+        const director =
+          escapeHTML(cert.director);
+
+        const date =
+          formatDate(cert.completion_date);
+
+
+        return `
+
+          <article class="certificate">
+
+            <div class="cert-top">
+
+              <div class="student">
+                ${student || "Unnamed Student"}
+              </div>
+
+              <div class="cert-number">
+                ${certNumber || "No number"}
+              </div>
+
+            </div>
+
+
+            <div class="course">
+              ${course || "Certificate"}
+            </div>
+
+
+            <div class="cert-meta">
+
+              ${
+                institution
+                  ? `<span>${institution}</span>`
+                  : ""
+              }
+
+              ${
+                director
+                  ? `<span>Director: ${director}</span>`
+                  : ""
+              }
+
+              <span>
+                ${date}
+              </span>
+
+            </div>
+
+
+            <div class="cert-actions">
+
+              <a
+                href="verify.html?cert=${encodeURIComponent(cert.cert_number || "")}"
+                class="action-btn verify"
+              >
+                Verify Certificate
+              </a>
+
+            </div>
+
+          </article>
+
+        `;
+
+      }).join("");
+
+
+    loadingState.style.display =
+      "none";
+
+    emptyState.style.display =
+      "none";
+
+    certificatesList.style.display =
+      "flex";
+
+
+  }
+  catch(error){
+
+    console.error(
+      "Customer dashboard error:",
+      error
+    );
+
+
+    loadingState.style.display =
+      "none";
+
+
+    showError(
+      "We couldn't load your dashboard. Please refresh the page and try again."
+    );
+
+  }
+
+}
+
+
+/*
+  LOGOUT
+*/
+
+logoutBtn.addEventListener(
+  "click",
+  async function(){
+
+    logoutBtn.disabled = true;
+    logoutBtn.textContent = "Logging out...";
+
+
+    const {
+      error
+    } =
+      await supabaseClient.auth.signOut();
+
+
+    if(error){
+
+      console.error(error);
+
+      logoutBtn.disabled = false;
+      logoutBtn.textContent = "Log out";
+
+      showError(
+        "Unable to log out. Please try again."
+      );
+
+      return;
+
+    }
+
+
+    window.location.href =
+      "customer-login.html";
+
+  }
+);
+
+
+/*
+  Start dashboard.
+*/
+
+loadCustomerDashboard();
+
+</script>
+
+</body>
+</html>
