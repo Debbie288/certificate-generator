@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CertificateHub — Welcome</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --navy: #0A1220;
+            --navy-2: #0F1B2E;
+            --card: #121F35;
+            --card-2: #172742;
+            --gold: #C9A24E;
+            --gold-soft: #DFC17E;
+            --cream: #F5F1E8;
+            --gray: #8A93A6;
+            --gray-soft: #5E6779;
+            --border: rgba(245, 241, 232, 0.09);
+            --success: #6FA787;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--navy);
+            color: var(--cream);
+            font-family: Inter, sans-serif;
+            min-height: 100vh;
+            padding-bottom: 90px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: min(1120px, calc(100% - 36px));
+            margin: auto;
+        }
+
+        /* TOP BAR */
+
+        header {
+            border-bottom: 1px solid var(--border);
+            background: rgba(10, 18, 32, 0.96);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(14px);
+        }
+
+        .topbar {
+            min-height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--gold);
+            display: grid;
+            place-items: center;
+            color: var(--gold-soft);
+            font-family: "Cormorant Garamond", serif;
+            font-size: 23px;
+        }
+
+        .brand-name {
+            font-family: "Cormorant Garamond", serif;
+            font-size: 25px;
+            font-weight: 700;
+            letter-spacing: .4px;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--gray);
+            padding: 10px 16px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-family: Inter, sans-serif;
+            font-size: 13px;
+        }
+
+        .logout-btn:hover {
+            color: var(--cream);
+            border-color: var(--gold);
+        }
+
+        /* HERO */
+
+        .hero {
+            padding: 70px 0 50px;
+        }
+
+        .eyebrow {
+            color: var(--gold-soft);
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(42px, 8vw, 70px);
+            line-height: .98;
+            font-weight: 600;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+
+        h1 span {
+            color: var(--gold-soft);
+        }
+
+        .hero-text {
+            color: var(--gray);
+            max-width: 650px;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .primary-btn {
+            background: var(--gold);
+            color: #0A1220;
+            border: none;
+            padding: 14px 21px;
+            border-radius: 7px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .primary-btn:hover {
+            background: var(--gold-soft);
+        }
+
+        .secondary-btn {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold-soft);
+            padding: 13px 21px;
+            border-radius: 7px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* FEATURES */
+
+        section {
+            padding: 55px 0;
+        }
+
+        .section-label {
+            color: var(--gold-soft);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-family: "Cormorant Garamond", serif;
+            font-size: 42px;
+            font-weight: 600;
+            margin-bottom: 32px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .feature {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 25px 21px;
+            min-height: 190px;
+        }
+
+        .feature-number {
+            color: var(--gold);
+            font-family: "Cormorant Garamond", serif;
+            font-size: 25px;
+            margin-bottom: 24px;
+        }
+
+        .feature h3 {
+            font-family: "Cormorant Garamond", serif;
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            color: var(--gray);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        /* CERTIFICATE PREVIEW */
+
+        .certificate-section {
+            border-top: 1px solid var(--border);
+        }
+
+        .certificate-preview {
+            background:
+                radial-gradient(circle at center, #fffdf7 0%, #f4efe2 100%);
+            color: #18243A;
+            border: 5px solid #071A35;
+            outline: 2px solid var(--gold);
+            outline-offset: -11px;
+            min-height: 330px;
+            padding: 45px 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .certificate-preview::before,
+        .certificate-preview::after {
+            content: "✦";
+            position: absolute;
+            color: var(--gold);
+            font-size: 35px;
+        }
+
+        .certificate-preview::before {
+            top: 24px;
+            left: 30px;
+        }
+
+        .certificate-preview::after {
+            bottom: 24px;
+            right: 30px;
+        }
+
+        .preview-small {
+            font-size: 11px;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+        }
+
+        .preview-title {
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(30px, 7vw, 48px);
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+        }
+
+        .preview-name {
+            font-family: "Cormorant Garamond", serif;
+            font-size: 30px;
+            font-weight: 600;
+            margin: 12px 0;
+        }
+
+        .preview-course {
+            font-size: 14px;
+            color: #526078;
+        }
+
+        .preview-line {
+            width: 180px;
+            height: 1px;
+            background: var(--gold);
+            margin: 15px 0;
+        }
+
+        /* POLICY */
+
+        .policies {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .policy {
+            border: 1px solid var(--border);
+            background: var(--card);
+            padding: 25px;
+        }
+
+        .policy h3 {
+            font-family: "Cormorant Garamond", serif;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .policy p {
+            color: var(--gray);
+            font-size: 13px;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .policy-link {
+            color: var(--gold-soft);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* FOOTER */
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 35px 0;
+            color: var(--gray-soft);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* BOTTOM NAV */
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 72px;
+            background: rgba(10, 18, 32, .98);
+            border-top: 1px solid var(--border);
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-inner {
+            width: min(650px, 100%);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            color: var(--gray);
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .nav-icon {
+            font-size: 19px;
+        }
+
+        .nav-item.active,
+        .nav-item:hover {
+            color: var(--gold-soft);
+        }
+
+        /* LOADING */
+
+        #loading {
+            position: fixed;
+            inset: 0;
+            background: var(--navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .loading-text {
+            color: var(--gold-soft);
+            font-family: "Cormorant Garamond", serif;
+            font-size: 28px;
+        }
+
+        /* DESKTOP NAV */
+
+        @media (min-width: 850px) {
+            body {
+                padding-bottom: 0;
+            }
+
+            .bottom-nav {
+                position: static;
+                height: auto;
+                border-top: none;
+                border-bottom: 1px solid var(--border);
+                background: var(--navy-2);
+            }
+
+            .nav-inner {
+                width: min(1120px, calc(100% - 36px));
+                margin: auto;
+                display: flex;
+                justify-content: flex-end;
+                gap: 35px;
+            }
+
+            .nav-item {
+                padding: 17px 0;
+                flex-direction: row;
+                font-size: 12px;
+            }
+
+            .nav-icon {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 90px;
+            }
+        }
+
+        @media (max-width: 850px) {
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .policies {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .container {
+                width: min(100% - 28px, 1120px);
+            }
+
+            .topbar {
+                min-height: 68px;
+            }
+
+            .brand-name {
+                font-size: 22px;
+            }
+
+            .logout-btn {
+                padding: 9px 12px;
+            }
+
+            .hero {
+                padding: 55px 0 35px;
+            }
+
+            h1 {
+                font-size: 46px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .feature {
+                min-height: auto;
+            }
+
+            .section-title {
+                font-size: 36px;
+            }
+
+            .certificate-preview {
+                min-height: 300px;
+                padding: 35px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loading">
+        <div class="loading-text">CertificateHub</div>
+    </div>
+
+    <header>
+        <div class="container topbar">
+
+            <a href="customer-home.html" class="brand">
+                <div class="brand-mark">C</div>
+                <div class="brand-name">CertificateHub</div>
+            </a>
+
+            <button class="logout-btn" id="logoutBtn">
+                Log out
+            </button>
+
+        </div>
+    </header>
+
+    <!-- TOP NAVIGATION -->
+    <nav class="bottom-nav">
+        <div class="nav-inner">
+
+            <a href="customer-home.html" class="nav-item active">
+                <span class="nav-icon">⌂</span>
+                <span>Home</span>
+            </a>
+
+            <a href="customer-dashboard.html" class="nav-item">
+                <span class="nav-icon">▦</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="generator.html" class="nav-item">
+                <span class="nav-icon">＋</span>
+                <span>Create Certificate</span>
+            </a>
+
+            <a href="verify.html" class="nav-item">
+                <span class="nav-icon">✓</span>
+                <span>Verify</span>
+            </a>
+
+        </div>
+    </nav>
+
+    <main>
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="container">
+
+                <div class="eyebrow">
+                    CertificateHub
+                </div>
+
+                <h1>
+                    Welcome back,
+                    <span id="organizationName">there</span>.
+                </h1>
+
+                <p class="hero-text">
+                    Create professional certificates, manage your records,
+                    and give recipients a simple and trusted way to verify
+                    their certificates online.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="generator.html" class="primary-btn">
+                        Create Certificate
+                    </a>
+
+                    <a href="customer-dashboard.html" class="secondary-btn">
+                        Open Dashboard
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- FEATURES -->
+        <section>
+            <div class="container">
+
+                <div class="section-label">
+                    What you can do
+                </div>
+
+                <h2 class="section-title">
+                    Everything you need.
+                </h2>
+
+                <div class="features">
+
+                    <div class="feature">
+                        <div class="feature-number">01</div>
+                        <h3>Create</h3>
+                        <p>
+                            Create elegant professional certificates
+                            using our premium certificate design.
+                        </p>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-number">02</div>
+                        <h3>Manage</h3>
+                        <p>
+                            Keep your certificates organized inside
+                            your secure customer account.
+                        </p>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-number">03</div>
+                        <h3>Verify</h3>
+                        <p>
+                            Allow anyone to verify a certificate using
+                            its unique certificate number.
+                        </p>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-number">04</div>
+                        <h3>Protect</h3>
+                        <p>
+                            Your certificate records are connected to
+                            your account and protected by secure access.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- CERTIFICATE PREVIEW -->
+        <section class="certificate-section">
+
+            <div class="container">
+
+                <div class="section-label">
+                    Your certificates
+                </div>
+
+                <h2 class="section-title">
+                    Designed to be respected.
+                </h2>
+
+                <div class="certificate-preview">
+
+                    <div class="preview-small">
+                        THIS IS TO CERTIFY THAT
+                    </div>
+
+                    <div class="preview-title">
+                        CERTIFICATE
+                    </div>
+
+                    <div class="preview-line"></div>
+
+                    <div class="preview-name">
+                        Your Recipient
+                    </div>
+
+                    <div class="preview-course">
+                        Has successfully completed the stated course
+                    </div>
+
+                    <div class="preview-line"></div>
+
+                    <div class="preview-small">
+                        OFFICIAL CERTIFICATE
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- POLICIES -->
+        <section>
+
+            <div class="container">
+
+                <div class="section-label">
+                    Important information
+                </div>
+
+                <h2 class="section-title">
+                    Our policies.
+                </h2>
+
+                <div class="policies">
+
+                    <div class="policy">
+                        <h3>Terms of Service</h3>
+
+                        <p>
+                            The rules and conditions that apply when
+                            using CertificateHub and its services.
+                        </p>
+
+                        <a href="#" class="policy-link">
+                            Read Terms →
+                        </a>
+                    </div>
+
+
+                    <div class="policy">
+                        <h3>Privacy Policy</h3>
+
+                        <p>
+                            Learn how account information and certificate
+                            records are handled and protected.
+                        </p>
+
+                        <a href="#" class="policy-link">
+                            Read Privacy →
+                        </a>
+                    </div>
+
+
+                    <div class="policy">
+                        <h3>Certificate Policy</h3>
+
+                        <p>
+                            Information about certificate creation,
+                            certificate numbers, and public verification.
+                        </p>
+
+                        <a href="#" class="policy-link">
+                            Read Policy →
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        <div class="container">
+            © 2026 CertificateHub. Create. Verify. Protect.
+        </div>
+    </footer>
+
+
+    <script>
+
+        const SUPABASE_URL =
+            "https://gdophhworvapqctpmyia.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable_PUMkwRHzr6lwQQzTQyO1bQ_DCmmQ9ww";
+
+        const supabaseClient =
+            supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+
+        async function loadCustomer() {
+
+            try {
+
+                const {
+                    data,
+                    error
+                } = await supabaseClient.auth.getUser();
+
+                if (error || !data.user) {
+
+                    window.location.href =
+                        "customer-login.html";
+
+                    return;
+                }
+
+                const user = data.user;
+
+                let organizationName =
+                    user.user_metadata?.organization_name;
+
+                if (!organizationName) {
+
+                    const {
+                        data: profile,
+    
