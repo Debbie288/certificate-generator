@@ -1,1 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101B2D">
 
+<title>Welcome to CertificateHub</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+:root {
+    --navy: #101B2D;
+    --navy-light: #17243A;
+    --gold: #C6A15B;
+    --gold-light: #D9BA7A;
+    --cream: #F6F1E4;
+    --white: #FFFFFF;
+    --muted: rgba(246,241,228,.68);
+    --border: rgba(198,161,91,.22);
+    --maroon: #7A2331;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    background: var(--navy);
+    color: var(--cream);
+    font-family: "Inter", sans-serif;
+    overflow-x: hidden;
+}
+
+button {
+    font-family: inherit;
+}
+
+.page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* =========================================
+   TOP BAR
+========================================= */
+
+.topbar {
+    width: 100%;
+    padding: 24px 22px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+}
+
+.brand {
+    font-family: "Fraunces", serif;
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -.3px;
+}
+
+.brand span {
+    color: var(--gold);
+}
+
+.terms-link {
+    border: 0;
+    background: transparent;
+    color: var(--gold-light);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 4px;
+}
+
+/* =========================================
+   SCREEN AREA
+========================================= */
+
+.screens {
+    flex: 1;
+    position: relative;
+    width: 100%;
+}
+
+.screen {
+    display: none;
+    width: 100%;
+    min-height: calc(100vh - 160px);
+    min-height: calc(100dvh - 160px);
+    padding: 24px 24px 20px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.screen.active {
+    display: flex;
+    animation: fadeIn .35s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.screen-content {
+    width: 100%;
+    max-width: 520px;
+    margin: auto;
+}
+
+.eyebrow {
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-family: "Fraunces", serif;
+    font-size: clamp(36px, 10vw, 54px);
+    line-height: 1.02;
+    font-weight: 600;
+    letter-spacing: -1.5px;
+    margin-bottom: 18px;
+}
+
+h2 {
+    font-family: "Fraunces", serif;
+    font-size: clamp(31px, 8vw, 46px);
+    line-height: 1.08;
+    font-weight: 600;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+}
+
+.description {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.75;
+    max-width: 430px;
+    margin: 0 auto;
+}
+
+/* =========================================
+   CERTIFICATE STACK
+========================================= */
+
+.certificate-stack {
+    height: 255px;
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto 30px;
+    position: relative;
+}
+
+.certificate {
+    position: absolute;
+    width: 250px;
+    height: 172px;
+    left: 50%;
+    top: 50%;
+    border: 2px solid var(--gold);
+    background:
+        radial-gradient(circle at center, #fffdf6 0%, #f6f1e4 72%);
+    color: var(--navy);
+    transform-origin: center;
+    padding: 16px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.28);
+}
+
+.certificate.back {
+    transform: translate(-50%, -50%) rotate(-8deg) translate(-17px, 9px);
+    opacity: .55;
+}
+
+.certificate.middle {
+    transform: translate(-50%, -50%) rotate(5deg) translate(13px, 6px);
+    opacity: .8;
+}
+
+.certificate.front {
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+
+.cert-inner {
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(198,161,91,.7);
+    padding: 11px;
+    text-align: center;
+}
+
+.cert-small {
+    font-size: 6px;
+    letter-spacing: 1.2px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.cert-title {
+    font-family: "Fraunces", serif;
+    font-size: 13px;
+    color: var(--maroon);
+    margin-bottom: 9px;
+}
+
+.cert-name {
+    font-family: "Fraunces", serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.cert-course {
+    font-size: 7px;
+    color: #555;
+}
+
+.cert-line {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 8px auto;
+}
+
+/* =========================================
+   FEATURE GRID
+========================================= */
+
+.feature-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.feature {
+    text-align: left;
+    padding: 18px 15px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.025);
+}
+
+.feature-number {
+    color: var(--gold);
+    font-family: "Fraunces", serif;
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.feature-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.feature-text {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+/* =========================================
+   WHY CERTIFICATEHUB
+========================================= */
+
+.reason-list {
+    margin-top: 30px;
+    display: grid;
+    gap: 12px;
+}
+
+.reason {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.reason-icon {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Fraunces", serif;
+    font-size: 14px;
+}
+
+.reason strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.reason p {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* =========================================
+   FINAL SCREEN
+========================================= */
+
+.ready-mark {
+    width: 74px;
+    height: 74px;
+    border: 1px solid var(--gold);
+    margin: 0 auto 27px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.ready-mark::before {
+    content: "";
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(198,161,91,.55);
+    position: absolute;
+}
+
+.ready-mark span {
+    color: var(--gold);
+    font-size: 26px;
+}
+
+.final-actions {
+    display: grid;
+    gap: 11px;
+    margin-top: 32px;
+}
+
+.primary-btn,
+.secondary-btn {
+    width: 100%;
+    min-height: 54px;
+    border: 0;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .2px;
+}
+
+.primary-btn {
+    background: var(--gold);
+    color: var(--navy);
+}
+
+.secondary-btn {
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid var(--border);
+}
+
+/* =========================================
+   BOTTOM NAVIGATION
+========================================= */
+
+.bottom-area {
+    padding: 12px 22px 24px;
+    position: relative;
+    z-index: 10;
+}
+
+.progress {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin-bottom: 18px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(246,241,228,.22);
+    transition: .25s ease;
+}
+
+.dot.active {
+    width: 22px;
+    border-radius: 10px;
+    background: var(--gold);
+}
+
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-btn {
+    border: 0;
+    background: transparent;
+    color: var(--cream);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 10px 0;
+}
+
+.nav-btn.next {
+    color: var(--gold-light);
+}
+
+.nav-btn:disabled {
+    opacity: .3;
+    cursor: default;
+}
+
+/* =========================================
+   TERMS MODAL
+========================================= */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(4,9,17,.78);
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-card {
+    width: 100%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    padding: 25px 22px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    font-family: "Fraunces", serif;
+    color: var(--cream);
+    font-size: 25px;
+}
+
+.close-modal {
+    border: 0;
+    background: transparent;
+    color: var(--gold);
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.modal-card h4 {
+    color: var(--gold-light);
+    font-size: 13px;
+    margin: 18px 0 7px;
+}
+
+.modal-card p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.modal-footer {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (min-width: 700px) {
+
+    .topbar {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    .screen {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    .bottom-area {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <header class="topbar">
+        <div class="brand">
+            Certificate<span>Hub</span>
+        </div>
+
+        <button
+            class="terms-link"
+            id="termsBtn"
+            type="button">
+            Terms & Policies
+        </button>
+    </header>
+
+    <main class="screens">
+
+        <!-- SCREEN 1 -->
+        <section class="screen active" id="screen1">
+
+            <div class="screen-content">
+
+                <div class="certificate-stack">
+
+                    <div class="certificate back">
+                        <div class="cert-inner">
+                            <div class="cert-small">
+                                CERTIFICATEHUB
+                            </div>
+                            <div class="cert-title">
+                                Certificate of Completion
+                            </div>
+                            <div class="cert-name">
+                                Jane Smith
+                            </div>
+                            <div class="cert-line"></div>
+                            <div class="cert-course">
+                                Professional Development
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="certificate middle">
+                        <div class="cert-inner">
+                            <div class="cert-small">
+                                CERTIFICATEHUB
+                            </div>
+                            <div class="cert-title">
+                                Certificate of Completion
+                            </div>
+                            <div class="cert-name">
+                                John Doe
+                            </div>
+                            <div class="cert-line"></div>
+                            <div class="cert-course">
+                                Web Development
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="certificate front">
+                        <div class="cert-inner">
+                            <div class="cert-small">
+                                CERTIFICATEHUB
+                            </div>
+                            <div class="cert-title">
+                                Certificate of Completion
+                            </div>
+                            <div class="cert-name">
+                                Jane Smith
+                            </div>
+                            <div class="cert-line"></div>
+                            <div class="cert-course">
+                                Professional Development
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="eyebrow">
+                    Create. Verify. Protect.
+                </div>
+
+                <h1>
+                    Professional certificates,
+                    made simple.
+                </h1>
+
+                <p class="description">
+                    Create professional certificates, verify credentials instantly,
+                    and manage them securely in one place.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- SCREEN 2 -->
+        <section class="screen" id="screen2">
+
+            <div class="screen-content">
+
+                <div class="eyebrow">
+                    CertificateHub
+                </div>
+
+                <h2>
+                    What CertificateHub does
+                </h2>
+
+                <p class="description">
+                    Everything you need to create and manage trustworthy
+                    digital certificate records.
+                </p>
+
+                <div class="feature-list">
+
+                    <div class="feature">
+                        <div class="feature-number">01</div>
+                        <div class="feature-title">
+                            Create professional certificates
+                        </div>
+                        <div class="feature-text">
+                            Generate polished certificates for your students,
+                            employees, trainees, or participants.
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-number">02</div>
+                        <div class="feature-title">
+                            Instant verification
+                        </div>
+                        <div class="feature-text">
+                            Anyone can verify a certificate using its unique
+                            certificate number.
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-number">03</div>
+                        <div class="feature-title">
+                            QR verification
+                        </div>
+                        <div class="feature-text">
+                            Certificates can connect recipients directly
+                            to their verification record.
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-number">04</div>
+                        <div class="feature-title">
+                            Secure records
+                        </div>
+                        <div class="feature-text">
+                            Your certificate records stay connected to
+                            your organization account.
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SCREEN 3 -->
+        <section class="screen" id="screen3">
+
+            <div class="screen-content">
+
+                <div class="eyebrow">
+                    Built for organizations
+                </div>
+
+                <h2>
+                    Why CertificateHub
+                </h2>
+
+                <p class="description">
+                    Everything you need to manage certificates
+                    with confidence.
+                </p>
+
+                <div class="reason-list">
+
+                    <div class="reason">
+                        <div class="reason-icon">C</div>
+                        <div>
+                            <strong>Create</strong>
+                            <p>
+                                Produce professional certificates
+                                without complicated tools.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="reason">
+                        <div class="reason-icon">V</div>
+                        <div>
+                            <strong>Verify</strong>
+                            <p>
+                                Make certificate authenticity easier
+                                to check.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="reason">
+                        <div class="reason-icon">M</div>
+                        <div>
+                            <strong>Manage</strong>
+                            <p>
+                                Keep your issued certificates organized
+                                inside your account.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="reason">
+                        <div class="reason-icon">S</div>
+                        <div>
+                            <strong>Share</strong>
+                            <p>
+                                Give recipients a simple way to access
+                                their certificate verification.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SCREEN 4 -->
+        <section class="screen" id="screen4">
+
+            <div class="screen-content">
+
+                <div class="ready-mark">
+                    <span>✓</span>
+                </div>
+
+                <div class="eyebrow">
+                    CertificateHub
+                </div>
+
+                <h2>
+                    You're ready to get started.
+                </h2>
+
+                <p class="description">
+                    Create your first certificate or explore your
+                    CertificateHub dashboard.
+                </p>
+
+                <div class="final-actions">
+
+                    <button
+                        class="primary-btn"
+                        type="button"
+                        onclick="finishIntro('create')">
+                        Create My First Certificate
+                    </button>
+
+                    <button
+                        class="secondary-btn"
+                        type="button"
+                        onclick="finishIntro('dashboard')">
+                        Go to Dashboard
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="bottom-area">
+
+        <div class="progress">
+            <span class="dot active" id="dot1"></span>
+            <span class="dot" id="dot2"></span>
+            <span class="dot" id="dot3"></span>
+            <span class="dot" id="dot4"></span>
+        </div>
+
+        <div class="nav-buttons">
+
+            <button
+                class="nav-btn"
+                id="backBtn"
+                type="button"
+                onclick="prevScreen()">
+                Back
+            </button>
+
+            <button
+                class="nav-btn"
+                id="skipBtn"
+                type="button"
+                onclick="skipIntro()">
+                Skip Introduction
+            </button>
+
+            <button
+                class="nav-btn next"
+                id="nextBtn"
+                type="button"
+                onclick="nextScreen()">
+                Next →
+            </button>
+
+        </div>
+        <script>
+/* =========================================
+   CERTIFICATEHUB CUSTOMER ONBOARDING
+   PART 2 — JAVASCRIPT
+========================================= */
+
+const SUPABASE_URL = "https://gdophhworvapqctpmyia.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_PUMkwRHzr6lwQQzTQyO1bQ_DCmmQ9ww";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =========================================
+   SCREEN NAVIGATION
+========================================= */
+
+let currentScreen = 1;
+const totalScreens = 4;
+
+function showScreen(screenNumber) {
+
+    if (screenNumber < 1) {
+        screenNumber = 1;
+    }
+
+    if (screenNumber > totalScreens) {
+        screenNumber = totalScreens;
+    }
+
+    currentScreen = screenNumber;
+
+    /* Hide all screens */
+    document.querySelectorAll(".screen").forEach(function(screen) {
+        screen.classList.remove("active");
+    });
+
+    /* Show current screen */
+    const activeScreen =
+        document.getElementById("screen" + currentScreen);
+
+    if (activeScreen) {
+        activeScreen.classList.add("active");
+    }
+
+    /* Update progress dots */
+    document.querySelectorAll(".dot").forEach(function(dot, index) {
+
+        if (index + 1 === currentScreen) {
+            dot.classList.add("active");
+        } else {
+            dot.classList.remove("active");
+        }
+
+    });
+
+    /* Back button */
+    const backBtn =
+        document.getElementById("backBtn");
+
+    if (backBtn) {
+        backBtn.disabled =
+            currentScreen === 1;
+    }
+
+    /* Next button */
+    const nextBtn =
+        document.getElementById("nextBtn");
+
+    if (nextBtn) {
+
+        if (currentScreen === totalScreens) {
+            nextBtn.style.visibility = "hidden";
+        } else {
+            nextBtn.style.visibility = "visible";
+        }
+
+    }
+
+    /* Skip button */
+    const skipBtn =
+        document.getElementById("skipBtn");
+
+    if (skipBtn) {
+
+        if (currentScreen === totalScreens) {
+            skipBtn.style.visibility = "hidden";
+        } else {
+            skipBtn.style.visibility = "visible";
+        }
+
+    }
+
+}
+
+
+/* =========================================
+   NEXT SCREEN
+========================================= */
+
+function nextScreen() {
+
+    if (currentScreen < totalScreens) {
+        showScreen(currentScreen + 1);
+    }
+
+}
+
+
+/* =========================================
+   PREVIOUS SCREEN
+========================================= */
+
+function prevScreen() {
+
+    if (currentScreen > 1) {
+        showScreen(currentScreen - 1);
+    }
+
+}
+
+
+/* =========================================
+   TERMS & POLICIES MODAL
+========================================= */
+
+function openTerms() {
+
+    const modal =
+        document.getElementById("termsModal");
+
+    if (modal) {
+        modal.classList.add("show");
+    }
+
+}
+
+
+function closeTerms() {
+
+    const modal =
+        document.getElementById("termsModal");
+
+    if (modal) {
+        modal.classList.remove("show");
+    }
+
+}
+
+
+/* =========================================
+   TERMS BUTTON
+========================================= */
+
+const termsBtn =
+    document.getElementById("termsBtn");
+
+if (termsBtn) {
+
+    termsBtn.addEventListener(
+        "click",
+        openTerms
+    );
+
+}
+
+
+/* =========================================
+   CLOSE MODAL WHEN CLICKING BACKDROP
+========================================= */
+
+const termsModal =
+    document.getElementById("termsModal");
+
+if (termsModal) {
+
+    termsModal.addEventListener(
+        "click",
+        function(event) {
+
+            if (event.target === termsModal) {
+                closeTerms();
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   ESCAPE KEY CLOSES MODAL
+========================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Escape") {
+            closeTerms();
+        }
+
+    }
+);
+
+
+/* =========================================
+   MARK INTRODUCTION AS SEEN
+========================================= */
+
+let finishingIntro = false;
+
+async function markIntroSeen() {
+
+    try {
+
+        /* Get currently logged-in user */
+        const {
+            data: {
+                user
+            },
+            error: userError
+        } =
+            await supabaseClient.auth.getUser();
+
+
+        /* No authenticated user */
+        if (userError || !user) {
+
+            console.error(
+                "Authentication error:",
+                userError
+            );
+
+            window.location.href =
+                "customer-login.html";
+
+            return false;
+        }
+
+
+        /* Update customer's profile */
+        const {
+            error: updateError
+        } =
+            await supabaseClient
+                .from("profiles")
+                .update({
+                    has_seen_intro: true
+                })
+                .eq("id", user.id);
+
+
+        if (updateError) {
+
+            console.error(
+                "Profile update error:",
+                updateError
+            );
+
+            alert(
+                "We couldn't save your onboarding progress. Please try again."
+            );
+
+            return false;
+        }
+
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Unexpected onboarding error:",
+            error
+        );
+
+        alert(
+            "Something went wrong. Please try again."
+        );
+
+        return false;
+    }
+
+}
+
+
+/* =========================================
+   SKIP INTRODUCTION
+========================================= */
+
+async function skipIntro() {
+
+    if (finishingIntro) {
+        return;
+    }
+
+    finishingIntro = true;
+
+    const skipBtn =
+        document.getElementById("skipBtn");
+
+    if (skipBtn) {
+        skipBtn.disabled = true;
+        skipBtn.textContent = "Saving...";
+    }
+
+
+    const success =
+        await markIntroSeen();
+
+
+    if (success) {
+
+        window.location.href =
+            "customer-dashboard.html";
+
+        return;
+    }
+
+
+    /* Allow retry if something failed */
+    finishingIntro = false;
+
+    if (skipBtn) {
+        skipBtn.disabled = false;
+        skipBtn.textContent =
+            "Skip Introduction";
+    }
+
+}
+
+
+/* =========================================
+   FINISH INTRODUCTION
+========================================= */
+
+async function finishIntro(destination) {
+
+    if (finishingIntro) {
+        return;
+    }
+
+    finishingIntro = true;
+
+
+    const primaryBtn =
+        document.querySelector(".primary-btn");
+
+    const secondaryBtn =
+        document.querySelector(".secondary-btn");
+
+
+    if (primaryBtn) {
+        primaryBtn.disabled = true;
+    }
+
+    if (secondaryBtn) {
+        secondaryBtn.disabled = true;
+    }
+
+
+    const success =
+        await markIntroSeen();
+
+
+    if (!success) {
+
+        finishingIntro = false;
+
+        if (primaryBtn) {
+            primaryBtn.disabled = false;
+        }
+
+        if (secondaryBtn) {
+            secondaryBtn.disabled = false;
+        }
+
+        return;
+    }
+
+
+    /* Create certificate */
+    if (destination === "create") {
+
+        window.location.href =
+            "generator.html";
+
+        return;
+    }
+
+
+    /* Go to dashboard */
+    if (destination === "dashboard") {
+
+        window.location.href =
+            "customer-dashboard.html";
+
+        return;
+    }
+
+
+    /* Safety fallback */
+    window.location.href =
+        "customer-dashboard.html";
+
+}
+
+
+/* =========================================
+   CHECK AUTHENTICATION ON PAGE LOAD
+========================================= */
+
+async function initializeOnboarding() {
+
+    try {
+
+        const {
+            data: {
+                session
+            },
+            error
+        } =
+            await supabaseClient.auth.getSession();
+
+
+        if (error) {
+
+            console.error(
+                "Session error:",
+                error
+            );
+
+            window.location.href =
+                "customer-login.html";
+
+            return;
+        }
+
+
+        /* User is not logged in */
+        if (!session || !session.user) {
+
+            window.location.href =
+                "customer-login.html";
+
+            return;
+        }
+
+
+        /* Start on screen 1 */
+        showScreen(1);
+
+    } catch (error) {
+
+        console.error(
+            "Initialization error:",
+            error
+        );
+
+        window.location.href =
+            "customer-login.html";
+    }
+
+}
+
+
+/* =========================================
+   START
+========================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        initializeOnboarding();
+
+    }
+);
+
+        </script>
+
+    <
