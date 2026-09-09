@@ -1068,3 +1068,219 @@ body{
   </div>
 
 </div>
+<script>
+
+/* =========================
+   ONBOARDING
+========================= */
+
+let current = 1;
+
+const total = 4;
+
+
+/* =========================
+   SHOW SCREEN
+========================= */
+
+function showScreen(n){
+
+  document
+    .querySelectorAll('.screen')
+    .forEach(function(screen){
+
+      screen.classList.remove('active');
+
+    });
+
+
+  const selectedScreen =
+    document.getElementById('screen-' + n);
+
+
+  if(!selectedScreen){
+    return;
+  }
+
+
+  selectedScreen.classList.add('active');
+
+  current = n;
+
+
+  const chrome =
+    document.querySelector('.chrome');
+
+  const termsBtn =
+    document.getElementById('termsBtn');
+
+
+  if(n <= total){
+
+    chrome.style.display = 'flex';
+
+
+    document
+      .querySelectorAll('.dot')
+      .forEach(function(dot){
+
+        dot.classList.toggle(
+          'active',
+          Number(dot.dataset.dot) === n
+        );
+
+      });
+
+
+    document
+      .getElementById('backBtn')
+      .classList.toggle(
+        'hidden',
+        n === 1
+      );
+
+
+    const nextBtn =
+      document.getElementById('nextBtn');
+
+
+    if(n === total){
+
+      nextBtn.style.display = 'none';
+
+    }else{
+
+      nextBtn.style.display = 'block';
+
+      nextBtn.textContent = 'Next →';
+
+    }
+
+
+    termsBtn.style.display = 'block';
+
+  }
+
+}
+
+
+/* =========================
+   NEXT
+========================= */
+
+function nextScreen(){
+
+  if(current < total){
+
+    showScreen(current + 1);
+
+  }
+
+}
+
+
+/* =========================
+   BACK
+========================= */
+
+function prevScreen(){
+
+  if(current > 1){
+
+    showScreen(current - 1);
+
+  }
+
+}
+
+
+/* =========================
+   SKIP INTRODUCTION
+========================= */
+
+function skipIntro(){
+
+  window.location.href =
+    'customer-dashboard.html';
+
+}
+
+
+/* =========================
+   GET STARTED
+========================= */
+
+function goToDashboard(intent){
+
+  if(intent === 'create'){
+
+    window.location.href =
+      'generator.html';
+
+  }else{
+
+    window.location.href =
+      'customer-dashboard.html';
+
+  }
+
+}
+
+
+/* =========================
+   TERMS MODAL
+========================= */
+
+document
+  .getElementById('termsBtn')
+  .addEventListener(
+    'click',
+    function(){
+
+      document
+        .getElementById('termsModal')
+        .classList.add('open');
+
+    }
+  );
+
+
+function closeTerms(){
+
+  document
+    .getElementById('termsModal')
+    .classList.remove('open');
+
+}
+
+
+/* =========================
+   CLOSE MODAL OUTSIDE
+========================= */
+
+document
+  .getElementById('termsModal')
+  .addEventListener(
+    'click',
+    function(event){
+
+      if(event.target === this){
+
+        closeTerms();
+
+      }
+
+    }
+  );
+
+
+/* =========================
+   START
+========================= */
+
+showScreen(1);
+
+</script>
+
+</body>
+</html>
