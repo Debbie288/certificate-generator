@@ -596,3 +596,641 @@
     footer strong{
       color:var(--gold-light);
     }
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+
+      display:none;
+      align-items:center;
+      justify-content:center;
+
+      padding:20px;
+
+      background:rgba(4,8,15,.78);
+
+      backdrop-filter:blur(10px);
+
+      z-index:500;
+    }
+
+    .modal-backdrop.show{
+      display:flex;
+    }
+
+    .modal{
+      width:min(420px,100%);
+
+      padding:28px;
+
+      border:1px solid
+        rgba(198,161,91,.3);
+
+      border-radius:20px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #16233A,
+          #101B2D
+        );
+
+      box-shadow:
+        0 30px 100px rgba(0,0,0,.5);
+
+      text-align:center;
+    }
+
+    .modal-icon{
+      width:48px;
+      height:48px;
+
+      margin:0 auto 15px;
+
+      display:grid;
+      place-items:center;
+
+      border-radius:50%;
+
+      border:1px solid
+        rgba(198,161,91,.45);
+
+      color:var(--gold-light);
+
+      font-size:20px;
+    }
+
+    .modal h3{
+      font-family:"Playfair Display",serif;
+      font-size:25px;
+    }
+
+    .modal p{
+      margin-top:9px;
+
+      color:var(--muted);
+
+      font-size:13px;
+    }
+
+    .modal-close{
+      width:100%;
+
+      margin-top:21px;
+
+      padding:12px;
+
+      border:1px solid var(--border);
+      border-radius:10px;
+
+      background:rgba(255,255,255,.04);
+
+      color:var(--white);
+
+      cursor:pointer;
+
+      font-weight:700;
+    }
+
+    @media(max-width:1000px){
+
+      .pricing-grid{
+        grid-template-columns:
+          repeat(2,minmax(0,1fr));
+      }
+
+    }
+
+    @media(max-width:600px){
+
+      .nav{
+        min-height:68px;
+      }
+
+      .brand-mark{
+        width:36px;
+        height:36px;
+      }
+
+      .brand-name{
+        font-size:15px;
+      }
+
+      .back-link{
+        font-size:12px;
+        padding:8px 10px;
+      }
+
+      .hero{
+        padding:55px 0 28px;
+      }
+
+      h1{
+        font-size:40px;
+      }
+
+      .hero p{
+        font-size:14px;
+      }
+
+      .billing-note{
+        font-size:11.5px;
+        padding:13px 14px;
+      }
+
+      .pricing-grid{
+        grid-template-columns:1fr;
+      }
+
+      .plan{
+        padding:25px 21px 22px;
+      }
+
+      .trust{
+        padding:23px 18px;
+      }
+
+      .faq{
+        margin-top:45px;
+      }
+
+    }
+
+    @media(max-width:380px){
+
+      .brand-name small{
+        display:none;
+      }
+
+      .brand-name{
+        font-size:14px;
+      }
+
+      .back-link{
+        padding:7px 8px;
+      }
+
+      h1{
+        font-size:35px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <header>
+
+    <nav class="nav">
+
+      <a href="customer-home.html"
+         class="brand"
+         aria-label="CertificateHub Home">
+
+        <div class="brand-mark">
+          <span>C</span>
+        </div>
+
+        <div class="brand-name">
+          CertificateHub
+          <small>Create. Verify. Protect.</small>
+        </div>
+
+      </a>
+
+      <a href="customer-home.html"
+         class="back-link">
+        ← Back to Home
+      </a>
+
+    </nav>
+
+  </header>
+
+  <main>
+
+    <section class="hero">
+
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        Simple, transparent pricing
+      </div>
+
+      <h1>
+        Choose the workspace<br>
+        that fits you.
+      </h1>
+
+      <p>
+        Create professional certificates, keep them organized,
+        and make every certificate easy to verify.
+      </p>
+
+    </section>
+
+    <div class="billing-note">
+
+      <span>✦</span>
+
+      <span>
+        Start with <strong>Free</strong>.
+        Upgrade whenever your certificate needs grow.
+      </span>
+
+    </div>
+
+    <section class="pricing-section">
+
+      <div class="pricing-grid">
+       <!-- FREE -->
+
+        <article class="plan">
+
+          <div class="plan-name">
+            Free
+          </div>
+
+          <div class="plan-description">
+            A simple way to get started with CertificateHub.
+          </div>
+
+          <div class="price free">
+
+            <span class="price-amount">
+              ₦0
+            </span>
+
+            <span class="price-period">
+              forever
+            </span>
+
+          </div>
+
+          <button
+            class="plan-button current"
+            type="button">
+
+            Current plan
+
+          </button>
+
+          <div class="divider"></div>
+
+          <div class="includes">
+            Includes:
+          </div>
+
+          <ul class="features">
+
+            <li>
+              <span class="check">✓</span>
+              <span>5 certificates per month</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Professional certificate generation</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>QR verification</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Certificate verification page</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Customer dashboard</span>
+            </li>
+
+          </ul>
+
+        </article>
+
+
+        <!-- STARTER -->
+
+        <article class="plan">
+
+          <div class="plan-name">
+            Starter
+          </div>
+
+          <div class="plan-description">
+            For individuals and small organizations creating certificates regularly.
+          </div>
+
+          <div class="price">
+
+            <span class="price-amount">
+              ₦2,500
+            </span>
+
+            <span class="price-period">
+              / month
+            </span>
+
+          </div>
+
+          <button
+            class="plan-button"
+            type="button"
+            data-plan="Starter">
+
+            Upgrade to Starter
+
+          </button>
+
+          <div class="divider"></div>
+
+          <div class="includes">
+            Everything in Free, plus:
+          </div>
+
+          <ul class="features">
+
+            <li>
+              <span class="check">✓</span>
+              <span>Up to 50 certificates per month</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Higher monthly certificate capacity</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Organized certificate workspace</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Certificate verification tracking</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Priority access to new features</span>
+            </li>
+
+          </ul>
+
+        </article>
+
+
+        <!-- PROFESSIONAL -->
+
+        <article class="plan featured">
+
+          <div class="popular">
+            Most Popular
+          </div>
+
+          <div class="plan-name">
+            Professional
+          </div>
+
+          <div class="plan-description">
+            Built for schools, trainers and organizations with larger certificate needs.
+          </div>
+
+          <div class="price">
+
+            <span class="price-amount">
+              ₦5,000
+            </span>
+
+            <span class="price-period">
+              / month
+            </span>
+
+          </div>
+
+          <button
+            class="plan-button"
+            type="button"
+            data-plan="Professional">
+
+            Upgrade to Professional
+
+          </button>
+
+          <div class="divider"></div>
+
+          <div class="includes">
+            Everything in Starter, plus:
+          </div>
+
+          <ul class="features">
+
+            <li>
+              <span class="check">✓</span>
+              <span>Up to 200 certificates per month</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Designed for growing organizations</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Detailed verification activity</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>More workspace capacity</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Priority product updates</span>
+            </li>
+
+          </ul>
+
+        </article>
+
+
+        <!-- BUSINESS -->
+
+        <article class="plan">
+
+          <div class="plan-name">
+            Business
+          </div>
+
+          <div class="plan-description">
+            For organizations issuing certificates at a much larger scale.
+          </div>
+
+          <div class="price">
+
+            <span class="price-amount">
+              ₦10,000
+            </span>
+
+            <span class="price-period">
+              / month
+            </span>
+
+          </div>
+
+          <button
+            class="plan-button"
+            type="button"
+            data-plan="Business">
+
+            Upgrade to Business
+
+          </button>
+
+          <div class="divider"></div>
+
+          <div class="includes">
+            Everything in Professional, plus:
+          </div>
+
+          <ul class="features">
+
+            <li>
+              <span class="check">✓</span>
+              <span>Up to 1,000 certificates per month</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Built for high-volume certificate issuing</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Advanced workspace capacity</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Verification activity tracking</span>
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              <span>Priority support experience</span>
+            </li>
+
+          </ul>
+
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <section class="trust">
+
+      <h2>
+        Built around trust.
+      </h2>
+
+      <p>
+        CertificateHub is designed to make certificates easier
+        to create, easier to verify and easier to manage.
+      </p>
+
+      <div class="trust-items">
+
+        <div class="trust-item">
+          ✓ Unique certificate numbers
+        </div>
+
+        <div class="trust-item">
+          ✓ QR verification
+        </div>
+
+        <div class="trust-item">
+          ✓ Secure account access
+        </div>
+
+        <div class="trust-item">
+          ✓ Certificate history
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="faq">
+
+      <h2 class="faq-title">
+        Questions
+      </h2>
+
+      <details>
+
+        <summary>
+          Can I start without paying?
+        </summary>
+
+        <p>
+          Yes. CertificateHub starts with a Free plan,
+          so you can create certificates before deciding
+          whether you need a larger plan.
+        </p>
+
+      </details>
+
+      <details>
+
+        <summary>
+          What happens when I reach my monthly limit?
+        </summary>
+
+        <p>
+          You can upgrade to a higher plan when your
+          certificate needs increase. CertificateHub will
+          show your usage and available capacity.
+        </p>
+
+      </details>
+
+      <details>
+
+        <summary>
+          Can I change my plan later?
+        </summary>
+
+        <p>
+          Yes. You will be able to manage your subscription
+          as CertificateHub billing is connected.
+        </p>
+
+      </details>
+
+      <details>
+
+        <summary>
+          Are payments secure?
+        </summary>
+
+        <p>
+          CertificateHub will use a secure payment provider
+          for billing. Payment credentials will not be stored
+          inside this pricing page.
+        </p>
+
+      </details>
+
+    </section>
+
+  </main>
