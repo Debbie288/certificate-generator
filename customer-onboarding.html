@@ -791,3 +791,154 @@
 
   </div>
 </div>
+<!-- Terms & Policies modal -->
+<div
+  class="modal-overlay"
+  id="termsOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="termsTitle"
+>
+  <div class="modal">
+
+    <div class="modal-header">
+      <h2 id="termsTitle">Terms &amp; Policies</h2>
+
+      <button
+        class="modal-close"
+        id="termsClose"
+        type="button"
+        aria-label="Close"
+      >
+        &times;
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <h3>Using CertificateHub</h3>
+
+      <p>
+        CertificateHub allows your organization to create, store, and verify
+        certificates. You are responsible for the accuracy of the information
+        you enter into any certificate you generate.
+      </p>
+
+      <h3>Data &amp; Records</h3>
+
+      <p>
+        Certificate records you create are stored securely and associated with
+        your organization's account. Only your organization can manage its own
+        certificate records.
+      </p>
+
+      <h3>Verification</h3>
+
+      <p>
+        Certificates issued through CertificateHub can be verified by anyone
+        with the certificate's verification details. Verification confirms
+        authenticity but does not share private account information.
+      </p>
+
+    </div>
+  </div>
+</div>
+ <script>
+(function(){
+  "use strict";
+
+  const SUPABASE_URL = "https://gdophhworvapqctpmyia.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_PUMkwRHzr6lwQQzTQyO1bQ_DCmmQ9ww";
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+  let currentUser = null;
+  let currentScreen = 1;
+  const totalScreens = 4;
+  let completing = false;
+
+  const guardScreen =
+    document.getElementById('guardScreen');
+
+  const app =
+    document.getElementById('app');
+
+  const screens =
+    Array.from(document.querySelectorAll('.screen'));
+
+  const dots =
+    Array.from(document.querySelectorAll('.dot'));
+
+  const backBtn =
+    document.getElementById('backBtn');
+
+  const nextBtn =
+    document.getElementById('nextBtn');
+
+  const skipBtn =
+    document.getElementById('skipBtn');
+
+  const firstCertBtn =
+    document.getElementById('firstCertBtn');
+
+  const goDashboardBtn =
+    document.getElementById('goDashboardBtn');
+
+  const termsBtn =
+    document.getElementById('termsBtn');
+
+  const termsOverlay =
+    document.getElementById('termsOverlay');
+
+  const termsClose =
+    document.getElementById('termsClose');
+
+  const orgGreeting =
+    document.getElementById('orgGreeting');
+
+  function goToScreen(target){
+
+    if(target < 1 || target > totalScreens) return;
+
+    const outgoing =
+      screens.find(
+        s => s.dataset.screen === String(currentScreen)
+      );
+
+    const incoming =
+      screens.find(
+        s => s.dataset.screen === String(target)
+      );
+
+    if(!incoming) return;
+
+    if(outgoing && outgoing !== incoming){
+      outgoing.classList.remove('active');
+      outgoing.setAttribute('aria-hidden', 'true');
+    }
+
+    incoming.classList.add('active');
+    incoming.setAttribute('aria-hidden', 'false');
+
+    dots.forEach(d => {
+      d.classList.toggle(
+        'active',
+        d.dataset.dot === String(target)
+      );
+    });
+
+    backBtn.disabled = (target === 1);
+
+    nextBtn.hidden = (target === totalScreens);
+
+    skipBtn.hidden = (target === totalScreens);
+
+    currentScreen = target;
+  }
+ 
