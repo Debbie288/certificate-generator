@@ -973,3 +973,520 @@
       }
     }
   </style>
+    <script>
+    const SUPABASE_URL = "https://gdophhworvapqctpmyia.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_PUMkwRHzr6lwQQzTQyO1bQ_DCmmQ9ww";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY,
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+          }
+        }
+      );
+
+    const loadingScreen =
+      document.getElementById("loadingScreen");
+
+    const app =
+      document.getElementById("app");
+
+    const errorBanner =
+      document.getElementById("errorBanner");
+
+    function showError(message) {
+      if (!errorBanner) return;
+
+      errorBanner.textContent = message;
+      errorBanner.style.display = "block";
+    }
+
+    function hideLoading() {
+      if (loadingScreen) {
+        loadingScreen.style.display = "none";
+      }
+
+      if (app) {
+        app.style.display = "block";
+      }
+    }
+
+    function formatDate(dateValue) {
+      if (!dateValue) return "";
+
+      const date = new Date(dateValue);
+
+      if (Number.isNaN(date.getTime())) {
+        return dateValue;
+      }
+
+      return date.toLocaleDateString(
+        "en-US",
+        {
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        }
+      );
+    }
+
+    function getInitials(name) {
+      if (!name) return "C";
+
+      const words = name
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+      if (words.length === 1) {
+        return words[0].charAt(0).toUpperCase();
+      }
+
+      return (
+        words[0].charAt(0) +
+        words[1].charAt(0)
+      ).toUpperCase();
+    }
+
+    async function loadProfile(userId) {
+      try {
+        const { data, error } =
+          await supabaseClient
+            .from("profiles")
+            .select("organization_name, email")
+            .eq("id", userId)
+            .single();
+
+        if (error) {
+          console.error(
+            "Profile error:",
+            error
+          );
+
+          return;
+        }
+
+        const organization =
+          data?.organization_name ||
+          "there";
+
+        const email =
+          data?.email || "";
+
+        const organizationName =
+          document.getElementById(
+            "organizationName"
+          );
+
+        const accountOrganization =
+          document.getElementById(
+            "accountOrganization"
+          );
+
+        const accountEmail =
+          document.getElementById(
+            "accountEmail"
+          );
+
+        const accountAvatar =
+          document.getElementById(
+            "accountAvatar"
+          );
+
+        if (organizationName) {
+          organizationName.textContent =
+            organization;
+        }
+
+        if (accountOrganization) {
+          accountOrganization.textContent =
+            organization;
+        }
+
+        if (accountEmail) {
+          accountEmail.textContent =
+            email;
+        }
+
+        if (accountAvatar) {
+          accountAvatar.textContent =
+            getInitials(organization);
+        }
+
+      } catch (error) {
+        console.error(
+          "Unexpected profile error:",
+          error
+        );
+      }
+    }
+
+    /* =========================================================
+       CERTIFICATES
+       ========================================================= */
+
+    async function loadCertificates(userId) {
+      try {
+        const { data, error } =
+          await supabaseClient
+            .from("certificates")
+            .select(
+              "id, student_name, course_name, completion_date, cert_number, institution, director, created_at"
+            )
+            .eq("user_id", userId)
+            .order(
+              "created_at",
+              {
+                ascending: false
+              }
+            );
+
+        if (error) {
+          console.error(
+            "Certificates error:",
+            error
+          );
+
+          showError(
+            "We couldn't load your certificates. Please try again."
+          );
+
+          return;
+        }
+
+        const certificates =
+          data || [];
+
+        const totalElement =
+          document.getElementById(
+            "totalCertificates"
+          );
+
+        const monthlyElement =
+          document.getElementById(
+            "monthlyCertificates"
+          );
+
+        if (totalElement) {
+          totalElement.textContent =
+            certificates.length;
+        }
+
+        const now = new Date();
+
+        const monthlyCount =
+          certificates.filter(
+            certificate => {
+              if (!certificate.created_at) {
+                return false;
+              }
+
+              const created =
+                new Date(
+                  certificate.created_at
+                );
+
+              return (
+                created.getMonth() ===
+                  now.getMonth() &&
+                created.getFullYear() ===
+                  now.getFullYear()
+              );
+            }
+          ).length;
+
+        if (monthlyElement) {
+          monthlyElement.textContent =
+            monthlyCount;
+        }
+
+        renderRecentCertificates(
+          certificates
+        );
+
+      } catch (error) {
+        console.error(
+          "Unexpected certificates error:",
+          error
+        );
+
+        showError(
+          "Something went wrong while loading your certificates."
+        );
+      }
+    }
+
+    function renderRecentCertificates(
+      certificates
+    ) {
+      const container =
+        document.getElementById(
+          "recentCertificates"
+        );
+
+      if (!container) return;
+
+      const emptyState =
+        document.getElementById(
+          "emptyState"
+        );
+
+      const viewAllBtn =
+        document.getElementById(
+          "viewAllBtn"
+        );
+
+      if (
+        certificates.length === 0
+      ) {
+        if (emptyState) {
+          emptyState.style.display =
+            "block";
+        }
+
+        if (viewAllBtn) {
+          viewAllBtn.style.display =
+            "none";
+        }
+
+        return;
+      }
+
+      if (emptyState) {
+        emptyState.style.display =
+          "none";
+      }
+
+      if (viewAllBtn) {
+        viewAllBtn.style.display =
+          certificates.length > 5
+            ? "inline-block"
+            : "none";
+      }
+
+      const recent =
+        certificates.slice(0, 5);
+
+      container.innerHTML = "";
+
+      recent.forEach(
+        certificate => {
+          const item =
+            document.createElement(
+              "div"
+            );
+
+          item.className =
+            "certificate-item";
+
+          const main =
+            document.createElement(
+              "div"
+            );
+
+          main.className =
+            "certificate-main";
+
+          const name =
+            document.createElement(
+              "div"
+            );
+
+          name.className =
+            "certificate-name";
+
+          name.textContent =
+            certificate.student_name ||
+            "Unnamed recipient";
+
+          const course =
+            document.createElement(
+              "div"
+            );
+
+          course.className =
+            "certificate-course";
+
+          course.textContent =
+            certificate.course_name ||
+            "Certificate";
+
+          const number =
+            document.createElement(
+              "div"
+            );
+
+          number.className =
+            "certificate-number";
+
+          number.textContent =
+            certificate.cert_number ||
+            "No verification number";
+
+          main.appendChild(name);
+          main.appendChild(course);
+          main.appendChild(number);
+
+          const date =
+            document.createElement(
+              "div"
+            );
+
+          date.className =
+            "certificate-date";
+
+          date.textContent =
+            formatDate(
+              certificate.created_at ||
+              certificate.completion_date
+            );
+
+          item.appendChild(main);
+          item.appendChild(date);
+
+          container.appendChild(item);
+        }
+      );
+    }
+        /* =========================================================
+       SIGN OUT
+       ========================================================= */
+
+    async function signOut() {
+      try {
+        const {
+          error
+        } =
+          await supabaseClient.auth.signOut();
+
+        if (error) {
+          console.error(
+            "Sign out error:",
+            error
+          );
+
+          showError(
+            "Unable to sign out. Please try again."
+          );
+
+          return;
+        }
+
+        window.location.href =
+          "customer-login.html";
+
+      } catch (error) {
+        console.error(
+          "Unexpected sign out error:",
+          error
+        );
+
+        window.location.href =
+          "customer-login.html";
+      }
+    }
+
+    const topLogoutBtn =
+      document.getElementById(
+        "topLogoutBtn"
+      );
+
+    const accountLogoutBtn =
+      document.getElementById(
+        "accountLogoutBtn"
+      );
+
+    if (topLogoutBtn) {
+      topLogoutBtn.addEventListener(
+        "click",
+        signOut
+      );
+    }
+
+    if (accountLogoutBtn) {
+      accountLogoutBtn.addEventListener(
+        "click",
+        signOut
+      );
+    }
+
+    /* =========================================================
+       INITIALIZE HOME PAGE
+       ========================================================= */
+
+    async function init() {
+      try {
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth.getSession();
+
+        if (error) {
+          console.error(
+            "Session error:",
+            error
+          );
+
+          window.location.href =
+            "customer-login.html";
+
+          return;
+        }
+
+        const session =
+          data?.session;
+
+        if (!session?.user) {
+          window.location.href =
+            "customer-login.html";
+
+          return;
+        }
+
+        const user =
+          session.user;
+
+        await Promise.all([
+          loadProfile(user.id),
+          loadCertificates(user.id)
+        ]);
+
+        hideLoading();
+
+      } catch (error) {
+        console.error(
+          "Home initialization error:",
+          error
+        );
+
+        window.location.href =
+          "customer-login.html";
+      }
+    }
+
+    supabaseClient.auth.onAuthStateChange(
+      (event, session) => {
+        if (
+          event === "SIGNED_OUT" ||
+          !session
+        ) {
+          window.location.href =
+            "customer-login.html";
+        }
+      }
+    );
+
+    init();
+
+  </script>
+
+</body>
+</html>
