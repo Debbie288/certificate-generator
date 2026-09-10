@@ -1,0 +1,19 @@
+{
+  "name": "CertificateHub",
+  "short_name": "CertificateHub",
+  "description": "Create. Verify. Protect.",
+  "start_url": "customer-home.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101B2D",
+  "theme_color": "#101B2D",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "xylarion -logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
