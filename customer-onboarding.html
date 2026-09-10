@@ -941,4 +941,188 @@
 
     currentScreen = target;
   }
+    backBtn.addEventListener('click', function(){
+    goToScreen(currentScreen - 1);
+  });
+
+  nextBtn.addEventListener('click', function(){
+    goToScreen(currentScreen + 1);
+  });
+
+  async function markIntroSeen(){
+
+    if(completing || !currentUser) return;
+
+    completing = true;
+
+    try{
+
+      const { error } =
+        await supabaseClient
+          .from('profiles')
+          .update({
+            has_seen_intro: true,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', currentUser.id);
+
+      if(error){
+        console.error(
+          'Failed to update has_seen_intro:',
+          error.message
+        );
+      }
+
+    }catch(err){
+
+      console.error(
+        'Unexpected error updating profile:',
+        err
+      );
+
+    }
+  }
+
+  skipBtn.addEventListener('click', async function(){
+
+    skipBtn.disabled = true;
+
+    await markIntroSeen();
+
+    window.location.href = 'customer-home.html';
+  });
+
+  firstCertBtn.addEventListener('click', async function(){
+
+    firstCertBtn.disabled = true;
+
+    await markIntroSeen();
+
+    window.location.href = 'generator.html';
+  });
+
+  goDashboardBtn.addEventListener('click', async function(){
+
+    goDashboardBtn.disabled = true;
+
+    await markIntroSeen();
+
+    window.location.href = 'customer-dashboard.html';
+  });
+
+  function openTerms(){
+    termsOverlay.classList.add('open');
+  }
+
+  function closeTerms(){
+    termsOverlay.classList.remove('open');
+  }
+
+  termsBtn.addEventListener('click', openTerms);
+
+  termsClose.addEventListener('click', closeTerms);
+
+  termsOverlay.addEventListener('click', function(e){
+
+    if(e.target === termsOverlay){
+      closeTerms();
+    }
+
+  });
+
+  document.addEventListener('keydown', function(e){
+
+    if(
+      e.key === 'Escape' &&
+      termsOverlay.classList.contains('open')
+    ){
+      closeTerms();
+    }
+
+  });
+    async function loadOrganizationName(userId){
+
+    try{
+
+      const { data, error } =
+        await supabaseClient
+          .from('profiles')
+          .select('organization_name')
+          .eq('id', userId)
+          .single();
+
+      if(
+        !error &&
+        data &&
+        data.organization_name
+      ){
+
+        orgGreeting.textContent =
+          data.organization_name +
+          '\u2019s workspace is ready';
+      }
+
+    }catch(err){
+
+      console.error(
+        'Could not load organization name:',
+        err
+      );
+
+    }
+  }
+
+  async function init(){
+
+    try{
+
+      const {
+        data: { session },
+        error
+      } =
+        await supabaseClient.auth.getSession();
+
+      if(
+        error ||
+        !session ||
+        !session.user
+      ){
+
+        window.location.href =
+          'customer-login.html';
+
+        return;
+      }
+
+      currentUser = session.user;
+
+      loadOrganizationName(
+        currentUser.id
+      );
+
+      guardScreen.hidden = true;
+
+      app.hidden = false;
+
+      goToScreen(1);
+
+    }catch(err){
+
+      console.error(
+        'Session check failed:',
+        err
+      );
+
+      window.location.href =
+        'customer-login.html';
+    }
+  }
+
+  init();
+
+})();
+</script>
+
+</body>
+</html>
  
