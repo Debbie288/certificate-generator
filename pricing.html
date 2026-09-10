@@ -1234,3 +1234,189 @@
     </section>
 
   </main>
+  <footer>
+
+    <strong>CertificateHub</strong>
+    · Create. Verify. Protect.
+
+    <br><br>
+
+    © <span id="year"></span> CertificateHub.
+    All rights reserved.
+
+  </footer>
+
+
+  <div
+    class="modal-backdrop"
+    id="upgradeModal"
+    aria-hidden="true">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitle">
+
+      <div class="modal-icon">
+        ✦
+      </div>
+
+      <h3 id="modalTitle">
+        Coming next
+      </h3>
+
+      <p id="modalText">
+        Secure payment is being prepared for CertificateHub.
+      </p>
+
+      <button
+        class="modal-close"
+        id="closeModal"
+        type="button">
+
+        Continue
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  /* CURRENT YEAR */
+
+  document.getElementById("year").textContent =
+    new Date().getFullYear();
+
+
+  /* UPGRADE BUTTONS */
+
+  const upgradeButtons =
+    document.querySelectorAll(
+      ".plan-button:not(.current)"
+    );
+
+  const modal =
+    document.getElementById(
+      "upgradeModal"
+    );
+
+  const modalText =
+    document.getElementById(
+      "modalText"
+    );
+
+  const closeModal =
+    document.getElementById(
+      "closeModal"
+    );
+
+
+  upgradeButtons.forEach(function(button){
+
+    button.addEventListener(
+      "click",
+      function(){
+
+        const plan =
+          button.dataset.plan;
+
+        modalText.textContent =
+          "The " +
+          plan +
+          " payment option will be connected to secure CertificateHub billing. No payment has been taken.";
+
+        modal.classList.add("show");
+
+        modal.setAttribute(
+          "aria-hidden",
+          "false"
+        );
+
+      }
+    );
+
+  });
+
+
+  /* CLOSE MODAL */
+
+  function closeUpgradeModal(){
+
+    modal.classList.remove("show");
+
+    modal.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+  }
+
+
+  closeModal.addEventListener(
+    "click",
+    closeUpgradeModal
+  );
+
+
+  modal.addEventListener(
+    "click",
+    function(event){
+
+      if(event.target === modal){
+
+        closeUpgradeModal();
+
+      }
+
+    }
+  );
+
+
+  document.addEventListener(
+    "keydown",
+    function(event){
+
+      if(event.key === "Escape"){
+
+        closeUpgradeModal();
+
+      }
+
+    }
+  );
+
+
+  /* SERVICE WORKER */
+
+  if("serviceWorker" in navigator){
+
+    window.addEventListener(
+      "load",
+      function(){
+
+        navigator.serviceWorker
+          .register("sw.js")
+          .catch(function(error){
+
+            console.log(
+              "Service worker registration failed:",
+              error
+            );
+
+          });
+
+      }
+    );
+
+  }
+
+</script>
+
+</body>
+</html>
