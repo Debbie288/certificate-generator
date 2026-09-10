@@ -575,3 +575,124 @@
 </style>
 </head>
 <body>
+<!-- Auth guard loading state -->
+<div class="guard-screen" id="guardScreen" aria-label="Checking your session">
+  <div class="spinner" role="status"></div>
+</div>
+
+<div class="app" id="app" hidden>
+
+  <div class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <span class="brand-name">CertificateHub</span>
+    </div>
+
+    <button class="skip-btn" id="skipBtn" type="button">
+      Skip introduction
+    </button>
+  </div>
+
+  <div class="screens" id="screens">
+
+    <!-- SCREEN 1 -->
+    <section class="screen active" data-screen="1" aria-hidden="false">
+      <div class="screen-body">
+
+        <div>
+          <p class="eyebrow">CertificateHub</p>
+          <h1 class="headline">Create. Verify.<br>Protect.</h1>
+        </div>
+
+        <div class="cert-stage" aria-hidden="true">
+          <div class="cert">
+            <div class="cert-inner">
+              <div class="cert-seal">C</div>
+              <p class="cert-title">Certificate of Completion</p>
+              <p class="cert-name">Jane Doe</p>
+              <div class="cert-line"></div>
+              <p class="cert-fine">Issued &amp; verifiable</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="subtext">
+          CertificateHub helps your organization create professional certificates,
+          keep every record organized in one place, and let anyone verify
+          authenticity in seconds.
+        </p>
+
+      </div>
+    </section>
+        <!-- SCREEN 2 -->
+    <section class="screen" data-screen="2" aria-hidden="true">
+      <div class="screen-body">
+
+        <div>
+          <p class="eyebrow">What CertificateHub does</p>
+          <h1 class="headline" style="font-size:26px;">
+            Everything in one workspace
+          </h1>
+        </div>
+
+        <div class="feature-list">
+
+          <div class="feature-row">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M12 4v16m8-8H4"/>
+              </svg>
+            </div>
+
+            <div class="feature-text">
+              <h3>Create</h3>
+              <p>Generate professional certificates in minutes.</p>
+            </div>
+          </div>
+
+          <div class="feature-row">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M4 12l5 5L20 6"/>
+              </svg>
+            </div>
+
+            <div class="feature-text">
+              <h3>Verify</h3>
+              <p>Let anyone confirm a certificate is genuine.</p>
+            </div>
+          </div>
+
+          <div class="feature-row">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="4" y="4" width="16" height="16" rx="2"/>
+                <path d="M4 10h16"/>
+              </svg>
+            </div>
+
+            <div class="feature-text">
+              <h3>Manage</h3>
+              <p>Keep every certificate organized and searchable.</p>
+            </div>
+          </div>
+
+          <div class="feature-row">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <circle cx="18" cy="5" r="2.4"/>
+                <circle cx="6" cy="12" r="2.4"/>
+                <circle cx="18" cy="19" r="2.4"/>
+                <path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/>
+              </svg>
+            </div>
+
+            <div class="feature-text">
+              <h3>Share</h3>
+              <p>Give every certificate a professional verification page.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
